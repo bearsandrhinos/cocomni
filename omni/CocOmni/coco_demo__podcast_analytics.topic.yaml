@@ -104,7 +104,7 @@ views:
 
       episode_id:
         sql: '"EPISODE_ID"'
-        description: Identifier for the specific episode streamed
+        description: Identifier for the specific episode streamed.  This is an ID
 
       episode_length_min:
         sql: '"EPISODE_LENGTH_MIN"'
@@ -241,19 +241,15 @@ views:
         sql: AVG(${coco_demo__podcast_analytics__users.age})
         description: Average age of registered users
 
+      id_count_distinct:
+        sql: COUNT(DISTINCT CASE WHEN ${coco_demo__podcast_analytics__users.state} =
+          'California' THEN ${coco_demo__podcast_analytics__users.id} ELSE NULL
+          END)
+        description: "(Count Distinct) ID: Unique user identifier"
+
       total_users:
         sql: COUNT(${coco_demo__podcast_analytics__users.id})
         description: Total number of registered users
-
-      id_count_distinct:
-        sql: ${coco_demo__podcast_analytics__users.id}
-        label: ID Count Distinct california
-        format: NUMBER_0
-        description: "(Count Distinct) ID: Unique user identifier"
-        aggregate_type: count_distinct
-        filters:
-          state:
-            is: California
 
 relationships:
   - join_from_view: coco_demo__podcast_analytics__streams

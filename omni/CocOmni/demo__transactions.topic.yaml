@@ -14,6 +14,27 @@ views:
     table_name: INVENTORY_ITEMS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+        description: The cost of each inventory item.
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each inventory item.
+
+      product_distribution_center_id:
+        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
+        description: The unique identifier for the distribution center where the
+          inventory item is stored.
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+        description: Unique identifier for a product in the inventory.
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+        description: The retail price at which each product is sold to customers.
+
       created_at:
         sql: '"CREATED_AT"'
         description: Date and time when the inventory item was created.
@@ -45,27 +66,6 @@ views:
         sql: '"SOLD_AT"'
         description: Date and time when the inventory item was sold.
 
-      cost:
-        sql: '"COST"'
-        description: The cost of each inventory item.
-
-      id:
-        sql: '"ID"'
-        description: Unique identifier for each inventory item.
-
-      product_distribution_center_id:
-        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
-        description: The unique identifier for the distribution center where the
-          inventory item is stored.
-
-      product_id:
-        sql: '"PRODUCT_ID"'
-        description: Unique identifier for a product in the inventory.
-
-      product_retail_price:
-        sql: '"PRODUCT_RETAIL_PRICE"'
-        description: The retail price at which each product is sold to customers.
-
     measures:
       total_cost:
         sql: SUM(${demo__transactions__inventory_items.cost})
@@ -81,40 +81,6 @@ views:
     table_name: ORDER_ITEMS
 
     dimensions:
-      created_at:
-        sql: '"CREATED_AT"'
-        description: The date and time when the order item was created.
-
-      delivered_at:
-        sql: '"DELIVERED_AT"'
-        description: The date and time when the order item was delivered to the customer.
-
-      is_delivered:
-        sql: '"IS_DELIVERED"'
-        description: Indicates whether the order item has been delivered to the customer.
-
-      is_returned:
-        sql: '"IS_RETURNED"'
-        description: Indicates whether the order item was returned by the customer.
-
-      is_shipped:
-        sql: '"IS_SHIPPED"'
-        description: Indicates whether the order item has been shipped to the customer.
-
-      returned_at:
-        sql: '"RETURNED_AT"'
-        description: The date and time when the order item was returned, if applicable.
-
-      shipped_at:
-        sql: '"SHIPPED_AT"'
-        description: The date and time when the order item was shipped.
-
-      status:
-        sql: '"STATUS"'
-        description: The status of the order item, indicating whether it was
-          successfully completed, cancelled by the customer or vendor, or
-          returned by the customer.
-
       id:
         sql: '"ID"'
         description: Unique identifier for each order item.
@@ -152,6 +118,40 @@ views:
         sql: '"USER_ID"'
         description: The unique identifier of the user who placed the order.
 
+      created_at:
+        sql: '"CREATED_AT"'
+        description: The date and time when the order item was created.
+
+      delivered_at:
+        sql: '"DELIVERED_AT"'
+        description: The date and time when the order item was delivered to the customer.
+
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+        description: Indicates whether the order item has been delivered to the customer.
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+        description: Indicates whether the order item was returned by the customer.
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+        description: Indicates whether the order item has been shipped to the customer.
+
+      returned_at:
+        sql: '"RETURNED_AT"'
+        description: The date and time when the order item was returned, if applicable.
+
+      shipped_at:
+        sql: '"SHIPPED_AT"'
+        description: The date and time when the order item was shipped.
+
+      status:
+        sql: '"STATUS"'
+        description: The status of the order item, indicating whether it was
+          successfully completed, cancelled by the customer or vendor, or
+          returned by the customer.
+
     measures:
       average_sales:
         sql: AVG(${demo__transactions__order_items.sale_price})
@@ -171,6 +171,27 @@ views:
     table_name: USERS
 
     dimensions:
+      age:
+        sql: '"AGE"'
+        description: The age of the user in years.
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each user in the system.
+        primary_key: true
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: The latitude coordinate of the user's location, representing the
+          angular distance north or south of the equator, measured in decimal
+          degrees.
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Longitude coordinate of the user's location, representing the
+          distance east or west of the prime meridian, measured in decimal
+          degrees.
+
       city:
         sql: '"CITY"'
         description: The CITY column represents the geographical location or urban area
@@ -219,27 +240,6 @@ views:
       zip:
         sql: '"ZIP"'
         description: Postal Code of the user's location.
-
-      age:
-        sql: '"AGE"'
-        description: The age of the user in years.
-
-      id:
-        sql: '"ID"'
-        description: Unique identifier for each user in the system.
-        primary_key: true
-
-      latitude:
-        sql: '"LATITUDE"'
-        description: The latitude coordinate of the user's location, representing the
-          angular distance north or south of the equator, measured in decimal
-          degrees.
-
-      longitude:
-        sql: '"LONGITUDE"'
-        description: Longitude coordinate of the user's location, representing the
-          distance east or west of the prime meridian, measured in decimal
-          degrees.
 
 relationships:
   - join_from_view: demo__transactions__order_items
