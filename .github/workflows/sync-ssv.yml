@@ -1,0 +1,109 @@
+# Lives in the Omni model repo. On merge to main, regenerates the Snowflake semantic view YAML for
+# each changed topic and opens a PR against the ssv repo. Requires the secret SSV_REPO_TOKEN
+# (fine-grained PAT or GitHub App token with Contents + Pull requests write on the ssv repo).
+# Scripts are expected under tools/omni-ssv-sync/.
+name: Sync topics to Snowflake semantic views
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.topic"
+      - "**/*.topic.yaml"
+  workflow_dispatch:
+    inputs:
+      topic_files:
+        description: Space-separated topic paths to sync (blank = all topics)
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-ssv
+  cancel-in-progress: false
+
+env:
+  SSV_REPO: bearsandrhinos/ssv
+  SSV_DIR: cortex_project
+  # Pin to a commit SHA once you have validated a converter version.
+  CONVERTERS_REF: main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/checkout@v4
+        with:
+          repository: apache/ossie-converters
+          ref: ${{ env.CONVERTERS_REF }}
+          submodules: true
+          path: .ossie-converters
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.SSV_REPO }}
+          token: ${{ secrets.SSV_REPO_TOKEN }}
+          path: ssv
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Find changed topics
+        id: changed
+        env:
+          INPUT_FILES: ${{ inputs.topic_files }}
+          BEFORE: ${{ github.event.before }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ -n "$INPUT_FILES" ]; then
+            files="$INPUT_FILES"
+          elif [ "$EVENT" = "push" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            files="$(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- '*.topic' '*.topic.yaml' | tr '\n' ' ')"
+          else
+            files="$(git ls-files '*.topic' '*.topic.yaml' | tr '\n' ' ')"
+          fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "Topics: $files"
+
+      - name: Convert and merge
+        if: steps.changed.outputs.files != ''
+        env:
+          OSSIE_CONVERTERS: ${{ github.workspace }}/.ossie-converters
+          TOPIC_FILES: ${{ steps.changed.outputs.files }}
+        run: |
+          # word-splitting of TOPIC_FILES is intended (space-separated paths)
+          uv run tools/omni-ssv-sync/sync_topics.py \
+            --ssv-root ssv --ssv-dir "$SSV_DIR" --report sync-report.md \
+            $TOPIC_FILES
+
+      - name: Open PR on the ssv repo
+        if: steps.changed.outputs.files != ''
+        working-directory: ssv
+        env:
+          GH_TOKEN: ${{ secrets.SSV_REPO_TOKEN }}
+        run: |
+          if git diff --quiet; then
+            echo "Semantic view files already match Omni; nothing to do."
+            exit 0
+          fi
+          short="${GITHUB_SHA::7}"
+          branch="omni-sync/$short"
+          base="$(gh repo view "$SSV_REPO" --json defaultBranchRef -q .defaultBranchRef.name)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add "$SSV_DIR"
+          git commit -m "Sync from Omni ${short}"
+          git push --force origin "$branch"
+          {
+            echo "Automated sync from Omni commit [\`$short\`](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA})."
+            echo
+            cat ../sync-report.md
+          } > ../pr-body.md
+          gh pr create --repo "$SSV_REPO" --base "$base" --head "$branch" \
+            --title "Sync from Omni ${short}" --body-file ../pr-body.md \
+            || gh pr edit "$branch" --repo "$SSV_REPO" --body-file ../pr-body.md
