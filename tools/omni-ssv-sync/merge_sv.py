@@ -65,8 +65,17 @@ def ensure_list(table, key):
     return table[key]
 
 
+def set_list(item, key, values, label, note):
+    """Set a list-valued property (synonyms, sample_values) when Omni's value differs."""
+    values = [str(v) for v in values]
+    if [str(v) for v in item.get(key) or []] != values:
+        item[key] = CommentedSeq(values)
+        note(f"{label}: {key} set to {values}")
+
+
 class Merger:
-    def __init__(self, existing, generated, prune):
+    def __init__(self, existing, generated, prune, extras=None):
+        self.extras = extras or {}
         self.ex = existing
         self.gen = generated
         self.prune = prune
@@ -110,6 +119,42 @@ class Merger:
 
         self.merge_metrics()
         self.merge_relationships()
+        self.merge_extras()
+        self.check_synonyms()
+
+    def merge_extras(self):
+        instructions = self.extras.get("ai_context")
+        if instructions:
+            block = self.ex.get("module_custom_instructions")
+            if block is None:
+                block = CommentedMap()
+                self.ex.insert(list(self.ex.keys()).index("tables"), "module_custom_instructions", block)
+            if str(block.get("sql_generation") or "").strip() != instructions:
+                block["sql_generation"] = instructions
+                self.note("model: module_custom_instructions.sql_generation set from topic ai_context")
+        for view, fields in (self.extras.get("fields") or {}).items():
+            ex_t = self.gen_to_ex.get(view)
+            if ex_t is None:
+                continue
+            for fname, props in fields.items():
+                kind, ex_f = find_field(ex_t, fname)
+                label = f"{ex_t['name']}.{fname}"
+                if ex_f is None:
+                    self.note(f"{label}: sample_values skipped, field not in existing file")
+                elif kind == "facts":
+                    self.note(f"{label}: sample_values skipped, Snowflake only allows them on dimensions")
+                else:
+                    set_list(ex_f, "sample_values", props["sample_values"], label, self.note)
+
+    def check_synonyms(self):
+        seen = {}
+        for t in self.ex["tables"]:
+            items = [i for k in FIELD_KINDS + ("metrics",) for i in t.get(k) or []]
+            for i in items:
+                for syn in i.get("synonyms") or []:
+                    prev = seen.setdefault(str(syn).lower(), f"{t['name']}.{i['name']}")
+                    if prev != f"{t['name']}.{i['name']}":
+                        self.note(f"WARNING synonym '{syn}' used on both {prev} and {t['name']}.{i['name']}; Snowflake requires unique synonyms")
 
     def merge_table(self, g_t, ex_t):
         name = ex_t["name"]
@@ -133,6 +178,8 @@ class Merger:
                 new = CommentedMap(name=str(g_f["name"]).upper(), expr=upper_outside_strings(str(g_f["expr"]).replace('"', "")))
                 if g_f.get("description"):
                     new["description"] = g_f["description"]
+                if g_f.get("synonyms"):
+                    new["synonyms"] = CommentedSeq(g_f["synonyms"])
                 ensure_list(ex_t, "dimensions").append(new)
                 self.note(f"{name}.{new['name']}: ADDED as dimension, needs data_type and classification review")
                 continue
@@ -142,6 +189,8 @@ class Merger:
             if norm(g_f["expr"]) != norm(ex_f["expr"]):
                 ex_f["expr"] = upper_outside_strings(g_f["expr"])
                 self.note(f"{name}.{ex_f['name']}: expr changed to {ex_f['expr']}")
+            if g_f.get("synonyms"):
+                set_list(ex_f, "synonyms", g_f["synonyms"], f"{name}.{ex_f['name']}", self.note)
 
         for kind in FIELD_KINDS:
             for f in list(ex_t.get(kind) or []):
@@ -184,6 +233,8 @@ class Merger:
                 new = CommentedMap(name=g_m["name"])
                 if g_m.get("description"):
                     new["description"] = g_m["description"]
+                if g_m.get("synonyms"):
+                    new["synonyms"] = CommentedSeq(g_m["synonyms"])
                 new["expr"] = expr
                 ensure_list(owner, "metrics").append(new)
                 self.note(f"{owner['name']}.{g_m['name']}: metric ADDED ({expr})")
@@ -194,6 +245,8 @@ class Merger:
             if norm(expr) != norm(ex_m["expr"]):
                 ex_m["expr"] = expr
                 self.note(f"{owner['name']}.{ex_m['name']}: expr changed to {expr}")
+            if g_m.get("synonyms"):
+                set_list(ex_m, "synonyms", g_m["synonyms"], f"{owner['name']}.{ex_m['name']}", self.note)
         for t in self.ex["tables"]:
             for m in list(t.get("metrics") or []):
                 if str(m["name"]).upper() in seen:
@@ -243,6 +296,7 @@ def main():
     ap.add_argument("--existing", required=True)
     ap.add_argument("--generated", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--extras", help="sidecar written by hoist_topic_views.py (sample_values, topic ai_context)")
     ap.add_argument("--prune", action="store_true", help="remove fields/metrics/relationships absent from Omni")
     args = ap.parse_args()
 
@@ -252,7 +306,11 @@ def main():
     with open(args.generated) as f:
         generated = YAML(typ="safe").load(f)
 
-    merger = Merger(existing, generated, args.prune)
+    extras = None
+    if args.extras:
+        with open(args.extras) as f:
+            extras = YAML(typ="safe").load(f)
+    merger = Merger(existing, generated, args.prune, extras)
     merger.merge()
     with open(args.out, "w") as f:
         y.dump(existing, f)

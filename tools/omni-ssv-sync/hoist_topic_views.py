@@ -58,7 +58,7 @@ def inline_measure_filters(views):
 
 
 
-def hoist(topic_path, out_dir):
+def hoist(topic_path, out_dir, extras_path=None):
     topic = yaml.safe_load(Path(topic_path).read_text())
     out = Path(out_dir)
     (out / "views").mkdir(parents=True, exist_ok=True)
@@ -67,6 +67,19 @@ def hoist(topic_path, out_dir):
     views = topic.pop("views", {})
     rels = topic.pop("relationships", [])
     inline_measure_filters(views)
+
+    # Things the converters drop on the way to Snowflake travel in a sidecar instead.
+    extras = {"fields": {}}
+    if topic.get("ai_context"):
+        extras["ai_context"] = str(topic.pop("ai_context")).strip()
+    for vname, view in views.items():
+        for fname, dim in (view.get("dimensions") or {}).items():
+            if dim.get("sample_values"):
+                extras["fields"].setdefault(vname, {})[fname] = {"sample_values": [str(v) for v in dim.pop("sample_values")]}
+            else:
+                dim.pop("sample_values", None)
+    if extras_path:
+        Path(extras_path).write_text(yaml.safe_dump(extras, sort_keys=False))
     catalog = topic.pop("semantic_view", "").split(".")[0]
 
     for name, body in views.items():
@@ -86,4 +99,4 @@ def hoist(topic_path, out_dir):
 
 
 if __name__ == "__main__":
-    hoist(sys.argv[1], sys.argv[2])
+    hoist(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
