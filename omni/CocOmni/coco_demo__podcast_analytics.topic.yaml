@@ -81,7 +81,7 @@ views:
         description: Average podcast rating
 
       total_podcasts:
-        sql: COUNT(${coco_demo__podcast_analytics__podcasts.podcast_id} * 2)
+        sql: COUNT(${coco_demo__podcast_analytics__podcasts.podcast_id})
         description: Total number of podcasts in the catalog.  I am multipling this by
           two now
 

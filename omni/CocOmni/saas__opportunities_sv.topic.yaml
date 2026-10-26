@@ -14,15 +14,6 @@ views:
     table_name: ACCOUNT
 
     dimensions:
-      annual_revenue:
-        sql: '"ANNUAL_REVENUE"'
-        description: The account's annual operating revenue
-        synonyms: [ annual_revenue_amount, company_revenue, revenue ]
-
-      number_of_employees:
-        sql: '"NUMBER_OF_EMPLOYEES"'
-        description: Total employee count at the account organization
-
       billing_city:
         sql: '"BILLING_CITY"'
         description: Account billing city
@@ -89,6 +80,15 @@ views:
         sql: '"TYPE"'
         description: "Account classification: Prospect or Customer"
         synonyms: [ account_status, account_type, customer_type ]
+
+      annual_revenue:
+        sql: '"ANNUAL_REVENUE"'
+        description: The account's annual operating revenue
+        synonyms: [ annual_revenue_amount, company_revenue, revenue ]
+
+      number_of_employees:
+        sql: '"NUMBER_OF_EMPLOYEES"'
+        description: Total employee count at the account organization
 
     measures:
       count:
@@ -161,40 +161,6 @@ views:
     table_name: OPPORTUNITIES
 
     dimensions:
-      acv:
-        sql: '"ACV"'
-        description: Annual contract value
-
-      amount:
-        sql: '"AMOUNT"'
-        description: Contract amount for the opportunity
-        synonyms: [ contract_value, deal_amount, opportunity_amount ]
-
-      arr:
-        sql: '"ARR"'
-        description: Annual recurring revenue
-
-      contract_term_months:
-        sql: '"CONTRACT_TERM_MONTHS"'
-        description: Length in months of the contract
-
-      is_won:
-        sql: '"IS_WON"'
-        description: Whether the opportunity is won
-        hidden: true
-
-      probability:
-        sql: '"PROBABILITY"'
-        description: Probability (0-100) that the opportunity will be won
-
-      risk_score:
-        sql: '"RISK_SCORE"'
-        description: Numeric risk level (1-100, 100 is locked, 1 is highly risky)
-
-      tcv:
-        sql: '"TCV"'
-        description: Total contract value
-
       account_id:
         sql: '"ACCOUNT_ID"'
         description: Unique identifier for the account
@@ -305,6 +271,40 @@ views:
         sql: '"WIN_REASON"'
         description: The win reason defined by the AE in salesforce
 
+      acv:
+        sql: '"ACV"'
+        description: Annual contract value
+
+      amount:
+        sql: '"AMOUNT"'
+        description: Contract amount for the opportunity
+        synonyms: [ contract_value, deal_amount, opportunity_amount ]
+
+      arr:
+        sql: '"ARR"'
+        description: Annual recurring revenue
+
+      contract_term_months:
+        sql: '"CONTRACT_TERM_MONTHS"'
+        description: Length in months of the contract
+
+      is_won:
+        sql: '"IS_WON"'
+        description: Whether the opportunity is won
+        hidden: true
+
+      probability:
+        sql: '"PROBABILITY"'
+        description: Probability (0-100) that the opportunity will be won
+
+      risk_score:
+        sql: '"RISK_SCORE"'
+        description: Numeric risk level (1-100, 100 is locked, 1 is highly risky)
+
+      tcv:
+        sql: '"TCV"'
+        description: Total contract value
+
     measures:
       average_arr:
         sql: AVG(${saas__opportunities_sv__opportunities.amount})
@@ -371,6 +371,31 @@ views:
     table_name: OPPORTUNITY_LINE_ITEMS
 
     dimensions:
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: Date when the line item was added to the opportunity
+
+      description:
+        sql: '"DESCRIPTION"'
+        description: Additional description or notes for the line item
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each opportunity line item
+
+      opportunity_id:
+        sql: '"OPPORTUNITY_ID"'
+        description: Foreign key to the parent opportunity
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+        description: Foreign key to the product catalog
+
+      service_date:
+        sql: '"SERVICE_DATE"'
+        description: Expected delivery or service date
+        synonyms: [ delivery_date, start_date, subscription_start_date ]
+
       acv:
         sql: '"ACV"'
         description: Annual contract value for line item
@@ -406,31 +431,6 @@ views:
         sql: '"TOTAL_PRICE"'
         description: Total price for this line item (quantity x sale_price)
         synonyms: [ line_item_total, line_item_value ]
-
-      created_date:
-        sql: '"CREATED_DATE"'
-        description: Date when the line item was added to the opportunity
-
-      description:
-        sql: '"DESCRIPTION"'
-        description: Additional description or notes for the line item
-
-      id:
-        sql: '"ID"'
-        description: Unique identifier for each opportunity line item
-
-      opportunity_id:
-        sql: '"OPPORTUNITY_ID"'
-        description: Foreign key to the parent opportunity
-
-      product_id:
-        sql: '"PRODUCT_ID"'
-        description: Foreign key to the product catalog
-
-      service_date:
-        sql: '"SERVICE_DATE"'
-        description: Expected delivery or service date
-        synonyms: [ delivery_date, start_date, subscription_start_date ]
 
     measures:
       count:
@@ -485,26 +485,6 @@ views:
     table_name: USER
 
     dimensions:
-      quota_2024:
-        sql: '"QUOTA_2024"'
-        description: 2024 quota
-
-      quota_2025:
-        sql: '"QUOTA_2025"'
-        description: 2025 quota
-
-      quota_2026:
-        sql: '"QUOTA_2026"'
-        description: 2026 quota
-
-      quota_attainment_pct:
-        sql: '"QUOTA_ATTAINMENT_PCT"'
-        description: Quota attainment percentage
-
-      quota_target:
-        sql: '"QUOTA_TARGET"'
-        description: Quota target
-
       created_date:
         sql: '"CREATED_DATE"'
         description: Date employee started
@@ -560,6 +540,26 @@ views:
       se_id:
         sql: '"SE_ID"'
         description: Sales engineer ID
+
+      quota_2024:
+        sql: '"QUOTA_2024"'
+        description: 2024 quota
+
+      quota_2025:
+        sql: '"QUOTA_2025"'
+        description: 2025 quota
+
+      quota_2026:
+        sql: '"QUOTA_2026"'
+        description: 2026 quota
+
+      quota_attainment_pct:
+        sql: '"QUOTA_ATTAINMENT_PCT"'
+        description: Quota attainment percentage
+
+      quota_target:
+        sql: '"QUOTA_TARGET"'
+        description: Quota target
 
     measures:
       count:
