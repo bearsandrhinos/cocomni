@@ -1,0 +1,78 @@
+# Reference this view as saas__stg_saas__jira_issues
+schema: SAAS
+table_name: STG_SAAS__JIRA_ISSUES
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  issue_key:
+    sql: '"ISSUE_KEY"'
+
+  issue_type:
+    sql: '"ISSUE_TYPE"'
+
+  summary:
+    sql: '"SUMMARY"'
+
+  description:
+    sql: '"DESCRIPTION"'
+
+  priority:
+    sql: '"PRIORITY"'
+
+  status:
+    sql: '"STATUS"'
+
+  assignee:
+    sql: '"ASSIGNEE"'
+
+  reporter:
+    sql: '"REPORTER"'
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  updated_date:
+    sql: '"UPDATED_DATE"'
+
+  resolved_date:
+    sql: '"RESOLVED_DATE"'
+
+  resolution:
+    sql: '"RESOLUTION"'
+
+  component:
+    sql: '"COMPONENT"'
+
+  labels:
+    sql: '"LABELS"'
+
+  story_points:
+    sql: '"STORY_POINTS"'
+
+  time_spent_hours:
+    sql: '"TIME_SPENT_HOURS"'
+
+  account_segment:
+    sql: '"ACCOUNT_SEGMENT"'
+
+  sprint:
+    sql: '"SPRINT"'
+
+  epic_link:
+    sql: '"EPIC_LINK"'
+
+  zendesk_ticket_id:
+    sql: '"ZENDESK_TICKET_ID"'
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count

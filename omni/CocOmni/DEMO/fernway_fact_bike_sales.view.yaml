@@ -1,0 +1,44 @@
+# Reference this view as demo__fernway_fact_bike_sales
+schema: DEMO
+table_name: FERNWAY_FACT_BIKE_SALES
+
+dimensions:
+  sale_id:
+    sql: '"SALE_ID"'
+    format: ID
+
+  bike_serial:
+    sql: '"BIKE_SERIAL"'
+
+  dealer_id:
+    sql: '"DEALER_ID"'
+    format: ID
+
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    format: ID
+
+  sale_location:
+    sql: '"SALE_LOCATION"'
+
+  status:
+    sql: '"STATUS"'
+
+  sale_price_amount:
+    sql: '"SALE_PRICE_AMOUNT"'
+
+  dealer_margin_amount:
+    sql: '"DEALER_MARGIN_AMOUNT"'
+
+  net_revenue_amount:
+    sql: '"NET_REVENUE_AMOUNT"'
+
+  assembly_date:
+    sql: '"ASSEMBLY_DATE"'
+
+  sale_date:
+    sql: '"SALE_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

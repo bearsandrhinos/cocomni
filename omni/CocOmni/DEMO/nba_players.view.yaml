@@ -1,0 +1,62 @@
+# Reference this view as demo__nba_players
+schema: DEMO
+table_name: NBA_PLAYERS
+
+dimensions:
+  url:
+    sql: '"URL"'
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  player_games_played:
+    sql: '"PLAYER_GAMES_PLAYED"'
+
+  player_games_started:
+    sql: '"PLAYER_GAMES_STARTED"'
+
+  player_minutes_per_game:
+    sql: '"PLAYER_MINUTES_PER_GAME"'
+
+  player_points_per_game:
+    sql: '"PLAYER_POINTS_PER_GAME"'
+
+  player_offensive_rebounds__per_game:
+    sql: '"PLAYER_OFFENSIVE_REBOUNDS__PER_GAME"'
+
+  player_defensive_rebounds_per_game:
+    sql: '"PLAYER_DEFENSIVE_REBOUNDS_PER_GAME"'
+
+  player_rebounds_per_game:
+    sql: '"PLAYER_REBOUNDS_PER_GAME"'
+
+  player_assists_per_game:
+    sql: '"PLAYER_ASSISTS_PER_GAME"'
+
+  player_steals_per_game:
+    sql: '"PLAYER_STEALS_PER_GAME"'
+
+  player_blocks_per_game:
+    sql: '"PLAYER_BLOCKS_PER_GAME"'
+
+  player_turnovers_per_game:
+    sql: '"PLAYER_TURNOVERS_PER_GAME"'
+
+  player_fouls_per_game:
+    sql: '"PLAYER_FOULS_PER_GAME"'
+
+  player_assist_to_turnover_ratio:
+    sql: '"PLAYER_ASSIST_TO_TURNOVER_RATIO"'
+
+  team:
+    sql: '"TEAM"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  season_year:
+    sql: '"SEASON_YEAR"'
+
+measures:
+  count:
+    aggregate_type: count

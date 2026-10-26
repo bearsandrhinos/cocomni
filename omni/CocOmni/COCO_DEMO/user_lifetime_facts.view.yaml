@@ -1,0 +1,30 @@
+# Reference this view as coco_demo__user_lifetime_facts
+schema: COCO_DEMO
+table_name: USER_LIFETIME_FACTS
+
+dimensions:
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  lifetime_revenue:
+    sql: '"LIFETIME_REVENUE"'
+
+  lifetime_orders:
+    sql: '"LIFETIME_ORDERS"'
+
+  avg_order_value:
+    sql: '"AVG_ORDER_VALUE"'
+
+  lifetime_margin:
+    sql: '"LIFETIME_MARGIN"'
+
+  first_order_date:
+    sql: '"FIRST_ORDER_DATE"'
+
+  last_order_date:
+    sql: '"LAST_ORDER_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

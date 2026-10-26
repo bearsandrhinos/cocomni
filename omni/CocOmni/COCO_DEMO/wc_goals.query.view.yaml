@@ -1,0 +1,95 @@
+# Reference this view as coco_demo__wc_goals
+label: World Cup Goals
+description: Individual goal events from FIFA World Cup matches. Each row
+  represents one goal scored, parsed from match event data, including the
+  scorer, minute, and scoring team.
+
+schema: COCO_DEMO
+sql: SELECT fd.fixture_id, f.index as goal_index, f.value::STRING as goal_text,
+  CAST(REGEXP_SUBSTR(f.value::STRING, '^[0-9]+') AS INTEGER) as goal_minute_raw,
+  CASE WHEN wf.pen_home IS NOT NULL OR wf.pen_away IS NOT NULL THEN true ELSE
+  false END as match_went_to_penalties, wf.home_team as home_team, wf.away_team
+  as away_team FROM COCO_DEMO.WC_FIXTURE_DETAILS fd LEFT JOIN
+  COCO_DEMO.WC_FIXTURES wf ON fd.fixture_id = wf.fixture_id, LATERAL
+  FLATTEN(input => TRY_PARSE_JSON(fd.goals_list)) f WHERE NOT ((wf.pen_home IS
+  NOT NULL OR wf.pen_away IS NOT NULL) AND CAST(REGEXP_SUBSTR(f.value::STRING,
+  '^[0-9]+') AS INTEGER) = 120)
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    label: Fixture ID
+    format: ID
+    description: Unique identifier for the match where the goal was scored
+    ai_context: Match ID linking to fixtures.
+
+  goal_index:
+    sql: '"GOAL_INDEX"'
+    label: Goal Number in Match
+    description: Sequential index of the goal within the match
+    ai_context: Order of the goal in the match (1st, 2nd, etc.).
+
+  goal_minute:
+    sql: CAST(REGEXP_SUBSTR("GOAL_TEXT", '^[0-9]+') AS INTEGER)
+    label: Minute Scored
+    description: Minute of the match when the goal was scored (numeric)
+    ai_context: Numeric minute for sorting and analysis. Use for timing patterns.
+
+  goal_text:
+    sql: '"GOAL_TEXT"'
+    label: Goal Text
+    description: Full text description of the goal event
+    ai_context: Detailed goal event text including scorer and context.
+
+  player_name:
+    sql: TRIM(REGEXP_REPLACE("GOAL_TEXT", '^[0-9]+\' [A-Za-z ]+ ', ''))
+    label: Player Name
+    description: Name of the goal scorer
+    ai_context: Primary dimension for top scorer analysis.
+
+  scoring_team:
+    sql: CASE WHEN ${coco_demo__wc_goals.goal_text} LIKE '%' ||
+      ${coco_demo__wc_goals.home_team} || '%' THEN
+      ${coco_demo__wc_goals.home_team} WHEN ${coco_demo__wc_goals.goal_text}
+      LIKE '%' || ${coco_demo__wc_goals.away_team} || '%' THEN
+      ${coco_demo__wc_goals.away_team} ELSE
+      TRIM(REGEXP_SUBSTR(REGEXP_REPLACE(${coco_demo__wc_goals.goal_text},
+      '^[0-9]+\' ', ''), '^[A-Za-z ]+')) END
+    label: Scoring Team
+    description: Name of the team that scored the goal
+    ai_context: Use to analyze goals by team. Derived from matching goal text
+      against home/away team names from the fixtures table.
+
+  goal_minute_raw:
+    sql: '"GOAL_MINUTE_RAW"'
+    description: Raw minute string as recorded (may include stoppage time notation)
+    ai_context: Original minute text, may include '+' for stoppage time.
+
+  match_went_to_penalties:
+    sql: '"MATCH_WENT_TO_PENALTIES"'
+    description: Whether the match was decided by a penalty shootout
+    ai_context: Use to filter out penalty shootout goals for regular-play analysis.
+
+  home_team:
+    sql: '"HOME_TEAM"'
+    description: Home team name from fixtures (used for scoring_team derivation)
+    hidden: true
+
+  away_team:
+    sql: '"AWAY_TEAM"'
+    description: Away team name from fixtures (used for scoring_team derivation)
+    hidden: true
+
+measures:
+  count:
+    label: Goal Count
+    description: Total number of goals scored
+    aggregate_type: count
+    ai_context: Count of goals. Use for goal totals and scoring analysis.
+
+ai_context: "This view contains individual goal events parsed from World Cup
+  match data. Each row is one goal. Use it for goal-level analysis: top scorers,
+  goal timing patterns, scoring by team, and minute-by-minute analysis. The
+  goal_minute field is numeric for sorting/analysis while goal_text contains the
+  full event description. Penalty shootout goals are excluded when
+  match_went_to_penalties is filtered."

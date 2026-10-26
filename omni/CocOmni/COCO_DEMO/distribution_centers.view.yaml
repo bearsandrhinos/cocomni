@@ -1,0 +1,22 @@
+# Reference this view as coco_demo__distribution_centers
+schema: COCO_DEMO
+table_name: DISTRIBUTION_CENTERS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  latitude:
+    sql: '"LATITUDE"'
+
+  longitude:
+    sql: '"LONGITUDE"'
+
+measures:
+  count:
+    aggregate_type: count

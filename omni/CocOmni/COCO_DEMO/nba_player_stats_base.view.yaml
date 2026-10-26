@@ -1,0 +1,256 @@
+# Reference this view as coco_demo__nba_player_stats_base
+label: NBA Player Season Stats
+description: One row per player per season and season type with base season
+  stats (scoring, rebounds, assists, shooting) and league ranks.
+
+schema: COCO_DEMO
+table_name: NBA_PLAYER_STATS_BASE
+
+dimensions:
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+    label: Player
+
+  nickname:
+    sql: '"NICKNAME"'
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_abbreviation:
+    sql: '"TEAM_ABBREVIATION"'
+    label: Team
+
+  age:
+    sql: '"AGE"'
+
+  gp:
+    sql: '"GP"'
+    label: Games Played
+
+  w:
+    sql: '"W"'
+
+  l:
+    sql: '"L"'
+
+  w_pct:
+    sql: '"W_PCT"'
+
+  min:
+    sql: '"MIN"'
+
+  fgm:
+    sql: '"FGM"'
+
+  fga:
+    sql: '"FGA"'
+
+  fg_pct:
+    sql: '"FG_PCT"'
+
+  fg3_m:
+    sql: '"FG3_M"'
+
+  fg3_a:
+    sql: '"FG3_A"'
+
+  fg3_pct:
+    sql: '"FG3_PCT"'
+
+  ftm:
+    sql: '"FTM"'
+
+  fta:
+    sql: '"FTA"'
+
+  ft_pct:
+    sql: '"FT_PCT"'
+
+  oreb:
+    sql: '"OREB"'
+
+  dreb:
+    sql: '"DREB"'
+
+  reb:
+    sql: '"REB"'
+    label: Rebounds
+
+  ast:
+    sql: '"AST"'
+    label: Assists
+
+  tov:
+    sql: '"TOV"'
+
+  stl:
+    sql: '"STL"'
+
+  blk:
+    sql: '"BLK"'
+
+  blka:
+    sql: '"BLKA"'
+
+  pf:
+    sql: '"PF"'
+
+  pfd:
+    sql: '"PFD"'
+
+  pts:
+    sql: '"PTS"'
+    label: Points
+
+  plus_minus:
+    sql: '"PLUS_MINUS"'
+
+  nba_fantasy_pts:
+    sql: '"NBA_FANTASY_PTS"'
+
+  dd2:
+    sql: '"DD2"'
+
+  td3:
+    sql: '"TD3"'
+
+  wnba_fantasy_pts:
+    sql: '"WNBA_FANTASY_PTS"'
+
+  fp_high_score:
+    sql: '"FP_HIGH_SCORE"'
+
+  gp_rank:
+    sql: '"GP_RANK"'
+
+  w_rank:
+    sql: '"W_RANK"'
+
+  l_rank:
+    sql: '"L_RANK"'
+
+  w_pct_rank:
+    sql: '"W_PCT_RANK"'
+
+  min_rank:
+    sql: '"MIN_RANK"'
+
+  fgm_rank:
+    sql: '"FGM_RANK"'
+
+  fga_rank:
+    sql: '"FGA_RANK"'
+
+  fg_pct_rank:
+    sql: '"FG_PCT_RANK"'
+
+  fg3_m_rank:
+    sql: '"FG3_M_RANK"'
+
+  fg3_a_rank:
+    sql: '"FG3_A_RANK"'
+
+  fg3_pct_rank:
+    sql: '"FG3_PCT_RANK"'
+
+  ftm_rank:
+    sql: '"FTM_RANK"'
+
+  fta_rank:
+    sql: '"FTA_RANK"'
+
+  ft_pct_rank:
+    sql: '"FT_PCT_RANK"'
+
+  oreb_rank:
+    sql: '"OREB_RANK"'
+
+  dreb_rank:
+    sql: '"DREB_RANK"'
+
+  reb_rank:
+    sql: '"REB_RANK"'
+
+  ast_rank:
+    sql: '"AST_RANK"'
+
+  tov_rank:
+    sql: '"TOV_RANK"'
+
+  stl_rank:
+    sql: '"STL_RANK"'
+
+  blk_rank:
+    sql: '"BLK_RANK"'
+
+  blka_rank:
+    sql: '"BLKA_RANK"'
+
+  pf_rank:
+    sql: '"PF_RANK"'
+
+  pfd_rank:
+    sql: '"PFD_RANK"'
+
+  pts_rank:
+    sql: '"PTS_RANK"'
+
+  plus_minus_rank:
+    sql: '"PLUS_MINUS_RANK"'
+
+  nba_fantasy_pts_rank:
+    sql: '"NBA_FANTASY_PTS_RANK"'
+
+  dd2_rank:
+    sql: '"DD2_RANK"'
+
+  td3_rank:
+    sql: '"TD3_RANK"'
+
+  wnba_fantasy_pts_rank:
+    sql: '"WNBA_FANTASY_PTS_RANK"'
+
+  fp_high_score_rank:
+    sql: '"FP_HIGH_SCORE_RANK"'
+
+  team_count:
+    sql: '"TEAM_COUNT"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${player_id}, '|', ${season}, '|', ${season_type})
+    hidden: true
+    primary_key: true
+
+measures:
+  count:
+    aggregate_type: count
+
+  player_count:
+    sql: ${player_id}
+    label: Players
+    aggregate_type: count_distinct
+
+  total_games_played:
+    sql: ${gp}
+    label: Total Games Played
+    aggregate_type: sum
+
+  total_wins:
+    sql: ${w}
+    label: Total Wins
+    aggregate_type: sum

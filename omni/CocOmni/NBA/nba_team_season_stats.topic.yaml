@@ -1,0 +1,19 @@
+base_view: coco_demo__nba_team_stats_base
+label: NBA Team Season Stats
+group_label: NBA
+description: "Season-level NBA team stats: base totals and averages, advanced
+  ratings and the four factors, by season and season type."
+
+default_filters:
+  coco_demo__nba_team_stats_base.season_type:
+    is: Regular Season
+
+joins:
+  coco_demo__nba_team_stats_advanced: {}
+  coco_demo__nba_team_stats_four_factors: {}
+
+ai_context: One row per team per season and season type (Regular Season or
+  Playoffs). Seasons are formatted like 2025-26. Always filter or group by
+  season_type. Use team_name for teams. Advanced has off/def/net rating, pace,
+  ts_pct; four factors has efg_pct, fta_rate, tm_tov_pct, oreb_pct and the
+  opponent equivalents.

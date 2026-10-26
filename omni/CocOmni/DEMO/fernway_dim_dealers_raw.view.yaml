@@ -1,0 +1,51 @@
+# Reference this view as demo__fernway_dim_dealers_raw
+schema: DEMO
+table_name: FERNWAY_DIM_DEALERS_RAW
+
+dimensions:
+  dealer_id:
+    sql: '"DEALER_ID"'
+    format: ID
+
+  dealer_name:
+    sql: '"DEALER_NAME"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  region:
+    sql: '"REGION"'
+
+  state_province:
+    sql: '"STATE_PROVINCE"'
+
+  city:
+    sql: '"CITY"'
+
+  contact_email:
+    sql: '"CONTACT_EMAIL"'
+
+  contact_phone:
+    sql: '"CONTACT_PHONE"'
+
+  dealer_tier:
+    sql: '"DEALER_TIER"'
+
+  cohort:
+    sql: '"COHORT"'
+
+  onboarded_fake_year:
+    sql: '"ONBOARDED_FAKE_YEAR"'
+
+  onboarded_day_ordinal:
+    sql: '"ONBOARDED_DAY_ORDINAL"'
+
+  network_exit_fake_year:
+    sql: '"NETWORK_EXIT_FAKE_YEAR"'
+
+  network_exit_day_ordinal:
+    sql: '"NETWORK_EXIT_DAY_ORDINAL"'
+
+measures:
+  count:
+    aggregate_type: count

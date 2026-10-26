@@ -1,0 +1,33 @@
+base_view: coco_demo__tournament_fixture_detail_facts
+label: Tournament Fixture Detail Facts
+group_label: Soccer
+description: Team-level match detail statistics for international soccer
+  tournaments. Analyze shooting, passing, possession, discipline, expected
+  goals, and goalkeeper performance across competitions and seasons.
+
+joins: {}
+
+ai_context: |-
+  This topic provides team-level match detail analytics for international soccer tournament matches. Each row represents one team's performance in a single match.
+
+  KEY METRICS:
+  - Shots → total_shots_on_goal, total_shots_off_goal, total_shots_sum, total_blocked_shots, total_shots_insidebox, total_shots_outsidebox
+  - Passing → total_passes_sum, total_passes_accurate, average_pass_pct, average_ball_possession
+  - Discipline → total_fouls, total_yellow_cards, total_red_cards
+  - Other → total_corner_kicks, total_offsides, total_goalkeeper_saves, total_expected_goals, average_expected_goals, total_goals_prevented
+  - Home/Away → total_matches_home, total_matches_away
+
+  COMMON ANALYSIS PATTERNS:
+  - Shooting efficiency: compare total_shots_on_goal vs total_shots_sum by team
+  - Passing quality: group by league_name or season, compare average_pass_pct
+  - Discipline rankings: group by team, sort by total_yellow_cards or total_red_cards
+  - Home advantage: compare stats with is_home filter
+  - xG analysis: compare total_expected_goals to actual goals (from fixtures table)
+  - Defensive strength: group by team, sort by total_goals_prevented or total_goalkeeper_saves
+
+  QUERY TIPS:
+  - Use league_name to filter to specific tournaments
+  - Use season for time-based trends
+  - Use is_home to split home vs away performance
+  - Each fixture appears twice (once per team), so count gives team appearances, not match count
+  - This table does not contain goal results — join to fixtures for match outcomes

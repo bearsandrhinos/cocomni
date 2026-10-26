@@ -1,0 +1,346 @@
+# Reference this view as saas__opportunities
+schema_label: ""
+description: |
+  The Opportunities table is the core sales pipeline table that represents potential revenue-generating deals. Each opportunity represents a sales deal that could result in revenue - whether it's a new customer acquisition, an expansion sale to an existing customer, or a renewal. Opportunities move through a defined sales process with stages (Pre-Qualified, Qualified, Trial, Trial Positive, Negotiate, Closed Won, Closed Lost) tracked by the STAGE_NAME field. This table is the foundation for sales forecasting, pipeline management, and revenue planning.
+
+  An opportunity is created when a sales rep identifies a potential sale - this could be when a prospect expresses interest, when a demo is scheduled, or when a customer requests additional products. Each opportunity is linked to exactly one Account via ACCOUNT_ID and typically has one primary Contact via CONTACT_ID. The AMOUNT field represents the total deal value, while PROBABILITY indicates the likelihood of winning (typically increases as the opportunity progresses through stages). The TYPE field categorizes opportunities as "New Business" (first-time customers), "Expansion" (existing customers buying more), or "Renewal" (existing customers renewing their subscription).
+
+schema: SAAS
+table_name: OPPORTUNITIES
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    description: Unique Identifier for the opportunity.  This should be the
+      salesforce record
+    links:
+      - url: https://blobbydata.lightning.force.com/lightning/r/Opportunity/{"values":["${id}"]}/view
+        label: Salesforce Opportunity
+        icon_url: https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salesforce.com_logo.svg/1280px-Salesforce.com_logo.svg.png
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+    description: Unique identifier for an account
+    links:
+      - url: https://omni.demo.exploreomni.dev/dashboards/08f42c49?f--tkbQ2HrJ={"values":["${account_id}"]}
+        label: Account Overview Dashboard
+        icon_url: https://avatars.githubusercontent.com/u/100505341?s=200&v=4
+      - url: https://blobbydata.lightning.force.com/lightning/r/Account/{"values":["${account_id}"]}/view
+        label: Salesforce Account
+        icon_url: https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salesforce.com_logo.svg/1280px-Salesforce.com_logo.svg.png
+
+  name:
+    sql: '"NAME"'
+    description: Opportunity name.  Should be account name + opportunity type
+    links:
+      - url: https://omni.demo.exploreomni.dev/dashboards/08f42c49?f--tkbQ2HrJ={"values":["${saas__opportunities.account_id}"]}
+        label: Account Overview Dashboard
+        icon_url: https://avatars.githubusercontent.com/u/100505341?s=200&v=4
+    synonyms: [ opportunity_name, deal_name ]
+    ai_context: |
+      Use this field to identify the deal for sales team and reporting. This is typically formatted as account name + opportunity type.
+
+  stage_name:
+    sql: '"STAGE_NAME"'
+    description: Current pipeline stage the opportunity is in
+    all_values:
+      [
+        Closed Lost,
+        Closed Won,
+        Qualified,
+        Trial Positive,
+        Pre-Qualified,
+        Trial,
+        Negotiate
+      ]
+    synonyms: [ Stage, " Pipeline Stage", " Opportunity gate" ]
+    ai_context: When someone asks for closed deals, filter on closed won.  When
+      someone asks for lost deals, filter on closed lost.  Early stage deals
+      should be prequalified and qualified.  Late stage deals are trial positive
+      and negotiate
+
+  amount:
+    sql: '"AMOUNT"'
+    description: Contract amount for given opportunity
+    synonyms: [ deal_amount, opportunity_amount, contract_value ]
+    ai_context: |
+      Use this field for revenue forecasting and pipeline value calculation. This represents the total deal value in currency. Use amount_sum measure for aggregated totals.
+
+  probability:
+    sql: '"PROBABILITY"'
+    description: Probability that the given opportunity will be won
+    ai_context: |
+      Use this field for weighted pipeline calculation and forecasting accuracy. This is the win probability percentage (0-100), typically increasing as the opportunity progresses through stages.
+
+  close_date:
+    sql: '"CLOSE_DATE"'
+    description: Forecasted close date for the opportunity
+    synonyms: [ expected_close_date, forecast_close_date ]
+    ai_context: |
+      Use this field for revenue timing and sales cycle analysis. This is the expected or actual close date for the opportunity.
+
+  type:
+    sql: '"TYPE"'
+    description: |
+      Opportunity type classification: "New Business" (first-time customers), "Expansion" (existing customers buying more products/services), or "Renewal" (existing customers renewing their subscription). This field is essential for revenue source analysis and sales strategy.
+    all_values: [ New Business, Expansion, Renewal ]
+    synonyms: [ opportunity_type, deal_type, business_type ]
+    ai_context: |
+      Use this field to distinguish between new customer acquisition (New Business), existing customer growth (Expansion), and subscription renewals (Renewal). When asked about new customers or new deals, filter on type = New Business. When asked about expansion or upsell, filter on type = Expansion. When asked about renewals, filter on type = Renewal.
+
+  next_steps:
+    sql: '"NEXT_STEPS"'
+    description: Action items for moving the deal forward
+    ai_context: |
+      Use this field for sales activity tracking and deal progression. This contains the next actions to be taken for this opportunity.
+
+  lead_source:
+    sql: '"LEAD_SOURCE"'
+    description: |
+      Channel the opportunity was sourced from. This field is used for marketing attribution and channel effectiveness analysis. Indicates how the opportunity originated (Inbound, Outbound, Referral, Organic, etc.).
+    all_values: [ Referral, Inbound, Outbound, Organic ]
+    synonyms: [ source, opportunity_source, lead_channel, acquisition_channel ]
+    ai_context: |
+      This is the field for what channel the opportunity was generated from. If someone asks for where an opportunity came from, use this field. "Inbound" means the customer reached out to us, "Outbound" means we reached out to them, "Referral" means they were referred by another customer, and "Organic" means they found us through search or other organic means.
+
+  is_won:
+    sql: '"IS_WON"'
+    description: Boolean field to determine if the opportunity is won or not
+    ai_context: |
+      Use this field for win/loss analysis and conversion metrics. Filter on is_won = true for won opportunities, is_won = false for lost opportunities.
+
+  forecast_category:
+    sql: '"FORECAST_CATEGORY"'
+    description: |
+      Forecast classification used for sales forecasting and revenue planning. Opportunities in "Commit" or "Forecast" categories are considered more likely to close and are included in revenue forecasts. Categories typically include: Pipeline, Upside, Forecast, Commit, Closed.
+    all_values: [ Pipeline, Upside, Forecast, Commit, Closed ]
+    synonyms: [ forecast, sales_forecast_category ]
+    ai_context: |
+      Use this field for sales forecasting. Opportunities in "Commit" or "Forecast" categories are considered more likely to close. "Pipeline" indicates early-stage deals, "Upside" indicates potential deals, and "Closed" indicates completed deals.
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+    description: ID of account executive who currently owns the account
+    synonyms: [ sales_rep_id, opportunity_owner_id ]
+    ai_context: |
+      Use this field for sales rep performance and quota tracking. This links to the User table to identify which sales rep owns the opportunity. Join to saas__user to get sales rep details.
+
+  sales_engineer_id:
+    sql: '"SALES_ENGINEER_ID"'
+    format: ID
+    description: ID of sales engineer who currently owns the account
+    synonyms: [ se_id, sales_engineer ]
+    ai_context: |
+      Use this field to analyze sales engineer involvement and effectiveness in deals. This links to the User table to identify which sales engineer is assigned. Join to saas__user to get sales engineer details.
+
+  created_date:
+    sql: '"CREATED_DATE"'
+    description: Date the opportunity was created
+    ai_context: |
+      Use this field for sales cycle duration and pipeline velocity analysis. This indicates when the opportunity was created.
+
+  contact_id:
+    sql: '"CONTACT_ID"'
+    format: ID
+    description: Identifier for main point of contact at the account
+    ai_context: |
+      Use this field to identify the primary contact for the opportunity. Join to saas__contacts to get contact details.
+
+  last_stage_change_date:
+    sql: '"LAST_STAGE_CHANGE_DATE"'
+    description: Date of last change in opportunity stage
+    ai_context: |
+      Use this field for sales velocity and stage progression analysis. This indicates when the opportunity last changed stages.
+
+  first_demo_date:
+    sql: '"FIRST_DEMO_DATE"'
+    description: Date of the first demo
+    ai_context: |
+      Use this field for sales cycle timing and demo-to-close metrics. This indicates when the product was first demonstrated to the prospect.
+
+  trial_start_date:
+    sql: '"TRIAL_START_DATE"'
+    description: Date of the trial start day
+    ai_context: |
+      Use this field for trial conversion analysis and product adoption. This indicates when the trial period began.
+
+  competitor:
+    sql: '"COMPETITOR"'
+    description: Competitors in the sales process
+    all_values:
+      [
+        SaaSy,
+        Modern Data,
+        Big Time SaaS,
+        Thunder Data,
+        Data Power,
+        Query Quest
+      ]
+    ai_context: Direct competitor in the deal or tool they would be migrating from
+
+  loss_reason:
+    sql: '"LOSS_REASON"'
+    description: Reason for opportunity not winning
+    ai_context: |
+      Use this field to identify patterns in losses for sales improvement. This captures why the opportunity was lost (e.g., pricing, competitor, budget, timing, etc.).
+
+  status:
+    sql: ${saas__opportunities.stage_name}
+    groups:
+      - filter:
+          is: [ Negotiate, Pre-Qualified, Qualified, Trial, Trial Positive ]
+        name: Open Pipeline
+      - filter:
+          is: [ Closed Won, Closed Lost ]
+        name: Closed
+    else: Other
+    label: Status
+    description: Status of opportunity in current pipeline
+
+  arr:
+    sql: '"ARR"'
+
+  acv:
+    sql: '"ACV"'
+
+  tcv:
+    sql: '"TCV"'
+
+  contract_term_months:
+    sql: '"CONTRACT_TERM_MONTHS"'
+    description: Length in months of the contract
+
+  win_reason:
+    sql: '"WIN_REASON"'
+    description: The win reason defined by the AE in salesforce
+    ai_context: Use this field when someone asks for why we won in an opportunity
+
+  risk_score:
+    sql: '"RISK_SCORE"'
+    description: This is the numeric value for the risk level of an account to
+      close.  Scale of 1-100, 100 is locked 1 is highly risky
+    ai_context: This can be used when looking at risks in an opp or risky deals
+
+  risk_flags:
+    sql: '"RISK_FLAGS"'
+    description: Identified risks from the AE
+    ai_context: Use this to identify what risks may exist in a deal
+
+  identified_pain:
+    sql: '"IDENTIFIED_PAIN"'
+
+  risk_details:
+    sql: '"RISK_DETAILS"'
+
+  ae_notes:
+    sql: '"AE_NOTES"'
+
+measures:
+  count:
+    description: Count of opportunities
+    aggregate_type: count
+    synonyms:
+      [
+        opportunity_count,
+        total_opportunities,
+        number_of_opportunities,
+        deal_count
+      ]
+    ai_context: |
+      Use this measure to count the total number of opportunities across all stages and types.
+
+  amount_sum:
+    sql: ${saas__opportunities.amount}
+    label: Total ARR
+    format: USDCURRENCY_2
+    description: Total Annual Recurring Revenue across all opportunities
+    aggregate_type: sum
+    synonyms: [ total_revenue, total_arr, sum_amount, total_deal_value ]
+    ai_context: |
+      Use this measure for total revenue calculation across all opportunities. This represents the sum of all opportunity amounts (ARR). Use this when asked about total sales, total revenue, or total ARR.
+
+  amount_sum_won:
+    sql: ${saas__opportunities.amount}
+    label: Total Won ARR
+    format: USDCURRENCY_2
+    description: Total Annual Recurring Revenue from won opportunities
+    aggregate_type: sum
+    filters:
+      is_won:
+        is: true
+    synonyms: [ won_revenue, won_arr, total_won_deals, closed_won_revenue ]
+    ai_context: |
+      Use this measure for total revenue from won deals only. This represents the sum of all opportunity amounts where is_won = true. Use this when asked about won revenue, closed revenue, or revenue from won deals.
+
+  amount_sum_pipeline:
+    sql: ${saas__opportunities.amount}
+    label: Total Pipeline
+    format: USDCURRENCY_2
+    description: Total pipeline value for open opportunities
+    aggregate_type: sum
+    filters:
+      stage_name:
+        is: [ Pre-Qualified, Qualified, Trial, Trial Positive, Negotiate ]
+    synonyms: [ pipeline_value, open_pipeline, pipeline_arr, total_open_deals ]
+    ai_context: |
+      Use this measure for pipeline value calculation. This represents the sum of all opportunity amounts for open pipeline stages (Pre-Qualified, Qualified, Trial, Trial Positive, Negotiate). Use this when asked about pipeline, open pipeline, or pipeline value.
+
+  amount_average:
+    sql: ${saas__opportunities.amount}
+    label: Average ARR
+    format: USDCURRENCY_2
+    description: Average Annual Recurring Revenue per opportunity
+    aggregate_type: average
+    synonyms: [ avg_arr, average_deal_size, avg_deal_value, average_revenue ]
+    ai_context: |
+      Use this measure for average deal size analysis. This represents the average opportunity amount (ARR). Use this when asked about average deal size, average ARR, or average opportunity value.
+
+  count_copy:
+    label: Pipeline Count
+    format: NUMBER_0
+    description: Count of opportunities in open pipeline stages
+    aggregate_type: count
+    filters:
+      stage_name:
+        is: [ Pre-Qualified, Qualified, Trial, Trial Positive, Negotiate ]
+    synonyms: [ pipeline_opportunities, open_deals_count, pipeline_deal_count ]
+    ai_context: |
+      Use this measure to count opportunities in the open pipeline. This counts opportunities in stages: Pre-Qualified, Qualified, Trial, Trial Positive, Negotiate. Use this when asked about pipeline count or number of open deals.
+
+  won_opps_count:
+    label: Opportunities Won Count
+    format: NUMBER_0
+    description: Count of won opportunities
+    aggregate_type: count
+    filters:
+      stage_name:
+        is: Closed Won
+    synonyms: [ won_deals, closed_won_count, won_opportunities, deals_won ]
+    ai_context: |
+      Use this measure to count won opportunities. This counts opportunities where stage_name = Closed Won. Use this when asked about won deals, closed won deals, or number of wins.
+
+  conversion_rate:
+    sql: ${saas__opportunities.won_opps_count} /
+      NULLIF(${saas__opportunities.count}, 0)
+    label: Conversion Rate
+    format: PERCENT
+    description: Win rate - percentage of opportunities that were won
+    synonyms: [ win_rate, close_rate, win_percentage, conversion_percentage ]
+    ai_context: |
+      Use this measure for win rate analysis. This calculates the percentage of opportunities that were won (won_opps_count / total_count). Use this when asked about win rate, conversion rate, or close rate.
+
+  arr_x_cvr:
+    sql: ${saas__opportunities.amount_sum} *
+      ${opportunity_facts.s1_to_close_conversion_rate}
+    label: ARR X CVR
+    description: Weighted pipeline - ARR multiplied by conversion rate
+    synonyms: [ weighted_pipeline, weighted_arr, pipeline_weighted_value ]
+    ai_context: |
+      Use this measure for weighted pipeline calculation. This multiplies total ARR by the conversion rate to estimate expected revenue. Use this when asked about weighted pipeline or expected revenue.
+
+ai_context: |
+  This view contains sales pipeline data - the core fact table for sales analysis. Use this for sales forecasting, revenue planning, and sales performance analysis. The STAGE_NAME field tracks pipeline position: Pre-Qualified → Qualified → Trial → Trial Positive → Negotiate → Closed Won/Lost. The TYPE field distinguishes New Business (first-time customers), Expansion (existing customers buying more), and Renewal (existing customers renewing). The AMOUNT field represents deal value, and PROBABILITY indicates win likelihood. When analyzing opportunities, always consider the stage, type, and amount together for accurate pipeline and revenue analysis.

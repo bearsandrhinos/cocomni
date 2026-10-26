@@ -1,0 +1,260 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.COCO_DEMO.PODCAST_ANALYTICS
+semantic_view: ANALYTICS_PROD.COCO_DEMO.PODCAST_ANALYTICS
+label: Podcast Analytics
+description: Podcast analytics model for a podcast company. Tracks listener
+  behavior through streams, podcast catalog metadata, and user demographics.
+  Supports analysis of listening patterns, podcast performance, user engagement,
+  and audience segmentation.
+
+views:
+  coco_demo__podcast_analytics__podcasts:
+    label: Podcasts
+    description: Podcast catalog with show-level metadata. Each row represents a
+      single podcast title including genre classification, host, ratings, and
+      subscriber counts.
+
+    schema: COCO_DEMO
+    table_name: PODCASTS
+
+    dimensions:
+      avg_episode_length_min:
+        sql: '"AVG_EPISODE_LENGTH_MIN"'
+        description: Average episode duration in minutes
+
+      episode_count:
+        sql: '"EPISODE_COUNT"'
+        description: Total number of episodes published
+
+      genre:
+        sql: '"GENRE"'
+        description: Primary genre category such as Comedy, News, or Technology
+
+      host_name:
+        sql: '"HOST_NAME"'
+        description: Name of the podcast host
+
+      is_explicit:
+        sql: '"IS_EXPLICIT"'
+        description: Whether the podcast contains explicit content
+
+      language:
+        sql: '"LANGUAGE"'
+        description: Language the podcast is produced in
+
+      launch_date:
+        sql: '"LAUNCH_DATE"'
+        description: Date the podcast first published
+
+      network:
+        sql: '"NETWORK"'
+        description: Podcast network or distribution partner
+
+      podcast_id:
+        sql: '"PODCAST_ID"'
+        description: Unique podcast identifier
+        primary_key: true
+
+      status:
+        sql: '"STATUS"'
+        description: Current podcast status such as Active or Inactive
+
+      subscriber_count:
+        sql: '"SUBSCRIBER_COUNT"'
+        description: Number of subscribers to this podcast
+
+      sub_genre:
+        sql: '"SUB_GENRE"'
+        description: More specific genre classification within the primary genre
+
+      title:
+        sql: '"TITLE"'
+        description: Podcast show title
+
+      rating:
+        sql: '"RATING"'
+        description: Average user rating on a scale of 0 to 5
+
+    measures:
+      avg_rating:
+        sql: AVG(${coco_demo__podcast_analytics__podcasts.rating})
+        description: Average podcast rating
+
+      total_podcasts:
+        sql: COUNT(${coco_demo__podcast_analytics__podcasts.podcast_id})
+        description: Total number of podcasts in the catalog
+
+      total_subscribers:
+        sql: SUM(${coco_demo__podcast_analytics__podcasts.subscriber_count})
+        description: Total subscriber count across all podcasts
+
+  coco_demo__podcast_analytics__streams:
+    label: Streams
+    description: Individual podcast listening events. Each row represents one stream
+      session capturing what was played, how long the listener engaged, and in
+      what context. This is the primary fact table for engagement analytics.
+
+    schema: COCO_DEMO
+    table_name: STREAMS
+
+    dimensions:
+      downloaded:
+        sql: '"DOWNLOADED"'
+        description: Whether the episode was downloaded for offline listening
+
+      episode_id:
+        sql: '"EPISODE_ID"'
+        description: Identifier for the specific episode streamed
+
+      episode_length_min:
+        sql: '"EPISODE_LENGTH_MIN"'
+        description: Full duration of the episode in minutes
+
+      listening_context:
+        sql: '"LISTENING_CONTEXT"'
+        description: Context in which the stream occurred such as commute, workout, or home
+
+      podcast_id:
+        sql: '"PODCAST_ID"'
+        description: Foreign key to the podcast being streamed
+
+      podcast_title:
+        sql: '"PODCAST_TITLE"'
+        description: Denormalized podcast title at time of stream
+
+      started_at:
+        sql: '"STARTED_AT"'
+        description: Timestamp when the stream session began
+
+      stream_id:
+        sql: '"STREAM_ID"'
+        description: Unique identifier for each stream event
+        primary_key: true
+
+      user_id:
+        sql: '"USER_ID"'
+        description: Foreign key to the listener who initiated the stream
+
+      completion_pct:
+        sql: '"COMPLETION_PCT"'
+        description: Percentage of the episode that was listened to, from 0 to 100
+
+      listened_min:
+        sql: '"LISTENED_MIN"'
+        description: Actual minutes the listener engaged with the episode
+
+    measures:
+      avg_completion_rate:
+        sql: AVG(${coco_demo__podcast_analytics__streams.completion_pct})
+        description: Average episode completion percentage
+
+      download_count:
+        sql: COUNT_IF(${coco_demo__podcast_analytics__streams.downloaded})
+        description: Number of streams that were downloaded for offline listening
+
+      total_listened_minutes:
+        sql: SUM(${coco_demo__podcast_analytics__streams.listened_min})
+        description: Total minutes listened across all streams
+
+      total_streams:
+        sql: COUNT(${coco_demo__podcast_analytics__streams.stream_id})
+        description: Total number of podcast streams
+
+      unique_listeners:
+        sql: COUNT(DISTINCT ${coco_demo__podcast_analytics__streams.user_id})
+        description: Number of distinct listeners
+
+  coco_demo__podcast_analytics__users:
+    label: Users
+    description: Registered podcast listeners. Each row represents a single user
+      account with demographic and geographic attributes. Joins to STREAMS to
+      analyze listening behavior by audience segment.
+
+    schema: COCO_DEMO
+    table_name: USERS
+
+    dimensions:
+      age:
+        sql: '"AGE"'
+        description: User age in years
+
+      city:
+        sql: '"CITY"'
+        description: City of residence
+
+      country:
+        sql: '"COUNTRY"'
+        description: Country of residence
+
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the user account was created
+
+      email:
+        sql: '"EMAIL"'
+        description: User email address
+
+      first_name:
+        sql: '"FIRST_NAME"'
+        description: User first name
+
+      full_name:
+        sql: ${coco_demo__podcast_analytics__users.first_name} || ' ' ||
+          ${coco_demo__podcast_analytics__users.last_name}
+        description: User full name
+
+      gender:
+        sql: '"GENDER"'
+        description: User gender
+
+      id:
+        sql: '"ID"'
+        description: Unique user identifier
+        primary_key: true
+
+      last_name:
+        sql: '"LAST_NAME"'
+        description: User last name
+
+      state:
+        sql: '"STATE"'
+        description: State or province of residence
+
+      traffic_source:
+        sql: '"TRAFFIC_SOURCE"'
+        description: Marketing channel or source through which the user signed up
+
+      zip:
+        sql: '"ZIP"'
+        description: Postal or ZIP code
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: Geographic latitude of the user location
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Geographic longitude of the user location
+
+    measures:
+      avg_user_age:
+        sql: AVG(${coco_demo__podcast_analytics__users.age})
+        description: Average age of registered users
+
+      total_users:
+        sql: COUNT(${coco_demo__podcast_analytics__users.id})
+        description: Total number of registered users
+
+relationships:
+  - join_from_view: coco_demo__podcast_analytics__streams
+    join_to_view: coco_demo__podcast_analytics__podcasts
+    join_type: always_left
+    on_sql: ${coco_demo__podcast_analytics__streams.podcast_id} =
+      ${coco_demo__podcast_analytics__podcasts.podcast_id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__podcast_analytics__streams
+    join_to_view: coco_demo__podcast_analytics__users
+    join_type: always_left
+    on_sql: ${coco_demo__podcast_analytics__streams.user_id} =
+      ${coco_demo__podcast_analytics__users.id}
+    relationship_type: many_to_one

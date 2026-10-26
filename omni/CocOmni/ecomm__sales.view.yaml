@@ -1,0 +1,8 @@
+# Reference this view as ecomm__sales
+dimensions:
+  age_bin:
+    sql: ${ecomm__sales.age}
+    bin_boundaries: [ 13, 31, 50, 68, 87 ]
+    label: Age Bins
+    description: The age of the customer in years, useful for demographic
+      segmentation and targeted marketing analysis.

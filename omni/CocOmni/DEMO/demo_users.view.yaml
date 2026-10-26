@@ -1,0 +1,32 @@
+# Reference this view as demo__demo_users
+schema: DEMO
+table_name: DEMO_USERS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  role_id:
+    sql: '"ROLE_ID"'
+    format: ID
+
+  name:
+    sql: '"NAME"'
+
+  termination_date:
+    sql: '"TERMINATION_DATE"'
+
+  territory_lat:
+    sql: '"TERRITORY_LAT"'
+
+  territory_lng:
+    sql: '"TERRITORY_LNG"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,562 @@
+# Reference this view as coco_demo__fct_matches
+label: Match Facts
+description: Team-level match statistics for international soccer matches. Each
+  row represents one team's performance in a single match, including goals,
+  shots, passes, possession, discipline, and match context across tournaments
+  and friendlies.
+
+schema: COCO_DEMO
+table_name: FCT_MATCHES
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    label: Fixture ID
+    format: id
+    description: Unique identifier for the match fixture
+    primary_key: true
+
+  fixture_type:
+    sql: '"FIXTURE_TYPE"'
+    label: Fixture Type
+    description: Type of match (e.g., World Cup, Tournament, Friendly)
+    group_label: Match Context
+
+  season:
+    sql: '"SEASON"'
+    label: Season
+    description: Tournament season or year
+    group_label: Match Context
+
+  match_date:
+    sql: '"MATCH_DATE"'
+    label: Match Date
+    description: Date and time when the match was played
+    group_label: Match Context
+
+  round:
+    sql: '"ROUND"'
+    label: Round
+    description: Tournament round (e.g., Group Stage, Round of 16, Quarter-finals,
+      Semi-finals, Final)
+    group_label: Match Context
+
+  group_letter:
+    sql: '"GROUP_LETTER"'
+    label: Group
+    description: Group letter for group stage matches (e.g., A, B, C)
+    group_label: Match Context
+
+  stage:
+    sql: '"STAGE"'
+    label: Stage
+    description: Tournament stage (e.g., Group Stage, Knockout Stage)
+    group_label: Match Context
+
+  venue_name:
+    sql: '"VENUE_NAME"'
+    label: Venue
+    description: Name of the stadium where the match was played
+    group_label: Venue
+
+  venue_city:
+    sql: '"VENUE_CITY"'
+    label: Venue City
+    description: City where the match was played
+    group_label: Venue
+
+  referee:
+    sql: '"REFEREE"'
+    label: Referee
+    description: Name of the match referee
+    group_label: Match Context
+
+  team_id:
+    sql: '"TEAM_ID"'
+    label: Team ID
+    format: id
+    description: Unique identifier for the team
+    group_label: Teams
+
+  team:
+    sql: '"TEAM"'
+    label: Team
+    description: Name of the team
+    group_label: Teams
+
+  opponent_id:
+    sql: '"OPPONENT_ID"'
+    label: Opponent ID
+    format: id
+    description: Unique identifier for the opposing team
+    group_label: Teams
+
+  opponent:
+    sql: '"OPPONENT"'
+    label: Opponent
+    description: Name of the opposing team
+    group_label: Teams
+
+  is_home:
+    sql: '"IS_HOME"'
+    label: Is Home
+    description: Whether the team was playing at home (true) or away (false)
+    group_label: Teams
+
+  goals_scored:
+    sql: '"GOALS_SCORED"'
+    label: Goals Scored
+    description: Total goals scored by the team in the match
+    group_label: Goals
+
+  goals_conceded:
+    sql: '"GOALS_CONCEDED"'
+    label: Goals Conceded
+    description: Total goals conceded by the team in the match
+    group_label: Goals
+
+  ht_goals_scored:
+    sql: '"HT_GOALS_SCORED"'
+    label: First Half Goals Scored
+    description: Goals scored in the first half (0-45 minutes)
+    group_label: Goals by Period
+
+  ht_goals_conceded:
+    sql: '"HT_GOALS_CONCEDED"'
+    label: First Half Goals Conceded
+    description: Goals conceded in the first half (0-45 minutes)
+    group_label: Goals by Period
+
+  ft_goals_scored:
+    sql: '"FT_GOALS_SCORED"'
+    label: Second Half Goals Scored
+    description: Goals scored in the second half (46-90 minutes)
+    group_label: Goals by Period
+
+  ft_goals_conceded:
+    sql: '"FT_GOALS_CONCEDED"'
+    label: Second Half Goals Conceded
+    description: Goals conceded in the second half (46-90 minutes)
+    group_label: Goals by Period
+
+  et_goals_scored:
+    sql: '"ET_GOALS_SCORED"'
+    label: Extra Time Goals Scored
+    description: Goals scored in extra time (91-120 minutes)
+    group_label: Goals by Period
+
+  et_goals_conceded:
+    sql: '"ET_GOALS_CONCEDED"'
+    label: Extra Time Goals Conceded
+    description: Goals conceded in extra time (91-120 minutes)
+    group_label: Goals by Period
+
+  pen_goals_scored:
+    sql: '"PEN_GOALS_SCORED"'
+    label: Penalty Shootout Goals Scored
+    description: Goals scored in the penalty shootout
+    group_label: Goals by Period
+
+  pen_goals_conceded:
+    sql: '"PEN_GOALS_CONCEDED"'
+    label: Penalty Shootout Goals Conceded
+    description: Goals conceded in the penalty shootout
+    group_label: Goals by Period
+
+  result:
+    sql: '"RESULT"'
+    label: Result
+    description: Match result from the team's perspective (W = Win, D = Draw, L = Loss)
+    group_label: Match Outcome
+
+  goal_difference:
+    sql: '"GOAL_DIFFERENCE"'
+    label: Goal Difference
+    description: Difference between goals scored and goals conceded (positive = more
+      goals scored)
+    group_label: Goals
+
+  went_to_et:
+    sql: '"WENT_TO_ET"'
+    label: Went to Extra Time
+    description: Whether the match went to extra time
+    group_label: Match Outcome
+
+  went_to_pens:
+    sql: '"WENT_TO_PENS"'
+    label: Went to Penalties
+    description: Whether the match was decided by a penalty shootout
+    group_label: Match Outcome
+
+  clean_sheet:
+    sql: '"CLEAN_SHEET"'
+    label: Clean Sheet
+    description: Whether the team kept a clean sheet (did not concede any goals)
+    group_label: Match Outcome
+
+  failed_to_score:
+    sql: '"FAILED_TO_SCORE"'
+    label: Failed to Score
+    description: Whether the team failed to score any goals
+    group_label: Match Outcome
+
+  shots_on_goal:
+    sql: '"SHOTS_ON_GOAL"'
+    label: Shots on Goal
+    description: Number of shots on target (would have gone in without goalkeeper
+      intervention)
+    group_label: Shooting
+
+  shots_off_goal:
+    sql: '"SHOTS_OFF_GOAL"'
+    label: Shots off Goal
+    description: Number of shots off target (missed the goal)
+    group_label: Shooting
+
+  blocked_shots:
+    sql: '"BLOCKED_SHOTS"'
+    label: Blocked Shots
+    description: Number of shots blocked by defenders
+    group_label: Shooting
+
+  shots_insidebox:
+    sql: '"SHOTS_INSIDEBOX"'
+    label: Shots Inside Box
+    description: Number of shots taken from inside the penalty box
+    group_label: Shooting
+
+  shots_outsidebox:
+    sql: '"SHOTS_OUTSIDEBOX"'
+    label: Shots Outside Box
+    description: Number of shots taken from outside the penalty box
+    group_label: Shooting
+
+  fouls:
+    sql: '"FOULS"'
+    label: Fouls
+    description: Number of fouls committed by the team
+    group_label: Discipline
+
+  corner_kicks:
+    sql: '"CORNER_KICKS"'
+    label: Corner Kicks
+    description: Number of corner kicks awarded to the team
+    group_label: Other Stats
+
+  offsides:
+    sql: '"OFFSIDES"'
+    label: Offsides
+    description: Number of offside calls against the team
+    group_label: Other Stats
+
+  ball_possession:
+    sql: '"BALL_POSSESSION"'
+    label: Ball Possession %
+    format: percent_0
+    description: Percentage of time the team had possession of the ball
+    group_label: Passing & Possession
+
+  yellow_cards:
+    sql: '"YELLOW_CARDS"'
+    label: Yellow Cards
+    description: Number of yellow cards received
+    group_label: Discipline
+
+  red_cards:
+    sql: '"RED_CARDS"'
+    label: Red Cards
+    description: Number of red cards received
+    group_label: Discipline
+
+  goalkeeper_saves:
+    sql: '"GOALKEEPER_SAVES"'
+    label: Goalkeeper Saves
+    description: Number of saves made by the goalkeeper
+    group_label: Other Stats
+
+  passes_accurate:
+    sql: '"PASSES_ACCURATE"'
+    label: Accurate Passes
+    description: Number of passes that reached a teammate
+    group_label: Passing & Possession
+
+  passes_pct:
+    sql: '"PASSES_PCT"'
+    label: Pass Accuracy %
+    format: percent_0
+    description: Percentage of passes that were accurate
+    group_label: Passing & Possession
+
+  source_table:
+    sql: '"SOURCE_TABLE"'
+    label: Source Table
+    description: Original source table for the match data
+    hidden: true
+
+  is_win:
+    sql: CASE WHEN "RESULT" = 'W' THEN true ELSE false END
+    label: Is Win
+    description: Whether the team won the match
+    group_label: Match Outcome
+
+  is_draw:
+    sql: CASE WHEN "RESULT" = 'D' THEN true ELSE false END
+    label: Is Draw
+    description: Whether the match ended in a draw
+    group_label: Match Outcome
+
+  is_loss:
+    sql: CASE WHEN "RESULT" = 'L' THEN true ELSE false END
+    label: Is Loss
+    description: Whether the team lost the match
+    group_label: Match Outcome
+
+  shot_accuracy_pct:
+    sql: CASE WHEN "TOTAL_SHOTS" > 0 THEN ("SHOTS_ON_GOAL" * 100.0 / "TOTAL_SHOTS")
+      ELSE NULL END
+    label: Shot Accuracy %
+    format: percent_1
+    description: Percentage of shots that were on target
+    group_label: Shooting
+
+  # 2026 World Cup group assignments
+  group_2026:
+    sql: CASE WHEN ${coco_demo__fct_matches.team} IN ('Mexico', 'South Africa',
+      'South Korea', 'Czech Republic') THEN 'Group A' WHEN
+      ${coco_demo__fct_matches.team} IN ('Canada', 'Bosnia & Herzegovina',
+      'Qatar', 'Switzerland') THEN 'Group B' WHEN ${coco_demo__fct_matches.team}
+      IN ('Brazil', 'Morocco', 'Haiti', 'Scotland') THEN 'Group C' WHEN
+      ${coco_demo__fct_matches.team} IN ('USA', 'Paraguay', 'Australia',
+      'Türkiye') THEN 'Group D' WHEN ${coco_demo__fct_matches.team} IN
+      ('Germany', 'Curaçao', 'Ivory Coast', 'Ecuador') THEN 'Group E' WHEN
+      ${coco_demo__fct_matches.team} IN ('Netherlands', 'Japan', 'Sweden',
+      'Tunisia') THEN 'Group F' WHEN ${coco_demo__fct_matches.team} IN
+      ('Belgium', 'Egypt', 'Iran', 'New Zealand') THEN 'Group G' WHEN
+      ${coco_demo__fct_matches.team} IN ('Spain', 'Cape Verde Islands', 'Saudi
+      Arabia', 'Uruguay') THEN 'Group H' WHEN ${coco_demo__fct_matches.team} IN
+      ('France', 'Senegal', 'Iraq', 'Norway') THEN 'Group I' WHEN
+      ${coco_demo__fct_matches.team} IN ('Argentina', 'Algeria', 'Austria',
+      'Jordan') THEN 'Group J' WHEN ${coco_demo__fct_matches.team} IN
+      ('Portugal', 'Congo DR', 'Uzbekistan', 'Colombia') THEN 'Group K' WHEN
+      ${coco_demo__fct_matches.team} IN ('England', 'Croatia', 'Ghana',
+      'Panama') THEN 'Group L' ELSE NULL END
+    label: 2026 Group
+    description: Group assignment for the 2026 World Cup (Groups A-L). Based on team name.
+    group_label: 2026 World Cup
+    ai_context: Use to filter or group by 2026 World Cup groups. Applies to all
+      matches for teams in the 2026 World Cup.
+
+  # 2026 World Cup seed assignments (1-4 per group)
+  seed_2026:
+    sql: CASE WHEN ${coco_demo__fct_matches.team} IN ('Mexico', 'Canada', 'Brazil',
+      'USA', 'Germany', 'Netherlands', 'Belgium', 'Spain', 'France',
+      'Argentina', 'Portugal', 'England') THEN 1 WHEN
+      ${coco_demo__fct_matches.team} IN ('South Africa', 'Bosnia & Herzegovina',
+      'Morocco', 'Paraguay', 'Curaçao', 'Japan', 'Egypt', 'Cape Verde Islands',
+      'Senegal', 'Algeria', 'Congo DR', 'Croatia') THEN 2 WHEN
+      ${coco_demo__fct_matches.team} IN ('South Korea', 'Qatar', 'Haiti',
+      'Australia', 'Ivory Coast', 'Sweden', 'Iran', 'Saudi Arabia', 'Iraq',
+      'Austria', 'Uzbekistan', 'Ghana') THEN 3 WHEN
+      ${coco_demo__fct_matches.team} IN ('Czech Republic', 'Switzerland',
+      'Scotland', 'Türkiye', 'Ecuador', 'Tunisia', 'New Zealand', 'Uruguay',
+      'Norway', 'Jordan', 'Colombia', 'Panama') THEN 4 ELSE NULL END
+    label: 2026 Seed
+    format: id
+    description: Seed position (1-4) for each team within their 2026 World Cup
+      group. Seed 1 is the top-seeded team in the group.
+    group_label: 2026 World Cup
+    ai_context: Use to identify team seeding within their 2026 World Cup group. Seed
+      1 is the highest-ranked/host team, seed 4 is the lowest.
+
+measures:
+  total_shots:
+    sql: '"TOTAL_SHOTS"'
+    label: Total Shots
+    format: number_0
+    description: Total shots attempted across all matches
+    aggregate_type: sum
+
+  total_passes:
+    sql: '"TOTAL_PASSES"'
+    label: Total Passes
+    format: number_0
+    description: Total passes attempted across all matches
+    aggregate_type: sum
+
+  count:
+    label: Match Count
+    description: Number of match records (each fixture appears twice, once per team)
+    aggregate_type: count
+
+  total_goals_scored:
+    sql: ${coco_demo__fct_matches.goals_scored}
+    label: Total Goals Scored
+    format: number_0
+    description: Total goals scored across all matches
+    aggregate_type: sum
+
+  total_goals_conceded:
+    sql: ${coco_demo__fct_matches.goals_conceded}
+    label: Total Goals Conceded
+    format: number_0
+    description: Total goals conceded across all matches
+    aggregate_type: sum
+
+  average_goals_scored:
+    sql: ${coco_demo__fct_matches.goals_scored}
+    label: Avg Goals Scored per Match
+    format: number_2
+    description: Average goals scored per match
+    aggregate_type: average
+
+  average_goals_conceded:
+    sql: ${coco_demo__fct_matches.goals_conceded}
+    label: Avg Goals Conceded per Match
+    format: number_2
+    description: Average goals conceded per match
+    aggregate_type: average
+
+  total_wins:
+    sql: CASE WHEN ${coco_demo__fct_matches.result} = 'W' THEN 1 ELSE 0 END
+    label: Total Wins
+    format: number_0
+    description: Total number of wins
+    aggregate_type: sum
+
+  total_draws:
+    sql: CASE WHEN ${coco_demo__fct_matches.result} = 'D' THEN 1 ELSE 0 END
+    label: Total Draws
+    format: number_0
+    description: Total number of draws
+    aggregate_type: sum
+
+  total_losses:
+    sql: CASE WHEN ${coco_demo__fct_matches.result} = 'L' THEN 1 ELSE 0 END
+    label: Total Losses
+    format: number_0
+    description: Total number of losses
+    aggregate_type: sum
+
+  win_rate:
+    sql: SUM(CASE WHEN ${coco_demo__fct_matches.result} = 'W' THEN 1 ELSE 0 END) *
+      1.0 / COUNT(*)
+    label: Win Rate %
+    format: percent_1
+    description: Percentage of matches won
+
+  total_clean_sheets:
+    sql: CASE WHEN ${coco_demo__fct_matches.clean_sheet} = true THEN 1 ELSE 0 END
+    label: Total Clean Sheets
+    format: number_0
+    description: Total number of clean sheets (matches without conceding)
+    aggregate_type: sum
+
+  clean_sheet_rate:
+    sql: SUM(CASE WHEN ${coco_demo__fct_matches.clean_sheet} = true THEN 1 ELSE 0
+      END) * 1.0 / COUNT(*)
+    label: Clean Sheet Rate %
+    format: percent_1
+    description: Percentage of matches with clean sheets
+
+  total_shots_on_goal:
+    sql: ${coco_demo__fct_matches.shots_on_goal}
+    label: Total Shots on Goal
+    format: number_0
+    description: Total shots on target across all matches
+    aggregate_type: sum
+
+  average_shot_accuracy:
+    sql: SUM(${coco_demo__fct_matches.shots_on_goal}) * 1.0 /
+      NULLIF(SUM("TOTAL_SHOTS"), 0)
+    label: Avg Shot Accuracy %
+    format: percent_1
+    description: Average percentage of shots on target
+
+  average_possession:
+    sql: AVG(CAST(REPLACE("BALL_POSSESSION", '%', '') AS FLOAT) / 100.0)
+    label: Avg Possession %
+    format: percent_0
+    description: Average ball possession percentage
+
+  total_accurate_passes:
+    sql: '"PASSES_ACCURATE"'
+    label: Total Accurate Passes
+    format: number_0
+    description: Total accurate passes across all matches
+    aggregate_type: sum
+
+  average_pass_accuracy:
+    sql: SUM("PASSES_ACCURATE") * 1.0 / NULLIF(SUM("TOTAL_PASSES"), 0)
+    label: Avg Pass Accuracy %
+    format: percent_1
+    description: Average percentage of accurate passes
+
+  total_yellow_cards:
+    sql: ${coco_demo__fct_matches.yellow_cards}
+    label: Total Yellow Cards
+    format: number_0
+    description: Total yellow cards received across all matches
+    aggregate_type: sum
+
+  total_red_cards:
+    sql: ${coco_demo__fct_matches.red_cards}
+    label: Total Red Cards
+    format: number_0
+    description: Total red cards received across all matches
+    aggregate_type: sum
+
+  total_fouls:
+    sql: ${coco_demo__fct_matches.fouls}
+    label: Total Fouls
+    format: number_0
+    description: Total fouls committed across all matches
+    aggregate_type: sum
+
+  goal_difference_sum:
+    sql: ${coco_demo__fct_matches.goal_difference}
+    label: Total Goal Difference
+    format: number_0
+    description: Sum of goal differences across all matches
+    aggregate_type: sum
+
+  average_goal_difference:
+    sql: ${coco_demo__fct_matches.goal_difference}
+    label: Avg Goal Difference
+    format: number_2
+    description: Average goal difference per match
+    aggregate_type: average
+
+  unique_teams:
+    sql: ${coco_demo__fct_matches.team_id}
+    label: Unique Teams
+    format: number_0
+    description: Number of unique teams
+    aggregate_type: count_distinct
+
+  unique_fixtures:
+    sql: ${coco_demo__fct_matches.fixture_id}
+    label: Unique Fixtures
+    format: number_0
+    description: Number of unique match fixtures
+    aggregate_type: count_distinct
+
+ai_context: |-
+  This view contains per-team, per-match statistics for international soccer matches from multiple sources (World Cup, tournaments, friendlies). Use it to analyze team performance including win/loss records, goal-scoring patterns across match periods, shooting efficiency, passing accuracy, possession, discipline, and head-to-head matchups.
+
+  KEY CONCEPTS:
+  - Each fixture appears twice — once for each team
+  - The 'is_home' dimension indicates whether the team was playing at home
+  - Goals are broken down by period: HT (half-time/first half), FT (full-time/second half), ET (extra time), and PEN (penalties)
+  - The 'result' dimension shows Win/Draw/Loss from the team's perspective
+  - Use fixture_type to distinguish between tournament matches and friendlies
+  - Use source_table to identify the original data source
+
+  COMMON ANALYSIS PATTERNS:
+  - Team rankings: group by team, sort by wins or win_rate
+  - Head-to-head: filter by team and opponent
+  - Home advantage: compare is_home = true vs false with win metrics
+  - Scoring trends: group by match_date[year] or season with goals_scored
+  - Defensive analysis: group by team, sort by goals_conceded or clean_sheets
+  - Shooting efficiency: compare shots_on_goal vs total_shots
+  - Possession vs results: compare ball_possession with result
+  - Tournament comparison: group by fixture_type or season

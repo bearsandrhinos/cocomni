@@ -1,0 +1,129 @@
+# Reference this view as coco_demo__wc_squads
+schema: COCO_DEMO
+table_name: WC_SQUADS
+
+dimensions:
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+
+  season:
+    sql: '"SEASON"'
+    format: ID
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  player_firstname:
+    sql: '"PLAYER_FIRSTNAME"'
+
+  player_lastname:
+    sql: '"PLAYER_LASTNAME"'
+
+  player_age:
+    sql: '"PLAYER_AGE"'
+
+  player_nationality:
+    sql: '"PLAYER_NATIONALITY"'
+
+  player_height:
+    sql: '"PLAYER_HEIGHT"'
+
+  player_weight:
+    sql: '"PLAYER_WEIGHT"'
+
+  player_photo:
+    sql: '"PLAYER_PHOTO"'
+
+  position:
+    sql: '"POSITION"'
+
+  number:
+    sql: '"NUMBER"'
+
+  appearances:
+    sql: '"APPEARANCES" :: INT'
+
+  lineups:
+    sql: '"LINEUPS"'
+
+  minutes:
+    sql: '"MINUTES" :: INT'
+
+  rating:
+    sql: '"RATING" :: FLOAT'
+    format: NUMBER_2
+
+  captain:
+    sql: '"CAPTAIN"'
+
+  goals:
+    sql: '"GOALS" :: INT'
+
+  assists:
+    sql: '"ASSISTS" :: INT'
+
+  shots_total:
+    sql: '"SHOTS_TOTAL" :: INT'
+
+  shots_on:
+    sql: '"SHOTS_ON" :: INT'
+
+  passes_total:
+    sql: '"PASSES_TOTAL" :: INT'
+
+  passes_key:
+    sql: '"PASSES_KEY" :: INT'
+
+  passes_accuracy:
+    sql: '"PASSES_ACCURACY" :: INT /100'
+    format: PERCENT_0
+
+  tackles_total:
+    sql: '"TACKLES_TOTAL" :: INT'
+
+  interceptions:
+    sql: '"INTERCEPTIONS" :: INT'
+
+  duels_total:
+    sql: '"DUELS_TOTAL" :: INT'
+
+  duels_won:
+    sql: '"DUELS_WON" :: INT'
+
+  dribbles_attempts:
+    sql: '"DRIBBLES_ATTEMPTS" :: INT'
+
+  dribbles_success:
+    sql: '"DRIBBLES_SUCCESS" :: INT'
+
+  yellow_cards:
+    sql: '"YELLOW_CARDS" :: INT'
+
+  red_cards:
+    sql: '"RED_CARDS" :: INT'
+
+  penalty_scored:
+    sql: '"PENALTY_SCORED"'
+
+  penalty_missed:
+    sql: '"PENALTY_MISSED" :: INT'
+
+measures:
+  count:
+    aggregate_type: count
+
+  goals_sum:
+    sql: ${coco_demo__wc_squads.goals}
+    aggregate_type: sum
+
+  assists_sum:
+    sql: ${coco_demo__wc_squads.assists}
+    aggregate_type: sum

@@ -1,0 +1,26 @@
+# Reference this view as demo__contact_js
+schema: DEMO
+table_name: CONTACT_JS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  first_name:
+    sql: '"FIRST_NAME"'
+
+  last_name:
+    sql: '"LAST_NAME"'
+
+  email:
+    sql: '"EMAIL"'
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count

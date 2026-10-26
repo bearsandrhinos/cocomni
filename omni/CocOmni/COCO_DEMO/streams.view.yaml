@@ -1,0 +1,163 @@
+# Reference this view as coco_demo__streams
+label: Streams
+description: Streaming events capturing user listening activity including
+  completion rates, download behavior, and listening context
+
+schema: COCO_DEMO
+table_name: STREAMS
+
+dimensions:
+  stream_id:
+    sql: '"STREAM_ID"'
+    label: Stream ID
+    format: ID
+    description: Unique identifier for each individual streaming session or listening event
+    primary_key: true
+    synonyms: [ stream identifier, session id, listening session id ]
+
+  user_id:
+    sql: '"USER_ID"'
+    label: User ID
+    format: ID
+    description: Unique identifier for the user who initiated the streaming session
+    synonyms: [ listener id, customer id, account id ]
+
+  podcast_id:
+    sql: '"PODCAST_ID"'
+    label: Podcast ID
+    format: ID
+    description: Unique identifier for the podcast being streamed
+    synonyms: [ show id, podcast identifier, program id ]
+
+  podcast_title:
+    sql: '"PODCAST_TITLE"'
+    label: Podcast Title
+    description: Name or title of the podcast being streamed
+    synonyms: [ podcast name, show title, show name, program title ]
+
+  started_at:
+    sql: '"STARTED_AT"'
+    label: Started At
+    description: Timestamp when the streaming session began
+    synonyms: [ start time, session start, listening start time, stream start ]
+
+  episode_id:
+    sql: '"EPISODE_ID"'
+    label: Episode ID
+    format: ID
+    description: Unique identifier for the specific podcast episode being streamed
+    synonyms: [ episode identifier, episode number ]
+
+  episode_length_min:
+    sql: '"EPISODE_LENGTH_MIN"'
+    description: Total duration of the podcast episode in minutes
+    synonyms: [ episode duration, episode length, runtime, total minutes ]
+
+  listened_min:
+    sql: '"LISTENED_MIN"'
+    description: Number of minutes the user actually listened during this streaming session
+    synonyms: [ minutes listened, listening time, playback time, time spent listening ]
+
+  completion_pct:
+    sql: '"COMPLETION_PCT"'
+    description: Percentage of the episode that was completed during this streaming
+      session, calculated as listened minutes divided by episode length
+    synonyms:
+      [
+        completion percentage,
+        completion rate,
+        percent completed,
+        listen through rate
+      ]
+
+  downloaded:
+    sql: '"DOWNLOADED"'
+    label: Downloaded
+    description: Boolean indicator of whether the episode was downloaded for offline
+      listening rather than streamed online
+    synonyms: [ offline download, download status, was downloaded ]
+
+  listening_context:
+    sql: '"LISTENING_CONTEXT"'
+    label: Listening Context
+    description: The activity or situation during which the user was listening to
+      the podcast (e.g., Commute, Workout, Relaxing)
+    synonyms: [ listening situation, listening activity, context, use case ]
+
+measures:
+  count:
+    label: Stream Count
+    aggregate_type: count
+
+  total_listened_min:
+    sql: '"LISTENED_MIN"'
+    label: Total Listened Minutes
+    format: "#,##0"
+    aggregate_type: sum
+
+  avg_listened_min:
+    sql: '"LISTENED_MIN"'
+    label: Avg Listened Minutes
+    format: "#,##0.0"
+    aggregate_type: average
+
+  avg_completion_pct:
+    sql: '"COMPLETION_PCT"'
+    label: Avg Completion %
+    format: "#,##0.0"
+    aggregate_type: average
+
+  total_episode_length_min:
+    sql: '"EPISODE_LENGTH_MIN"'
+    label: Total Episode Length (min)
+    format: "#,##0"
+    aggregate_type: sum
+
+  download_count:
+    label: Downloads
+    format: "#,##0"
+    aggregate_type: count
+    filters:
+      downloaded:
+        is: true
+
+  download_rate:
+    sql: '"DOWNLOADED"::INT'
+    label: Download Rate
+    format: "#,##0.0%"
+    aggregate_type: average
+
+  unique_listeners:
+    sql: '"USER_ID"'
+    label: Unique Listeners
+    format: "#,##0"
+    aggregate_type: count_distinct
+
+  unique_podcasts:
+    sql: '"PODCAST_ID"'
+    label: Unique Podcasts Streamed
+    format: "#,##0"
+    aggregate_type: count_distinct
+
+  total_listening_hours:
+    sql: '"LISTENED_MIN" / 60.0'
+    label: Total Listening Hours
+    format: "#,##0.0"
+    aggregate_type: sum
+
+  avg_completion_pct_non_downloaded:
+    sql: '"COMPLETION_PCT"'
+    label: Avg Completion % (Non-Downloaded)
+    format: "#,##0.0"
+    description: Average completion percentage for episodes that were streamed
+      online (not downloaded)
+    aggregate_type: average
+    filters:
+      downloaded:
+        is: false
+    synonyms:
+      [
+        streaming completion rate,
+        non-download completion,
+        online listen completion
+      ]

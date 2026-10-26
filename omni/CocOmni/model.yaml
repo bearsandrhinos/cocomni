@@ -1,0 +1,5 @@
+ai_context: |-
+  If I ask you to build a dashboard here is the style guide.  It should have 4 kpi tiles at the top with percent change from the previous.  Below should be a line chart and next to it should be an ai summary tile.  Below that should be a table vis that goes into the details.
+  If I ask about history, use Cortex 2
+
+included_schemas: [ COCO_DEMO, ECOMM, DEMO, SAAS ]

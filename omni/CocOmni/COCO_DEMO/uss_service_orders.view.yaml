@@ -1,0 +1,238 @@
+# Reference this view as coco_demo__uss_service_orders
+label: USS Service Orders
+description: Field service work orders against USS assets at customer sites —
+  pump-outs, cleanings, restocks, deliveries and pickups — with scheduled vs
+  completed dates, on-time status, and cycle time.
+
+schema: COCO_DEMO
+table_name: USS_SERVICE_ORDERS
+
+dimensions:
+  service_order_id:
+    sql: '"SERVICE_ORDER_ID"'
+    label: Service Order ID
+    format: id
+    group_label: Keys
+    primary_key: true
+    synonyms: [ work order, order id, ticket ]
+
+  asset_id:
+    sql: '"ASSET_ID"'
+    label: Asset ID
+    format: id
+    group_label: Keys
+    synonyms: [ unit, equipment id ]
+
+  site_id:
+    sql: '"SITE_ID"'
+    label: Site ID
+    format: id
+    group_label: Keys
+    synonyms: [ job site, location id ]
+
+  route_id:
+    sql: '"ROUTE_ID"'
+    label: Route ID
+    format: id
+    group_label: Keys
+    synonyms: [ route, run ]
+
+  service_type:
+    sql: '"SERVICE_TYPE"'
+    label: Service Type
+    description: pump-out, cleaning, restock, delivery, or pickup
+    group_label: Service Attributes
+    sample_values: [ pump-out, cleaning, restock, delivery, pickup ]
+    synonyms: [ visit type, work type, service mix, job type ]
+    ai_context: Use for service mix analysis. pump-out and cleaning are recurring
+      maintenance; delivery/pickup are logistics events.
+
+  scheduled_date:
+    sql: '"SCHEDULED_DATE"'
+    label: Scheduled Date
+    description: Date the service was scheduled for
+    group_label: Service Dates
+    synonyms: [ due date, planned date ]
+
+  completed_date:
+    sql: '"COMPLETED_DATE"'
+    label: Completed Date
+    description: Date the service was actually completed
+    group_label: Service Dates
+    synonyms: [ actual date, done date ]
+
+  status:
+    sql: '"STATUS"'
+    label: Order Status
+    description: completed, late, or missed
+    group_label: Service Attributes
+    colors:
+      conditions:
+        - condition:
+            is: completed
+          color: green
+        - condition:
+            is: late
+          color: orange
+        - condition:
+            is: missed
+          color: red
+    sample_values: [ completed, late, missed ]
+    synonyms: [ order status, outcome, completion status ]
+
+  is_on_time:
+    sql: CASE WHEN ${completed_date} <= ${scheduled_date} THEN TRUE ELSE FALSE END
+    label: Is On-Time
+    description: Completed on or before scheduled date
+    group_label: Service Attributes
+    synonyms: [ on time flag, SLA met ]
+    ai_context: True when completed on or before the scheduled date. Basis for
+      on-time rate.
+
+  service_cycle_days:
+    sql: DATEDIFF(day, ${scheduled_date}, ${completed_date})
+    label: Service Cycle Time (Days)
+    format: number_0
+    description: Days between scheduled and completed date; negative means completed early
+    group_label: Service Dates
+    synonyms: [ cycle time, days late, turnaround ]
+
+measures:
+  count:
+    label: Service Order Count
+    description: Count of service orders
+    drill_fields: [ service_order_id, service_type, status, scheduled_date, site_id ]
+    aggregate_type: count
+    synonyms: [ service orders, stops, work orders, visits ]
+
+  total_service_orders:
+    label: Total Service Orders
+    group_label: Volume
+    drill_fields:
+      [
+        service_order_id,
+        service_type,
+        status,
+        scheduled_date,
+        completed_date,
+        site_id,
+        asset_id,
+        route_id
+      ]
+    aggregate_type: count
+    synonyms: [ service orders, stops, visits, work orders ]
+    ai_context: Denominator for on-time rate and numerator for stops per route.
+
+  completed_orders:
+    label: Completed Orders
+    group_label: Volume
+    drill_fields: [ service_order_id, service_type, scheduled_date, completed_date, site_id ]
+    aggregate_type: count
+    filters:
+      status:
+        is: completed
+    synonyms: [ completed stops, finished work ]
+
+  late_orders:
+    label: Late Orders
+    group_label: Volume
+    drill_fields:
+      [
+        service_order_id,
+        service_type,
+        scheduled_date,
+        completed_date,
+        service_cycle_days,
+        site_id
+      ]
+    aggregate_type: count
+    filters:
+      status:
+        is: late
+    synonyms: [ late stops, overdue services ]
+
+  missed_orders:
+    label: Missed Orders
+    group_label: Volume
+    drill_fields: [ service_order_id, service_type, scheduled_date, site_id, route_id ]
+    aggregate_type: count
+    filters:
+      status:
+        is: missed
+    synonyms: [ missed stops, skipped services, no shows ]
+
+  on_time_orders:
+    label: On-Time Orders
+    group_label: Volume
+    description: Orders completed on or before scheduled date
+    drill_fields: [ service_order_id, service_type, scheduled_date, completed_date, site_id ]
+    aggregate_type: count
+    filters:
+      is_on_time:
+        is: true
+    synonyms: [ on time stops, SLA met count ]
+
+  avg_service_cycle_time:
+    sql: ${service_cycle_days}
+    label: Avg Service Cycle Time (Days)
+    group_label: Performance
+    format: number_2
+    description: Average days between scheduled and completed date
+    aggregate_type: average
+    synonyms: [ cycle time, average turnaround, days to complete ]
+
+  unique_routes_served:
+    sql: ${route_id}
+    label: Unique Routes Served
+    group_label: Volume
+    aggregate_type: count_distinct
+    synonyms: [ routes with stops, distinct routes ]
+
+  on_time_rate:
+    sql: ${on_time_orders} / NULLIF(${total_service_orders}, 0)
+    label: On-Time Rate
+    group_label: Performance
+    format: percent_1
+    description: Share of service orders completed on or before the scheduled date
+    synonyms: [ on time percentage, SLA attainment, service level ]
+    ai_context: Headline field service KPI.
+
+  completion_rate:
+    sql: ${completed_orders} / NULLIF(${total_service_orders}, 0)
+    label: Completion Rate
+    group_label: Performance
+    format: percent_1
+    description: Share of service orders completed
+    synonyms: [ percent completed ]
+
+  missed_rate:
+    sql: ${missed_orders} / NULLIF(${total_service_orders}, 0)
+    label: Missed Rate
+    group_label: Performance
+    format: percent_1
+    description: Share of service orders missed
+    synonyms: [ percent missed, skip rate ]
+
+default_drill_fields:
+  [
+    service_order_id,
+    service_type,
+    status,
+    scheduled_date,
+    completed_date,
+    site_id,
+    asset_id,
+    route_id
+  ]
+
+ai_context: |-
+  One row per service order (a single scheduled visit to service an asset at a site).
+
+  This is the base view for field service performance.
+  - 'on-time rate' -> on_time_orders / total_service_orders (or use the on_time_rate measure)
+  - 'service mix' -> breakdown by service_type
+  - 'service cycle time' -> avg_service_cycle_time (days between scheduled and completed)
+  - 'missed' / 'late' work -> missed_orders, late_orders
+  - 'stops per route' -> total_service_orders / coco_demo__uss_routes.total_routes
+  Status values: completed, late, missed. is_on_time compares completed_date to scheduled_date.
+  Join to coco_demo__uss_sites for customer/geography, coco_demo__uss_assets for product type, and coco_demo__uss_routes for route/driver context.

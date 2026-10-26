@@ -1,0 +1,34 @@
+# Reference this view as coco_demo__wc_squads_2026
+schema: COCO_DEMO
+table_name: WC_SQUADS_2026
+
+dimensions:
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  age:
+    sql: '"AGE"'
+
+  number:
+    sql: '"NUMBER"'
+
+  position:
+    sql: '"POSITION"'
+
+  photo_url:
+    sql: '"PHOTO_URL"'
+
+measures:
+  count:
+    aggregate_type: count

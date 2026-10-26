@@ -1,0 +1,37 @@
+# Reference this view as demo__fernway_dim_recall_events
+schema: DEMO
+table_name: FERNWAY_DIM_RECALL_EVENTS
+
+dimensions:
+  recall_event_id:
+    sql: '"RECALL_EVENT_ID"'
+    format: ID
+
+  title:
+    sql: '"TITLE"'
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  description:
+    sql: '"DESCRIPTION"'
+
+  root_cause:
+    sql: '"ROOT_CAUSE"'
+
+  status:
+    sql: '"STATUS"'
+
+  identified_date:
+    sql: '"IDENTIFIED_DATE"'
+
+  contact_list_ready_date:
+    sql: '"CONTACT_LIST_READY_DATE"'
+
+  all_dealers_notified_date:
+    sql: '"ALL_DEALERS_NOTIFIED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

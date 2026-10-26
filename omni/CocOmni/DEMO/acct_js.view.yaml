@@ -1,0 +1,59 @@
+# Reference this view as demo__acct_js
+schema: DEMO
+table_name: ACCT_JS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  billing_address:
+    sql: '"BILLING_ADDRESS"'
+
+  billing_address2:
+    sql: '"BILLING_ADDRESS2"'
+
+  billing_city:
+    sql: '"BILLING_CITY"'
+
+  billing_state:
+    sql: '"BILLING_STATE"'
+
+  billing_zip:
+    sql: '"BILLING_ZIP"'
+
+  billing_county:
+    sql: '"BILLING_COUNTY"'
+
+  employees_c:
+    sql: '"EMPLOYEES_C"'
+
+  revenue_c:
+    sql: '"REVENUE_C"'
+
+  website:
+    sql: '"WEBSITE"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  status:
+    sql: '"STATUS"'
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  industry:
+    sql: '"INDUSTRY"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,141 @@
+# Reference this view as coco_demo__wc_seasons
+label: World Cup Seasons
+description: FIFA World Cup tournament metadata by year. Each row represents one
+  World Cup edition with start/end dates, duration, and API data coverage
+  information.
+
+schema: COCO_DEMO
+table_name: WC_SEASONS
+
+dimensions:
+  year:
+    sql: '"YEAR"'
+    label: Tournament Year
+    description: World Cup tournament year
+    group_label: Tournament Info
+    primary_key: true
+    ai_context: Primary dimension for identifying World Cup editions.
+
+  start:
+    sql: '"START"'
+    label: Start Date
+    description: Start date of the tournament
+    group_label: Tournament Info
+    ai_context: Tournament opening date.
+
+  end:
+    sql: '"END"'
+    label: End Date
+    description: End date of the tournament
+    group_label: Tournament Info
+    ai_context: Tournament final date.
+
+  current:
+    sql: '"CURRENT"'
+    label: Is Current Season
+    description: Whether this is the current/active tournament
+    group_label: Tournament Info
+    ai_context: Boolean flag for the active World Cup.
+
+  coverage_players:
+    sql: '"COVERAGE_PLAYERS"'
+    label: Players Coverage
+    description: Whether player statistics are available for this tournament
+    group_label: Coverage
+    ai_context: Player stats data availability.
+
+  coverage_standings:
+    sql: '"COVERAGE_STANDINGS"'
+    label: Standings Coverage
+    description: Whether standings data is available for this tournament
+    group_label: Coverage
+    ai_context: Standings data availability.
+
+  tournament_duration_days:
+    sql: DATEDIFF(day, ${coco_demo__wc_seasons.start}, ${coco_demo__wc_seasons.end})
+    label: Tournament Duration (Days)
+    description: Number of days the tournament lasted
+    group_label: Tournament Info
+    ai_context: Duration of the tournament in days.
+
+  coverage_fixtures_events:
+    sql: '"COVERAGE_FIXTURES_EVENTS"'
+    description: Whether fixture event data (goals, cards, subs) is available
+    group_label: Coverage
+    ai_context: Match event data availability.
+
+  coverage_fixtures_lineups:
+    sql: '"COVERAGE_FIXTURES_LINEUPS"'
+    description: Whether lineup data is available
+    group_label: Coverage
+    ai_context: Lineup data availability.
+
+  coverage_fixtures_stats_fix:
+    sql: '"COVERAGE_FIXTURES_STATS_FIX"'
+    description: Whether fixture-level statistics are available
+    group_label: Coverage
+    ai_context: Match statistics data availability.
+
+  coverage_fixtures_stats_players:
+    sql: '"COVERAGE_FIXTURES_STATS_PLAYERS"'
+    description: Whether player-level match statistics are available
+    group_label: Coverage
+    ai_context: Player match statistics availability.
+
+  coverage_top_scorers:
+    sql: '"COVERAGE_TOP_SCORERS"'
+    description: Whether top scorers data is available
+    group_label: Coverage
+    ai_context: Top scorers data availability.
+
+  coverage_top_assists:
+    sql: '"COVERAGE_TOP_ASSISTS"'
+    description: Whether top assists data is available
+    group_label: Coverage
+    ai_context: Top assists data availability.
+
+  coverage_top_cards:
+    sql: '"COVERAGE_TOP_CARDS"'
+    description: Whether top cards data is available
+    group_label: Coverage
+    ai_context: Top cards data availability.
+
+  coverage_injuries:
+    sql: '"COVERAGE_INJURIES"'
+    description: Whether injury data is available
+    group_label: Coverage
+    ai_context: Injury data availability.
+
+  coverage_predictions:
+    sql: '"COVERAGE_PREDICTIONS"'
+    description: Whether prediction data is available
+    group_label: Coverage
+    ai_context: Prediction data availability.
+
+  coverage_odds:
+    sql: '"COVERAGE_ODDS"'
+    description: Whether odds data is available
+    group_label: Coverage
+    ai_context: Betting odds data availability.
+
+measures:
+  count:
+    label: Season Count
+    description: Number of World Cup tournaments
+    aggregate_type: count
+    ai_context: Count of World Cup editions.
+
+  average_tournament_duration:
+    sql: DATEDIFF(day, ${coco_demo__wc_seasons.start}, ${coco_demo__wc_seasons.end})
+    label: Average Tournament Duration (Days)
+    group_label: Tournament Info
+    format: number_1
+    description: Average tournament duration in days across all editions
+    aggregate_type: average
+    ai_context: Mean tournament length in days.
+
+ai_context: "This view contains tournament-level metadata for FIFA World Cup
+  editions. Each row is one World Cup year. Use it for tournament-level
+  analysis: comparing tournament durations, checking data coverage, and
+  identifying which World Cups have complete data. Coverage fields indicate what
+  data is available from the API for each edition."

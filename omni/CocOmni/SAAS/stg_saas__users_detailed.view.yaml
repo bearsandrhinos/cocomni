@@ -1,0 +1,44 @@
+# Reference this view as saas__stg_saas__users_detailed
+schema: SAAS
+table_name: STG_SAAS__USERS_DETAILED
+
+dimensions:
+  name: {}
+  email: {}
+  title: {}
+  role: {}
+  department: {}
+  signup_source: {}
+  license_type: {}
+  is_admin: {}
+  status: {}
+  created_date: {}
+  updated_date: {}
+  activated_date: {}
+  last_event_date: {}
+  days_since_last_event: {}
+  total_events_lifetime: {}
+  total_sessions_lifetime: {}
+  events_last_30d: {}
+  events_last_90d: {}
+  onboarding_steps_completed: {}
+  onboarding_completed: {}
+  lifecycle_stage: {}
+  timezone: {}
+  location: {}
+
+  user_id:
+    format: ID
+
+  account_id:
+    format: ID
+
+  manager_id:
+    format: ID
+
+  invited_by_user_id:
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,163 @@
+# Reference this view as coco_demo__nba_team_stats_advanced
+label: NBA Team Advanced Stats
+
+schema: COCO_DEMO
+table_name: NBA_TEAM_STATS_ADVANCED
+
+dimensions:
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+
+  gp:
+    sql: '"GP"'
+
+  w:
+    sql: '"W"'
+
+  l:
+    sql: '"L"'
+
+  w_pct:
+    sql: '"W_PCT"'
+
+  min:
+    sql: '"MIN"'
+
+  e_off_rating:
+    sql: '"E_OFF_RATING"'
+
+  off_rating:
+    sql: '"OFF_RATING"'
+
+  e_def_rating:
+    sql: '"E_DEF_RATING"'
+
+  def_rating:
+    sql: '"DEF_RATING"'
+
+  e_net_rating:
+    sql: '"E_NET_RATING"'
+
+  net_rating:
+    sql: '"NET_RATING"'
+
+  ast_pct:
+    sql: '"AST_PCT"'
+
+  ast_to:
+    sql: '"AST_TO"'
+
+  ast_ratio:
+    sql: '"AST_RATIO"'
+
+  oreb_pct:
+    sql: '"OREB_PCT"'
+
+  dreb_pct:
+    sql: '"DREB_PCT"'
+
+  reb_pct:
+    sql: '"REB_PCT"'
+
+  tm_tov_pct:
+    sql: '"TM_TOV_PCT"'
+
+  efg_pct:
+    sql: '"EFG_PCT"'
+
+  ts_pct:
+    sql: '"TS_PCT"'
+
+  e_pace:
+    sql: '"E_PACE"'
+
+  pace:
+    sql: '"PACE"'
+
+  pace_per40:
+    sql: '"PACE_PER40"'
+
+  poss:
+    sql: '"POSS"'
+
+  pie:
+    sql: '"PIE"'
+
+  gp_rank:
+    sql: '"GP_RANK"'
+
+  w_rank:
+    sql: '"W_RANK"'
+
+  l_rank:
+    sql: '"L_RANK"'
+
+  w_pct_rank:
+    sql: '"W_PCT_RANK"'
+
+  min_rank:
+    sql: '"MIN_RANK"'
+
+  off_rating_rank:
+    sql: '"OFF_RATING_RANK"'
+
+  def_rating_rank:
+    sql: '"DEF_RATING_RANK"'
+
+  net_rating_rank:
+    sql: '"NET_RATING_RANK"'
+
+  ast_pct_rank:
+    sql: '"AST_PCT_RANK"'
+
+  ast_to_rank:
+    sql: '"AST_TO_RANK"'
+
+  ast_ratio_rank:
+    sql: '"AST_RATIO_RANK"'
+
+  oreb_pct_rank:
+    sql: '"OREB_PCT_RANK"'
+
+  dreb_pct_rank:
+    sql: '"DREB_PCT_RANK"'
+
+  reb_pct_rank:
+    sql: '"REB_PCT_RANK"'
+
+  tm_tov_pct_rank:
+    sql: '"TM_TOV_PCT_RANK"'
+
+  efg_pct_rank:
+    sql: '"EFG_PCT_RANK"'
+
+  ts_pct_rank:
+    sql: '"TS_PCT_RANK"'
+
+  pace_rank:
+    sql: '"PACE_RANK"'
+
+  pie_rank:
+    sql: '"PIE_RANK"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${team_id}, '|', ${season}, '|', ${season_type})
+    hidden: true
+    primary_key: true
+
+measures:
+  count:
+    aggregate_type: count

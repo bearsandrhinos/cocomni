@@ -1,0 +1,185 @@
+# Reference this view as coco_demo__nba_player_stats_usage
+label: NBA Player Usage Stats
+
+schema: COCO_DEMO
+table_name: NBA_PLAYER_STATS_USAGE
+
+dimensions:
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  nickname:
+    sql: '"NICKNAME"'
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_abbreviation:
+    sql: '"TEAM_ABBREVIATION"'
+
+  age:
+    sql: '"AGE"'
+
+  gp:
+    sql: '"GP"'
+
+  w:
+    sql: '"W"'
+
+  l:
+    sql: '"L"'
+
+  w_pct:
+    sql: '"W_PCT"'
+
+  min:
+    sql: '"MIN"'
+
+  usg_pct:
+    sql: '"USG_PCT"'
+
+  pct_fgm:
+    sql: '"PCT_FGM"'
+
+  pct_fga:
+    sql: '"PCT_FGA"'
+
+  pct_fg3_m:
+    sql: '"PCT_FG3_M"'
+
+  pct_fg3_a:
+    sql: '"PCT_FG3_A"'
+
+  pct_ftm:
+    sql: '"PCT_FTM"'
+
+  pct_fta:
+    sql: '"PCT_FTA"'
+
+  pct_oreb:
+    sql: '"PCT_OREB"'
+
+  pct_dreb:
+    sql: '"PCT_DREB"'
+
+  pct_reb:
+    sql: '"PCT_REB"'
+
+  pct_ast:
+    sql: '"PCT_AST"'
+
+  pct_tov:
+    sql: '"PCT_TOV"'
+
+  pct_stl:
+    sql: '"PCT_STL"'
+
+  pct_blk:
+    sql: '"PCT_BLK"'
+
+  pct_blka:
+    sql: '"PCT_BLKA"'
+
+  pct_pf:
+    sql: '"PCT_PF"'
+
+  pct_pfd:
+    sql: '"PCT_PFD"'
+
+  pct_pts:
+    sql: '"PCT_PTS"'
+
+  gp_rank:
+    sql: '"GP_RANK"'
+
+  w_rank:
+    sql: '"W_RANK"'
+
+  l_rank:
+    sql: '"L_RANK"'
+
+  w_pct_rank:
+    sql: '"W_PCT_RANK"'
+
+  min_rank:
+    sql: '"MIN_RANK"'
+
+  usg_pct_rank:
+    sql: '"USG_PCT_RANK"'
+
+  pct_fgm_rank:
+    sql: '"PCT_FGM_RANK"'
+
+  pct_fga_rank:
+    sql: '"PCT_FGA_RANK"'
+
+  pct_fg3_m_rank:
+    sql: '"PCT_FG3_M_RANK"'
+
+  pct_fg3_a_rank:
+    sql: '"PCT_FG3_A_RANK"'
+
+  pct_ftm_rank:
+    sql: '"PCT_FTM_RANK"'
+
+  pct_fta_rank:
+    sql: '"PCT_FTA_RANK"'
+
+  pct_oreb_rank:
+    sql: '"PCT_OREB_RANK"'
+
+  pct_dreb_rank:
+    sql: '"PCT_DREB_RANK"'
+
+  pct_reb_rank:
+    sql: '"PCT_REB_RANK"'
+
+  pct_ast_rank:
+    sql: '"PCT_AST_RANK"'
+
+  pct_tov_rank:
+    sql: '"PCT_TOV_RANK"'
+
+  pct_stl_rank:
+    sql: '"PCT_STL_RANK"'
+
+  pct_blk_rank:
+    sql: '"PCT_BLK_RANK"'
+
+  pct_blka_rank:
+    sql: '"PCT_BLKA_RANK"'
+
+  pct_pf_rank:
+    sql: '"PCT_PF_RANK"'
+
+  pct_pfd_rank:
+    sql: '"PCT_PFD_RANK"'
+
+  pct_pts_rank:
+    sql: '"PCT_PTS_RANK"'
+
+  team_count:
+    sql: '"TEAM_COUNT"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${player_id}, '|', ${season}, '|', ${season_type})
+    hidden: true
+    primary_key: true
+
+measures:
+  count:
+    aggregate_type: count

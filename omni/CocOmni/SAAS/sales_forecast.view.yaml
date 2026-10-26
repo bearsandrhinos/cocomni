@@ -1,0 +1,90 @@
+# Reference this view as saas__sales_forecast
+schema: SAAS
+table_name: SALES_FORECAST
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  stage_name:
+    sql: '"STAGE_NAME"'
+
+  forecast_category:
+    sql: '"FORECAST_CATEGORY"'
+
+  close_date:
+    sql: '"CLOSE_DATE"'
+
+  fiscal_quarter:
+    sql: '"FISCAL_QUARTER"'
+
+  amount:
+    sql: '"AMOUNT"'
+
+  arr:
+    sql: '"ARR"'
+
+  acv:
+    sql: '"ACV"'
+
+  tcv:
+    sql: '"TCV"'
+
+  contract_term_months:
+    sql: '"CONTRACT_TERM_MONTHS"'
+
+  type:
+    sql: '"TYPE"'
+
+  lead_source:
+    sql: '"LEAD_SOURCE"'
+
+  competitor:
+    sql: '"COMPETITOR"'
+
+  risk_score:
+    sql: '"RISK_SCORE"'
+
+  deal_size:
+    sql: '"DEAL_SIZE"'
+
+  risk_level:
+    sql: '"RISK_LEVEL"'
+
+  original_probability:
+    sql: '"ORIGINAL_PROBABILITY"'
+
+  ml_prediction:
+    sql: '"ML_PREDICTION"'
+
+  ml_win_probability:
+    sql: '"ML_WIN_PROBABILITY"'
+
+  ml_weighted_amount:
+    sql: '"ML_WEIGHTED_AMOUNT"'
+
+  ml_weighted_arr:
+    sql: '"ML_WEIGHTED_ARR"'
+
+  ml_weighted_acv:
+    sql: '"ML_WEIGHTED_ACV"'
+
+  scored_at:
+    sql: '"SCORED_AT"'
+
+measures:
+  count:
+    aggregate_type: count

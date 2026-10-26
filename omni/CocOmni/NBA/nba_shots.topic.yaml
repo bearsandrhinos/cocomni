@@ -1,0 +1,15 @@
+base_view: coco_demo__nba_shot_chart
+label: NBA Shot Chart
+group_label: NBA
+description: Shot-level NBA data with court location, zone, distance and
+  make/miss, joined to the player's game box score.
+
+joins:
+  coco_demo__nba_player_game_log:
+    coco_demo__nba_team_game_log: {}
+
+ai_context: One row per shot attempt. Use shooting_pct for field goal
+  percentage, shot_attempts and shots_made for volumes. Slice by
+  shot_zone_basic, shot_zone_area, shot_zone_range, shot_type (2PT vs 3PT) or
+  action_type. loc_x and loc_y are court coordinates for plotting. Use
+  season_type to separate Regular Season and Playoffs.

@@ -1,0 +1,25 @@
+# Reference this view as saas__product
+schema: SAAS
+table_name: PRODUCT
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  family:
+    sql: '"FAMILY"'
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  product_code:
+    sql: '"PRODUCT_CODE"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,14 @@
+# Reference this view as demo__sales_forecast
+schema: DEMO
+table_name: SALES_FORECAST
+
+dimensions:
+  close_month:
+    sql: '"CLOSE_MONTH"'
+
+  forecast:
+    sql: '"FORECAST"'
+
+measures:
+  count:
+    aggregate_type: count

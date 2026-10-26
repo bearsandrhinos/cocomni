@@ -1,0 +1,29 @@
+# Reference this view as demo__fernway_fact_part_units
+schema: DEMO
+table_name: FERNWAY_FACT_PART_UNITS
+
+dimensions:
+  part_unit_id:
+    sql: '"PART_UNIT_ID"'
+    format: ID
+
+  lot_id:
+    sql: '"LOT_ID"'
+    format: ID
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  status:
+    sql: '"STATUS"'
+
+  unit_cost_amount:
+    sql: '"UNIT_COST_AMOUNT"'
+
+  received_date:
+    sql: '"RECEIVED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

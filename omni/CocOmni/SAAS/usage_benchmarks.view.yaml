@@ -1,0 +1,293 @@
+# Reference this view as saas__usage_benchmarks
+schema: SAAS
+table_name: USAGE_BENCHMARKS
+
+dimensions:
+  snapshot_month:
+    sql: '"SNAPSHOT_MONTH"'
+
+  peer_group_segment:
+    sql: '"PEER_GROUP_SEGMENT"'
+
+  peer_group_region:
+    sql: '"PEER_GROUP_REGION"'
+
+  peer_group_product_tier:
+    sql: '"PEER_GROUP_PRODUCT_TIER"'
+
+  company_count:
+    sql: '"COMPANY_COUNT"'
+
+  mean_total_users:
+    sql: '"MEAN_TOTAL_USERS"'
+
+  median_total_users:
+    sql: '"MEDIAN_TOTAL_USERS"'
+
+  p25_total_users:
+    sql: '"P25_TOTAL_USERS"'
+
+  p75_total_users:
+    sql: '"P75_TOTAL_USERS"'
+
+  p90_total_users:
+    sql: '"P90_TOTAL_USERS"'
+
+  mean_admin_users:
+    sql: '"MEAN_ADMIN_USERS"'
+
+  median_admin_users:
+    sql: '"MEDIAN_ADMIN_USERS"'
+
+  p25_admin_users:
+    sql: '"P25_ADMIN_USERS"'
+
+  p75_admin_users:
+    sql: '"P75_ADMIN_USERS"'
+
+  p90_admin_users:
+    sql: '"P90_ADMIN_USERS"'
+
+  mean_creator_users:
+    sql: '"MEAN_CREATOR_USERS"'
+
+  median_creator_users:
+    sql: '"MEDIAN_CREATOR_USERS"'
+
+  p25_creator_users:
+    sql: '"P25_CREATOR_USERS"'
+
+  p75_creator_users:
+    sql: '"P75_CREATOR_USERS"'
+
+  p90_creator_users:
+    sql: '"P90_CREATOR_USERS"'
+
+  mean_viewer_users:
+    sql: '"MEAN_VIEWER_USERS"'
+
+  median_viewer_users:
+    sql: '"MEDIAN_VIEWER_USERS"'
+
+  p25_viewer_users:
+    sql: '"P25_VIEWER_USERS"'
+
+  p75_viewer_users:
+    sql: '"P75_VIEWER_USERS"'
+
+  p90_viewer_users:
+    sql: '"P90_VIEWER_USERS"'
+
+  mean_total_events:
+    sql: '"MEAN_TOTAL_EVENTS"'
+
+  median_total_events:
+    sql: '"MEDIAN_TOTAL_EVENTS"'
+
+  p25_total_events:
+    sql: '"P25_TOTAL_EVENTS"'
+
+  p75_total_events:
+    sql: '"P75_TOTAL_EVENTS"'
+
+  p90_total_events:
+    sql: '"P90_TOTAL_EVENTS"'
+
+  mean_agentic_events:
+    sql: '"MEAN_AGENTIC_EVENTS"'
+
+  median_agentic_events:
+    sql: '"MEDIAN_AGENTIC_EVENTS"'
+
+  p25_agentic_events:
+    sql: '"P25_AGENTIC_EVENTS"'
+
+  p75_agentic_events:
+    sql: '"P75_AGENTIC_EVENTS"'
+
+  p90_agentic_events:
+    sql: '"P90_AGENTIC_EVENTS"'
+
+  mean_api_events:
+    sql: '"MEAN_API_EVENTS"'
+
+  median_api_events:
+    sql: '"MEDIAN_API_EVENTS"'
+
+  p25_api_events:
+    sql: '"P25_API_EVENTS"'
+
+  p75_api_events:
+    sql: '"P75_API_EVENTS"'
+
+  p90_api_events:
+    sql: '"P90_API_EVENTS"'
+
+  mean_ui_events:
+    sql: '"MEAN_UI_EVENTS"'
+
+  median_ui_events:
+    sql: '"MEDIAN_UI_EVENTS"'
+
+  p25_ui_events:
+    sql: '"P25_UI_EVENTS"'
+
+  p75_ui_events:
+    sql: '"P75_UI_EVENTS"'
+
+  p90_ui_events:
+    sql: '"P90_UI_EVENTS"'
+
+  mean_admin_other_events:
+    sql: '"MEAN_ADMIN_OTHER_EVENTS"'
+
+  median_admin_other_events:
+    sql: '"MEDIAN_ADMIN_OTHER_EVENTS"'
+
+  p25_admin_other_events:
+    sql: '"P25_ADMIN_OTHER_EVENTS"'
+
+  p75_admin_other_events:
+    sql: '"P75_ADMIN_OTHER_EVENTS"'
+
+  p90_admin_other_events:
+    sql: '"P90_ADMIN_OTHER_EVENTS"'
+
+  mean_events_per_user:
+    sql: '"MEAN_EVENTS_PER_USER"'
+
+  median_events_per_user:
+    sql: '"MEDIAN_EVENTS_PER_USER"'
+
+  p25_events_per_user:
+    sql: '"P25_EVENTS_PER_USER"'
+
+  p75_events_per_user:
+    sql: '"P75_EVENTS_PER_USER"'
+
+  p90_events_per_user:
+    sql: '"P90_EVENTS_PER_USER"'
+
+  mean_agentic_events_per_user:
+    sql: '"MEAN_AGENTIC_EVENTS_PER_USER"'
+
+  median_agentic_events_per_user:
+    sql: '"MEDIAN_AGENTIC_EVENTS_PER_USER"'
+
+  p25_agentic_events_per_user:
+    sql: '"P25_AGENTIC_EVENTS_PER_USER"'
+
+  p75_agentic_events_per_user:
+    sql: '"P75_AGENTIC_EVENTS_PER_USER"'
+
+  p90_agentic_events_per_user:
+    sql: '"P90_AGENTIC_EVENTS_PER_USER"'
+
+  mean_api_events_per_user:
+    sql: '"MEAN_API_EVENTS_PER_USER"'
+
+  median_api_events_per_user:
+    sql: '"MEDIAN_API_EVENTS_PER_USER"'
+
+  p25_api_events_per_user:
+    sql: '"P25_API_EVENTS_PER_USER"'
+
+  p75_api_events_per_user:
+    sql: '"P75_API_EVENTS_PER_USER"'
+
+  p90_api_events_per_user:
+    sql: '"P90_API_EVENTS_PER_USER"'
+
+  mean_ui_events_per_user:
+    sql: '"MEAN_UI_EVENTS_PER_USER"'
+
+  median_ui_events_per_user:
+    sql: '"MEDIAN_UI_EVENTS_PER_USER"'
+
+  p25_ui_events_per_user:
+    sql: '"P25_UI_EVENTS_PER_USER"'
+
+  p75_ui_events_per_user:
+    sql: '"P75_UI_EVENTS_PER_USER"'
+
+  p90_ui_events_per_user:
+    sql: '"P90_UI_EVENTS_PER_USER"'
+
+  mean_admin_other_events_per_user:
+    sql: '"MEAN_ADMIN_OTHER_EVENTS_PER_USER"'
+
+  median_admin_other_events_per_user:
+    sql: '"MEDIAN_ADMIN_OTHER_EVENTS_PER_USER"'
+
+  p25_admin_other_events_per_user:
+    sql: '"P25_ADMIN_OTHER_EVENTS_PER_USER"'
+
+  p75_admin_other_events_per_user:
+    sql: '"P75_ADMIN_OTHER_EVENTS_PER_USER"'
+
+  p90_admin_other_events_per_user:
+    sql: '"P90_ADMIN_OTHER_EVENTS_PER_USER"'
+
+  mean_admin_other_events_per_admin_user:
+    sql: '"MEAN_ADMIN_OTHER_EVENTS_PER_ADMIN_USER"'
+
+  median_admin_other_events_per_admin_user:
+    sql: '"MEDIAN_ADMIN_OTHER_EVENTS_PER_ADMIN_USER"'
+
+  p25_admin_other_events_per_admin_user:
+    sql: '"P25_ADMIN_OTHER_EVENTS_PER_ADMIN_USER"'
+
+  p75_admin_other_events_per_admin_user:
+    sql: '"P75_ADMIN_OTHER_EVENTS_PER_ADMIN_USER"'
+
+  p90_admin_other_events_per_admin_user:
+    sql: '"P90_ADMIN_OTHER_EVENTS_PER_ADMIN_USER"'
+
+  mean_agentic_events_per_creator_user:
+    sql: '"MEAN_AGENTIC_EVENTS_PER_CREATOR_USER"'
+
+  median_agentic_events_per_creator_user:
+    sql: '"MEDIAN_AGENTIC_EVENTS_PER_CREATOR_USER"'
+
+  p25_agentic_events_per_creator_user:
+    sql: '"P25_AGENTIC_EVENTS_PER_CREATOR_USER"'
+
+  p75_agentic_events_per_creator_user:
+    sql: '"P75_AGENTIC_EVENTS_PER_CREATOR_USER"'
+
+  p90_agentic_events_per_creator_user:
+    sql: '"P90_AGENTIC_EVENTS_PER_CREATOR_USER"'
+
+  mean_ui_events_per_creator_user:
+    sql: '"MEAN_UI_EVENTS_PER_CREATOR_USER"'
+
+  median_ui_events_per_creator_user:
+    sql: '"MEDIAN_UI_EVENTS_PER_CREATOR_USER"'
+
+  p25_ui_events_per_creator_user:
+    sql: '"P25_UI_EVENTS_PER_CREATOR_USER"'
+
+  p75_ui_events_per_creator_user:
+    sql: '"P75_UI_EVENTS_PER_CREATOR_USER"'
+
+  p90_ui_events_per_creator_user:
+    sql: '"P90_UI_EVENTS_PER_CREATOR_USER"'
+
+  mean_ui_events_per_viewer_user:
+    sql: '"MEAN_UI_EVENTS_PER_VIEWER_USER"'
+
+  median_ui_events_per_viewer_user:
+    sql: '"MEDIAN_UI_EVENTS_PER_VIEWER_USER"'
+
+  p25_ui_events_per_viewer_user:
+    sql: '"P25_UI_EVENTS_PER_VIEWER_USER"'
+
+  p75_ui_events_per_viewer_user:
+    sql: '"P75_UI_EVENTS_PER_VIEWER_USER"'
+
+  p90_ui_events_per_viewer_user:
+    sql: '"P90_UI_EVENTS_PER_VIEWER_USER"'
+
+measures:
+  count:
+    aggregate_type: count

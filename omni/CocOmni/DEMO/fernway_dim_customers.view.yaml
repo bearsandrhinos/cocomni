@@ -1,0 +1,24 @@
+# Reference this view as demo__fernway_dim_customers
+schema: DEMO
+table_name: FERNWAY_DIM_CUSTOMERS
+
+dimensions:
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    format: ID
+
+  customer_name:
+    sql: '"CUSTOMER_NAME"'
+
+  email:
+    sql: '"EMAIL"'
+
+  phone:
+    sql: '"PHONE"'
+
+  address:
+    sql: '"ADDRESS"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,36 @@
+base_view: coco_demo__tournament_team_facts
+label: Tournament Team Facts
+group_label: Soccer
+description: Team-level performance data for international tournament matches.
+  Analyze win/loss records, goal-scoring patterns by match period, home vs away
+  performance, head-to-head matchups, and round-by-round progression across
+  competitions.
+
+joins: {}
+
+ai_context: |-
+  This topic provides team-level analytics for international soccer tournament matches. Each row represents one team's performance in a single match.
+
+  KEY METRICS:
+  - Total Goals Scored/Conceded → total_goals_scored, total_goals_conceded
+  - Goals by period → total_ht_goals_scored (first half), total_ft_goals_scored (full-time), total_et_goals_scored (extra time), total_pen_goals_scored (penalties)
+  - Win metrics → total_wins, win_rate
+  - Goal Difference → goal_difference
+  - Home/Away splits → total_matches_home, total_matches_away
+
+  COMMON ANALYSIS PATTERNS:
+  - Team rankings: group by team, sort by total_wins or win_rate
+  - Head-to-head: filter by team and opponent
+  - Home advantage: compare total_matches_home vs total_matches_away with win_rate
+  - Scoring trends: group by date[year] or season with total_goals_scored
+  - Defensive analysis: group by team, sort by total_goals_conceded
+  - Tournament comparison: group by league_name to compare across competitions
+  - Round analysis: group by round to see performance in group stage vs knockout rounds
+
+  QUERY TIPS:
+  - Use is_won to filter to only winning matches
+  - Use is_home to split home vs away performance
+  - Use league_name to filter to a specific tournament
+  - Use round to analyze knockout vs group stage performance
+  - Each fixture appears twice (once per team), so count gives team appearances, not match count
+  - Use season or date[year] for time-based trends

@@ -1,0 +1,17 @@
+# Reference this view as demo__query_dbt
+schema: DEMO
+table_name: QUERY_DBT
+
+dimensions:
+  total_sale_price:
+    sql: '"TOTAL_SALE_PRICE"'
+
+  calculation:
+    sql: '"CALCULATION"'
+
+  order_id_count_distinct:
+    sql: '"ORDER_ID_COUNT_DISTINCT"'
+
+measures:
+  count:
+    aggregate_type: count

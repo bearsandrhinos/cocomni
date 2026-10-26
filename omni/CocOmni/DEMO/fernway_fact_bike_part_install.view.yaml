@@ -1,0 +1,32 @@
+# Reference this view as demo__fernway_fact_bike_part_install
+schema: DEMO
+table_name: FERNWAY_FACT_BIKE_PART_INSTALL
+
+dimensions:
+  install_id:
+    sql: '"INSTALL_ID"'
+    format: ID
+
+  bike_serial:
+    sql: '"BIKE_SERIAL"'
+
+  part_unit_id:
+    sql: '"PART_UNIT_ID"'
+    format: ID
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  install_station:
+    sql: '"INSTALL_STATION"'
+
+  labor_minutes:
+    sql: '"LABOR_MINUTES"'
+
+  install_date:
+    sql: '"INSTALL_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

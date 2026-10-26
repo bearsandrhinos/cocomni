@@ -1,0 +1,380 @@
+# Reference this view as coco_demo__wc_team_stats
+description: Season-level team standings for FIFA World Cup tournaments. Each
+  row represents one team's aggregate statistics for a single World Cup edition,
+  including win/draw/loss records, goals for/against, clean sheets, biggest
+  wins/losses, and penalty records.
+
+schema: COCO_DEMO
+table_name: WC_TEAM_STATS
+
+dimensions:
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+    description: Unique identifier for the team
+    ai_context: Internal team ID. Prefer 'team_name' for display.
+
+  team_name:
+    sql: '"TEAM_NAME"'
+    description: Name of the national team
+    ai_context: Primary team dimension for grouping and filtering.
+
+  team_crest:
+    sql: '"TEAM_CREST"'
+    description: URL to the team's crest/badge image
+    ai_context: Team logo image URL. Use for visual displays.
+
+  country_flag:
+    sql: '"COUNTRY_FLAG"'
+    description: URL to the team's country flag image
+    ai_context: Country flag image URL.
+
+  season:
+    sql: '"SEASON"'
+    format: ID_0
+    description: World Cup tournament year
+    ai_context: Use to filter or group by World Cup edition.
+
+  form:
+    sql: '"FORM"'
+    description: Recent match results string (e.g., WWDLW)
+    ai_context: Sequence of recent results. W=Win, D=Draw, L=Loss.
+
+  played_home:
+    sql: '"PLAYED_HOME"'
+    description: Number of matches played at home
+    group_label: Matches Played
+    ai_context: Home matches played in the tournament.
+
+  played_away:
+    sql: '"PLAYED_AWAY"'
+    description: Number of matches played away
+    group_label: Matches Played
+    ai_context: Away matches played in the tournament.
+
+  played_total:
+    sql: '"PLAYED_TOTAL"'
+    description: Total number of matches played
+    group_label: Matches Played
+    ai_context: Total matches played in the tournament.
+
+  wins_home:
+    sql: '"WINS_HOME"'
+    description: Number of home wins
+    group_label: Record
+    ai_context: Home wins in the tournament.
+
+  wins_away:
+    sql: '"WINS_AWAY"'
+    description: Number of away wins
+    group_label: Record
+    ai_context: Away wins in the tournament.
+
+  wins_total:
+    sql: '"WINS_TOTAL"'
+    description: Total number of wins
+    group_label: Record
+    ai_context: Total wins in the tournament.
+
+  draws_home:
+    sql: '"DRAWS_HOME"'
+    description: Number of home draws
+    group_label: Record
+    ai_context: Home draws in the tournament.
+
+  draws_away:
+    sql: '"DRAWS_AWAY"'
+    description: Number of away draws
+    group_label: Record
+    ai_context: Away draws in the tournament.
+
+  draws_total:
+    sql: '"DRAWS_TOTAL"'
+    description: Total number of draws
+    group_label: Record
+    ai_context: Total draws in the tournament.
+
+  losses_home:
+    sql: '"LOSSES_HOME"'
+    description: Number of home losses
+    group_label: Record
+    ai_context: Home losses in the tournament.
+
+  losses_away:
+    sql: '"LOSSES_AWAY"'
+    description: Number of away losses
+    group_label: Record
+    ai_context: Away losses in the tournament.
+
+  losses_total:
+    sql: '"LOSSES_TOTAL"'
+    description: Total number of losses
+    group_label: Record
+    ai_context: Total losses in the tournament.
+
+  goals_for_home:
+    sql: '"GOALS_FOR_HOME"'
+    description: Goals scored at home
+    group_label: Goals
+    ai_context: Home goals scored in the tournament.
+
+  goals_for_away:
+    sql: '"GOALS_FOR_AWAY"'
+    description: Goals scored away
+    group_label: Goals
+    ai_context: Away goals scored in the tournament.
+
+  goals_for_total:
+    sql: '"GOALS_FOR_TOTAL"'
+    description: Total goals scored
+    group_label: Goals
+    ai_context: Total goals scored in the tournament.
+
+  goals_for_avg_home:
+    sql: '"GOALS_FOR_AVG_HOME"'
+    description: Average goals scored per home match
+    group_label: Goals
+    ai_context: Average home goals per match.
+
+  goals_for_avg_away:
+    sql: '"GOALS_FOR_AVG_AWAY"'
+    description: Average goals scored per away match
+    group_label: Goals
+    ai_context: Average away goals per match.
+
+  goals_for_avg_total:
+    sql: '"GOALS_FOR_AVG_TOTAL"'
+    description: Average goals scored per match overall
+    group_label: Goals
+    ai_context: Average goals per match across all matches.
+
+  goals_against_home:
+    sql: '"GOALS_AGAINST_HOME"'
+    description: Goals conceded at home
+    group_label: Goals
+    ai_context: Home goals conceded.
+
+  goals_against_away:
+    sql: '"GOALS_AGAINST_AWAY"'
+    description: Goals conceded away
+    group_label: Goals
+    ai_context: Away goals conceded.
+
+  goals_against_total:
+    sql: '"GOALS_AGAINST_TOTAL"'
+    description: Total goals conceded
+    group_label: Goals
+    ai_context: Total goals conceded in the tournament.
+
+  goals_against_avg_home:
+    sql: '"GOALS_AGAINST_AVG_HOME"'
+    description: Average goals conceded per home match
+    group_label: Goals
+    ai_context: Average home goals conceded per match.
+
+  goals_against_avg_away:
+    sql: '"GOALS_AGAINST_AVG_AWAY"'
+    description: Average goals conceded per away match
+    group_label: Goals
+    ai_context: Average away goals conceded per match.
+
+  goals_against_avg_total:
+    sql: '"GOALS_AGAINST_AVG_TOTAL"'
+    description: Average goals conceded per match overall
+    group_label: Goals
+    ai_context: Average goals conceded per match.
+
+  biggest_win_home:
+    sql: '"BIGGEST_WIN_HOME"'
+    description: Largest margin of victory at home (e.g., 4-0)
+    group_label: Biggest Results
+    ai_context: Biggest home win scoreline.
+
+  biggest_win_away:
+    sql: '"BIGGEST_WIN_AWAY"'
+    description: Largest margin of victory away (e.g., 3-0)
+    group_label: Biggest Results
+    ai_context: Biggest away win scoreline.
+
+  biggest_loss_home:
+    sql: '"BIGGEST_LOSS_HOME"'
+    description: Largest margin of defeat at home
+    group_label: Biggest Results
+    ai_context: Biggest home loss scoreline.
+
+  biggest_loss_away:
+    sql: '"BIGGEST_LOSS_AWAY"'
+    description: Largest margin of defeat away
+    group_label: Biggest Results
+    ai_context: Biggest away loss scoreline.
+
+  biggest_goals_for_home:
+    sql: '"BIGGEST_GOALS_FOR_HOME"'
+    description: Most goals scored in a single home match
+    group_label: Biggest Results
+    ai_context: Highest-scoring home match.
+
+  biggest_goals_for_away:
+    sql: '"BIGGEST_GOALS_FOR_AWAY"'
+    description: Most goals scored in a single away match
+    group_label: Biggest Results
+    ai_context: Highest-scoring away match.
+
+  biggest_goals_against_home:
+    sql: '"BIGGEST_GOALS_AGAINST_HOME"'
+    description: Most goals conceded in a single home match
+    group_label: Biggest Results
+    ai_context: Most goals conceded at home in one match.
+
+  biggest_goals_against_away:
+    sql: '"BIGGEST_GOALS_AGAINST_AWAY"'
+    description: Most goals conceded in a single away match
+    group_label: Biggest Results
+    ai_context: Most goals conceded away in one match.
+
+  clean_sheet_home:
+    sql: '"CLEAN_SHEET_HOME"'
+    description: Number of home clean sheets (no goals conceded)
+    group_label: Other Stats
+    ai_context: Home matches where the team conceded zero goals.
+
+  clean_sheet_away:
+    sql: '"CLEAN_SHEET_AWAY"'
+    description: Number of away clean sheets
+    group_label: Other Stats
+    ai_context: Away matches where the team conceded zero goals.
+
+  clean_sheet_total:
+    sql: '"CLEAN_SHEET_TOTAL"'
+    description: Total number of clean sheets
+    group_label: Other Stats
+    ai_context: Total matches where the team conceded zero goals.
+
+  failed_to_score_home:
+    sql: '"FAILED_TO_SCORE_HOME"'
+    description: Number of home matches where the team failed to score
+    group_label: Other Stats
+    ai_context: Home matches with zero goals scored.
+
+  failed_to_score_away:
+    sql: '"FAILED_TO_SCORE_AWAY"'
+    description: Number of away matches where the team failed to score
+    group_label: Other Stats
+    ai_context: Away matches with zero goals scored.
+
+  failed_to_score_total:
+    sql: '"FAILED_TO_SCORE_TOTAL"'
+    description: Total matches where the team failed to score
+    group_label: Other Stats
+    ai_context: Total matches with zero goals scored.
+
+  penalty_scored:
+    sql: '"PENALTY_SCORED"'
+    description: Number of penalties scored in the tournament
+    group_label: Penalties
+    ai_context: Penalties successfully converted.
+
+  penalty_missed:
+    sql: '"PENALTY_MISSED"'
+    description: Number of penalties missed in the tournament
+    group_label: Penalties
+    ai_context: Penalties missed (saved, hit post, or off target).
+
+  penalty_total:
+    sql: '"PENALTY_TOTAL"'
+    description: Total number of penalties taken in the tournament
+    group_label: Penalties
+    ai_context: Total penalty kicks taken.
+
+  pk_team_stats:
+    sql: CONCAT(${coco_demo__wc_team_stats.season},
+      ${coco_demo__wc_team_stats.team_id})
+    label: PK Team Stats
+    description: Primary Key for WC Team Stats
+    hidden: true
+    primary_key: true
+
+measures:
+  count:
+    description: Total number of team-season records
+    aggregate_type: count
+    ai_context: Counts team-season entries. One row per team per World Cup edition.
+
+  total_wins:
+    sql: ${coco_demo__wc_team_stats.wins_total}
+    label: Total Wins
+    group_label: Record
+    description: Sum of wins across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate wins across World Cup editions.
+
+  total_draws:
+    sql: ${coco_demo__wc_team_stats.draws_total}
+    label: Total Draws
+    group_label: Record
+    description: Sum of draws across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate draws across World Cup editions.
+
+  total_losses:
+    sql: ${coco_demo__wc_team_stats.losses_total}
+    label: Total Losses
+    group_label: Record
+    description: Sum of losses across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate losses across World Cup editions.
+
+  total_goals_for:
+    sql: ${coco_demo__wc_team_stats.goals_for_total}
+    label: Total Goals Scored
+    group_label: Goals
+    description: Sum of goals scored across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate goals scored across World Cup editions.
+
+  total_goals_against:
+    sql: ${coco_demo__wc_team_stats.goals_against_total}
+    label: Total Goals Conceded
+    group_label: Goals
+    description: Sum of goals conceded across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate goals conceded across World Cup editions.
+
+  total_clean_sheets:
+    sql: ${coco_demo__wc_team_stats.clean_sheet_total}
+    label: Total Clean Sheets
+    group_label: Other Stats
+    description: Sum of clean sheets across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate clean sheets across World Cup editions.
+
+  total_penalties_scored:
+    sql: ${coco_demo__wc_team_stats.penalty_scored}
+    label: Total Penalties Scored
+    group_label: Penalties
+    description: Sum of penalties scored across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate penalties converted.
+
+  total_penalties_missed:
+    sql: ${coco_demo__wc_team_stats.penalty_missed}
+    label: Total Penalties Missed
+    group_label: Penalties
+    description: Sum of penalties missed across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate penalties missed.
+
+  total_matches_played:
+    sql: ${coco_demo__wc_team_stats.played_total}
+    label: Total Matches Played
+    group_label: Matches Played
+    description: Sum of matches played across all tournaments
+    aggregate_type: sum
+    ai_context: Aggregate matches played across World Cup editions.
+
+ai_context: This view contains season-level aggregate team statistics for World
+  Cup tournaments. Each row is one team in one World Cup year. Use it for
+  tournament standings, comparing team records across editions, and analyzing
+  home vs away splits at the season level. Includes biggest wins/losses, clean
+  sheet counts, and penalty records. For match-level analysis, use wc_team_facts
+  instead.

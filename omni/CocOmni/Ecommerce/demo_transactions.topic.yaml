@@ -1,0 +1,31 @@
+base_view: demo__transactions__order_items
+label: Demo Transactions
+group_label: Ecommerce
+description: Ecommerce order line items joined to customers and product
+  inventory. Analyze revenue, margin, shipping and return behavior by product,
+  brand, category, and customer geography.
+
+joins:
+  demo__transactions__users: {}
+  demo__transactions__inventory_items: {}
+
+ai_context: |-
+  Order-line-level ecommerce transactions.
+
+  VIEWS:
+  - demo__transactions__order_items (base): one row per order line item — sale price, margin, status, ship/deliver/return timestamps
+  - demo__transactions__users: one row per customer — demographics, traffic source, geography
+  - demo__transactions__inventory_items: one row per inventory unit — product name, brand, category, department, cost, retail price
+
+  METRIC MAPPING:
+  - 'revenue' / 'sales' -> demo__transactions__order_items.total_revenue
+  - 'average order value' / 'average sale' -> demo__transactions__order_items.average_sales
+  - 'order line count' -> demo__transactions__order_items.count
+  - 'customers' -> demo__transactions__users.count
+  - 'cost' -> demo__transactions__inventory_items.total_cost
+
+  QUERY TIPS:
+  - Slice by product_category, product_brand, product_department, or user state/country/traffic_source
+  - Use is_returned, is_shipped, is_delivered booleans for fulfillment analysis; status has cancelled/complete/returned values
+  - Use time_to_ship for fulfillment speed and margin for profitability
+  - Trends: group by demo__transactions__order_items.created_at[month]

@@ -1,0 +1,38 @@
+# Reference this view as demo__fernway_dim_part_lots_raw
+schema: DEMO
+table_name: FERNWAY_DIM_PART_LOTS_RAW
+
+dimensions:
+  lot_id:
+    sql: '"LOT_ID"'
+    format: ID
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  supplier_sk:
+    sql: '"SUPPLIER_SK"'
+
+  lot_number:
+    sql: '"LOT_NUMBER"'
+
+  recall_event_id:
+    sql: '"RECALL_EVENT_ID"'
+    format: ID
+
+  manufacture_fake_year:
+    sql: '"MANUFACTURE_FAKE_YEAR"'
+
+  manufacture_day_ordinal:
+    sql: '"MANUFACTURE_DAY_ORDINAL"'
+
+  received_fake_year:
+    sql: '"RECEIVED_FAKE_YEAR"'
+
+  received_day_ordinal:
+    sql: '"RECEIVED_DAY_ORDINAL"'
+
+measures:
+  count:
+    aggregate_type: count

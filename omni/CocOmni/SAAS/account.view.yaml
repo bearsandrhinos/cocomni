@@ -1,0 +1,148 @@
+# Reference this view as saas__account
+description: |
+  The Account table is the master record table in the Salesforce CRM system that represents companies or organizations that are either prospects (potential customers) or customers (active paying clients). This is the central entity around which all other sales, marketing, and customer success activities revolve. Every company that the business interacts with, whether they've purchased or not, should have an Account record. This table serves as the parent record for Contacts (people who work at these companies), Opportunities (sales deals), and is linked to product usage data, support tickets, and feature requests.
+
+  An Account record is created when the company first learns about a potential customer organization, typically when a lead is converted or when a sales rep manually creates an account. The Account record persists throughout the entire customer lifecycle - from initial prospect status through becoming a customer, and even after churn. The Account table contains firmographic data (company size, industry, location) that helps with segmentation, territory assignment, and account-based marketing.
+
+schema: SAAS
+table_name: ACCOUNT
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    description: Unique identifier for an account
+    links:
+      - url: https://omni.demo.exploreomni.dev/dashboards/08f42c49?f--omni_dbt_saas__account.id={"values":["${id}"]}
+        label: Account Overview Dashboard
+        icon_url: https://avatars.githubusercontent.com/u/100505341?s=200&v=4
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+    description: Account company name
+    synonyms: [ company_name, account_name, organization_name ]
+    ai_context: |
+      Use this field to identify the organization for sales, support, and reporting. This is the company name associated with the account.
+
+  type:
+    sql: '"TYPE"'
+    description: |
+      Account classification that distinguishes between potential and actual customers for pipeline and revenue reporting. "Prospect" indicates companies that haven't purchased yet, while "Customer" indicates companies that have at least one closed-won opportunity.
+    all_values: [ Prospect, Customer ]
+    synonyms: [ account_type, account_status, customer_type ]
+    ai_context: |
+      Use this field to filter between prospects and customers. When asked about customers, filter on type = Customer. When asked about prospects or potential customers, filter on type = Prospect.
+
+  billing_street:
+    sql: '"BILLING_STREET"'
+    description: Account billing street
+    ai_context: |
+      Use this field for billing, shipping, and geographic analysis. This is the street address for the account's billing location.
+
+  billing_state:
+    sql: '"BILLING_STATE"'
+    description: Account billing state
+    synonyms: [ state, billing_state_province ]
+    ai_context: |
+      Use this field for geographic segmentation and regional sales analysis. This is the state or province for the account's billing address.
+
+  billing_city:
+    sql: '"BILLING_CITY"'
+    description: Account billing city
+    synonyms: [ city, billing_city_name ]
+    ai_context: |
+      Use this field for local market analysis and territory management. This is the city for the account's billing address.
+
+  billing_zip:
+    sql: '"BILLING_ZIP"'
+    description: Account billing zip code
+    synonyms: [ zip_code, postal_code, billing_postal_code ]
+    ai_context: |
+      Use this field for geographic analysis and territory assignment. This is the postal/ZIP code for the account's billing address.
+
+  billing_country:
+    sql: '"BILLING_COUNTRY"'
+    description: Account billing country
+    synonyms: [ country, billing_country_name ]
+    ai_context: |
+      Use this field for international sales analysis and regional reporting. This is the country for the account's billing address.
+
+  region:
+    sql: '"REGION"'
+    description: |
+      Sales region classification (North America, EMEA, APAC) used for regional performance tracking and sales team assignment.
+    all_values: [ North America, EMEA, APAC ]
+    synonyms: [ sales_region, geographic_region, territory_region ]
+    ai_context: |
+      Use this field for regional analysis. North America (NA) includes US and Canada. EMEA includes Europe, Middle East, and Africa. APAC includes Asia Pacific countries.
+
+  industry:
+    sql: '"INDUSTRY"'
+    description: |
+      Industry vertical classification (Tech, Finance, Healthcare, etc.) used for industry-specific analysis, product fit assessment, and marketing segmentation.
+    synonyms: [ industry_vertical, sector, business_industry ]
+    ai_context: |
+      Use this field for industry-based segmentation and analysis. Common industries include Tech, Finance, Healthcare, Manufacturing, Retail, and others.
+
+  annual_revenue:
+    sql: '"ANNUAL_REVENUE"'
+    description: The account's annual operating revenue
+    synonyms: [ revenue, company_revenue, annual_revenue_amount ]
+    ai_context: |
+      Use this field for account sizing for segmentation and pricing strategy. This represents the company's annual revenue, which helps determine account value and appropriate product packaging.
+
+  number_of_employees:
+    sql: '"NUMBER_OF_EMPLOYEES"'
+    description: |
+      Total employee count at the account organization. Used for account sizing and segmentation (SMB, Mid-Market, Enterprise). This field directly influences the SEGMENT classification.
+    ai_context: |
+      Use this field for account sizing analysis. Typically, <500 employees = SMB, 500-5000 = Mid-Market, 5000+ = Enterprise. This field is used to determine account segment classification.
+
+  segment:
+    sql: '"SEGMENT"'
+    description: |
+      Customer segment classification used for pricing, product packaging, and sales strategy. SMB (Small/Medium Business) typically has <500 employees, Mid-Market has 500-5000 employees, and Enterprise has 5000+ employees.
+    all_values: [ SMB, Mid-Market, Enterprise ]
+    synonyms: [ account_segment, customer_segment, company_size_segment ]
+    ai_context: |
+      Use this field for segment-based analysis. When asked about small businesses or SMBs, filter on segment = SMB. When asked about enterprise customers, filter on segment = Enterprise. Mid-Market refers to medium-sized companies.
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+    description: Unique identifier for the account owner
+    synonyms: [ account_owner_id, sales_rep_id, owner ]
+    ai_context: |
+      Use this field for sales attribution, quota tracking, and territory management. This links to the User table to identify which sales rep owns the account. Join to omni_dbt_saas__user to get sales rep details.
+
+  created_date:
+    sql: '"CREATED_DATE"'
+    description: SFDC account created date
+    synonyms: [ account_created_date, creation_date, account_creation_date ]
+    ai_context: |
+      Use this field for account acquisition timeline and cohort analysis. This indicates when the account record was created in Salesforce, which can be used to analyze account age and acquisition trends.
+
+  csm_id:
+    sql: '"CSM_ID"'
+    format: ID
+
+measures:
+  count:
+    description: Count of accounts
+    aggregate_type: count
+    synonyms: [ account_count, total_accounts, number_of_accounts ]
+    ai_context: |
+      Use this measure to count the total number of accounts. This includes both prospects and customers.
+
+  customer_count:
+    label: Customer Count
+    format: NUMBER_0
+    description: Count of accounts that are customers
+    aggregate_type: count
+    filters:
+      type:
+        is: Customer
+    synonyms: [ customers, total_customers, number_of_customers ]
+    ai_context: |
+      Use this measure to count only customer accounts (accounts that have at least one closed-won opportunity). This excludes prospects.

@@ -1,0 +1,549 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.ECOMM.SALES
+semantic_view: ANALYTICS_PROD.ECOMM.SALES
+label: Sales
+description: This is a descripotion
+
+views:
+  ecomm__sales__inventory_items:
+    label: Inventory Items
+
+    schema: ECOMM
+    table_name: INVENTORY_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the inventory item was added to the system, useful
+          for inventory aging and turnover analysis.
+        synonyms: [ inventory date, received date, stock date ]
+
+      product_brand:
+        sql: '"PRODUCT_BRAND"'
+        description: The brand or manufacturer name of the product (e.g., Nike, Apple,
+          Levi's). Key dimension for brand performance analysis.
+        synonyms: [ brand name, label, make, manufacturer ]
+
+      product_category:
+        sql: '"PRODUCT_CATEGORY"'
+        description: The product category classification (e.g., Jeans, Sweaters,
+          Accessories). Used for category-level sales and inventory analysis.
+        synonyms: [ category, item category, merchandise category, product type ]
+
+      product_department:
+        sql: '"PRODUCT_DEPARTMENT"'
+        description: The high-level department the product belongs to (e.g., Men, Women,
+          Kids). Primary dimension for departmental performance reporting.
+        synonyms: [ business unit, department, division, section ]
+
+      product_name:
+        sql: '"PRODUCT_NAME"'
+        description: The full descriptive name of the product including brand, style,
+          and key attributes.
+        synonyms: [ item name, product description, product title, sku name ]
+
+      product_sku:
+        sql: '"PRODUCT_SKU"'
+        description: The unique Stock Keeping Unit identifier for inventory tracking and
+          management.
+        synonyms: [ item number, product code, sku, stock code, upc ]
+
+      sold_at:
+        sql: '"SOLD_AT"'
+        description: Timestamp when this specific inventory item was sold, enabling
+          inventory velocity and turnover calculations.
+        synonyms: [ inventory sold date, sale date, sold date ]
+
+      cost:
+        sql: '"COST"'
+        description: The wholesale cost paid to acquire this specific inventory item
+          from the supplier, used for calculating profit margins and cost of
+          goods sold (COGS).
+        synonyms: [ cogs, inventory cost, item cost, unit cost ]
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      product_distribution_center_id:
+        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
+        description: Identifier for the distribution center or warehouse where this
+          inventory item is stored and shipped from.
+        synonyms: [ dc id, fulfillment center, warehouse id ]
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+        description: The manufacturer suggested retail price (MSRP) for the product,
+          representing the recommended selling price before any discounts.
+        synonyms: [ list price, msrp, sticker price ]
+
+    measures:
+      average_cost:
+        sql: AVG(${ecomm__sales__inventory_items.cost})
+        description: Average cost per item sold, useful for cost trend analysis and
+          margin planning.
+        synonyms: [ avg cost, mean cost, unit cost average ]
+
+      max_cost:
+        sql: MAX(${ecomm__sales__inventory_items.cost})
+
+      total_cost:
+        sql: SUM(${ecomm__sales__inventory_items.cost})
+        description: Total cost of goods sold (COGS), representing the direct costs of
+          inventory sold. Essential for profitability analysis.
+        synonyms:
+          [
+            cogs,
+            cost of goods sold,
+            direct costs,
+            total cost of sales,
+            total expense
+          ]
+
+  ecomm__sales__order_items:
+    label: Order Items
+
+    schema: ECOMM
+    table_name: ORDER_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the order was placed. Primary time dimension for
+          sales trends, seasonality, and cohort analysis.
+        synonyms: [ order date, order timestamp, purchase date, transaction date ]
+
+      delivered_at:
+        sql: '"DELIVERED_AT"'
+        description: Timestamp when the order was delivered to the customer, used for
+          delivery time analysis.
+        synonyms: [ arrival date, delivery date, received date ]
+
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+        description: Boolean flag indicating whether the order has been successfully
+          delivered to the customer.
+        synonyms: [ delivered, delivery confirmed, received by customer ]
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+        description: Boolean flag indicating whether the customer returned this item.
+          Critical for return rate analysis and quality insights.
+        synonyms: [ refunded, returned, sent back ]
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+        description: Boolean flag indicating whether the order has been shipped from the
+          fulfillment center.
+        synonyms: [ dispatched, in transit, shipped ]
+
+      returned_at:
+        sql: '"RETURNED_AT"'
+        description: Timestamp when the item was returned, if applicable. Used for
+          return timing and seasonal return pattern analysis.
+        synonyms: [ refund date, return date ]
+
+      shipped_at:
+        sql: '"SHIPPED_AT"'
+        description: Timestamp when the order was shipped from the warehouse, used for
+          fulfillment speed analysis.
+        synonyms: [ dispatch date, ship date, shipment date ]
+
+      status:
+        sql: '"STATUS"'
+        description: "Current status of the order: Processing, Shipped, Complete,
+          Cancelled, or Returned. Essential for order funnel and fulfillment
+          analysis."
+        synonyms: [ fulfillment status, order state, order status, transaction status ]
+
+      completed_order:
+        sql: CASE WHEN ${ecomm__sales__order_items.status} = 'Complete' THEN 1 ELSE 0
+          END
+
+      completed_orders:
+        sql: ${ecomm__sales__order_items.status} = 'Complete'
+        hidden: true
+
+      id:
+        sql: '"ID"'
+
+      inventory_item_id:
+        sql: '"INVENTORY_ITEM_ID"'
+
+      margin:
+        sql: '"MARGIN"'
+        description: The profit earned on this specific item, calculated as sale price
+          minus cost. Positive values indicate profitable sales, negative values
+          indicate losses.
+        synonyms: [ earnings, gross profit, item profit, markup, net profit, profit margin ]
+
+      months_since_signup:
+        sql: '"MONTHS_SINCE_SIGNUP"'
+        description: Number of months between customer account creation and this order,
+          useful for analyzing customer lifetime value and purchase patterns by
+          tenure.
+        synonyms:
+          [
+            account age,
+            customer tenure,
+            loyalty duration,
+            membership length,
+            months as customer
+          ]
+
+      order_id:
+        sql: '"ORDER_ID"'
+        description: Unique identifier for the order transaction. Multiple items can
+          share the same order_id if purchased together.
+        synonyms: [ order number, purchase id, transaction id ]
+
+      sale_price:
+        sql: '"SALE_PRICE" * 0.5'
+        description: The actual price the customer paid for this item, which may differ
+          from retail price due to discounts, promotions, or dynamic pricing.
+        synonyms:
+          [
+            amount paid,
+            item revenue,
+            price paid,
+            purchase price,
+            selling price,
+            transaction amount
+          ]
+
+      time_to_ship:
+        sql: '"TIME_TO_SHIP"'
+        description: Number of days between order placement and shipment, a key
+          operational metric for fulfillment efficiency and customer
+          satisfaction.
+        synonyms:
+          [
+            days to ship,
+            fulfillment time,
+            lead time,
+            processing days,
+            shipping time
+          ]
+
+      user_id:
+        sql: '"USER_ID"'
+
+    measures:
+      average_sale_price:
+        sql: AVG(${ecomm__sales__order_items.sale_price})
+        description: Average selling price per item, useful for pricing strategy
+          analysis and basket composition insights.
+        synonyms: [ aov, average order value, average transaction, avg price, mean price ]
+
+      avg_margin:
+        sql: AVG(${ecomm__sales__order_items.margin})
+        description: Average profit margin per item sold, useful for product-level
+          profitability analysis.
+        synonyms: [ average profit per item, mean margin ]
+
+      avg_time_to_ship:
+        sql: AVG(${ecomm__sales__order_items.time_to_ship})
+        description: Average number of days to ship orders, a critical operational KPI
+          for customer satisfaction.
+        synonyms: [ average shipping time, avg processing days, mean fulfillment time ]
+
+      items_per_order:
+        sql: COUNT(${ecomm__sales__order_items.id}) * 1.0 / NULLIF(COUNT(DISTINCT
+          ${ecomm__sales__order_items.order_id}), 0)
+        description: Average number of items per order, a key metric for basket analysis
+          and cross-sell effectiveness.
+        synonyms: [ basket size, items per basket, order size, units per transaction ]
+
+      max_sales:
+        sql: MAX(${ecomm__sales__order_items.sale_price})
+        description: The highest individual sale price in the dataset, useful for
+          identifying premium purchases and outliers.
+        synonyms: [ highest sale, largest order, max transaction, peak sale ]
+
+      max_time_to_ship:
+        sql: MAX(${ecomm__sales__order_items.time_to_ship})
+        description: Maximum shipping time observed, useful for identifying fulfillment
+          bottlenecks.
+        synonyms: [ longest ship time, max fulfillment delay ]
+
+      min_sale_price:
+        sql: MIN(${ecomm__sales__order_items.sale_price})
+        description: The lowest sale price, useful for identifying deep discounts or
+          promotional pricing.
+        synonyms: [ floor price, lowest sale, minimum price ]
+
+      orders_per_customer:
+        sql: COUNT(DISTINCT ${ecomm__sales__order_items.order_id}) * 1.0 /
+          NULLIF(COUNT(DISTINCT ${ecomm__sales__order_items.user_id}), 0)
+        description: Average number of orders per customer, indicating purchase
+          frequency and loyalty.
+        synonyms: [ order frequency, purchase frequency, transactions per customer ]
+
+      return_count:
+        sql: SUM(CASE WHEN ${ecomm__sales__order_items.is_returned} THEN 1 ELSE 0 END)
+        description: Total number of items returned by customers.
+        synonyms: [ refund count, returned items, returns ]
+
+      return_rate:
+        sql: SUM(CASE WHEN ${ecomm__sales__order_items.is_returned} THEN 1 ELSE 0 END) *
+          100.0 / NULLIF(COUNT(${ecomm__sales__order_items.id}), 0)
+        description: Percentage of items returned, a key quality and customer
+          satisfaction metric. Industry average is typically 15-30%.
+        synonyms: [ refund rate, return percentage, return ratio ]
+
+      revenue_per_customer:
+        sql: SUM(${ecomm__sales__order_items.sale_price}) / NULLIF(COUNT(DISTINCT
+          ${ecomm__sales__order_items.user_id}), 0)
+        description: Average revenue per unique customer, a proxy for customer value and
+          spending patterns.
+        synonyms: [ arpu, average revenue per user, customer value, spend per customer ]
+
+      semi_additive_sum:
+        sql: SUM(${ecomm__sales__order_items.sale_price})
+
+      total_customers:
+        sql: COUNT(DISTINCT ${ecomm__sales__order_items.user_id})
+        description: Total number of unique customers who made purchases. Foundation
+          metric for customer analytics.
+        synonyms: [ active customers, customer count, unique buyers, unique customers ]
+
+      total_items_sold:
+        sql: COUNT(${ecomm__sales__order_items.id})
+        description: Total number of individual items sold across all orders.
+        synonyms: [ item count, quantity sold, units sold, volume ]
+
+      total_margin:
+        sql: SUM(${ecomm__sales__order_items.margin})
+        description: Sum of individual item margins, providing an alternative profit
+          calculation from pre-computed margin values.
+        synonyms: [ aggregate profit, sum of margins, total item profit ]
+
+      total_orders:
+        sql: COUNT(DISTINCT ${ecomm__sales__order_items.order_id})
+        description: Total number of unique orders/transactions. Key volume metric for
+          business activity.
+        synonyms: [ number of orders, order count, purchase count, transaction count ]
+
+      total_revenue:
+        sql: SUM(${ecomm__sales__order_items.sale_price})
+        description: Total revenue from all sales calculated as the sum of sale prices.
+          The primary top-line metric for business performance.
+        synonyms:
+          [
+            gmv,
+            gross merchandise value,
+            gross revenue,
+            sales volume,
+            total income,
+            total sales
+          ]
+
+      total_revenue_completed:
+        sql: SUM(${ecomm__sales__order_items.sale_price} *
+          ${ecomm__sales__order_items.completed_order})
+
+    filters:
+      completed_orders__filter:
+        type: boolean
+        label: Completed Orders
+        group_label: Filters
+        bind_to: [ completed_orders ]
+
+  ecomm__sales__products:
+    label: Products
+
+    schema: ECOMM
+    table_name: PRODUCTS
+
+    dimensions:
+      brand:
+        sql: '"BRAND"'
+        description: Brand name from the product master data. Use for brand-level
+          analytics and competitive analysis.
+        synonyms: [ label, make, manufacturer, product brand ]
+
+      category:
+        sql: '"CATEGORY"'
+        description: Product category from master data for hierarchical category reporting.
+        synonyms: [ item type, merchandise type, product category ]
+
+      department:
+        sql: '"DEPARTMENT"'
+        description: Department classification from product master for high-level
+          business reporting.
+        synonyms: [ business segment, division, product department ]
+
+      name:
+        sql: '"NAME"'
+        description: Product name from master data catalog.
+        synonyms: [ item name, product name, title ]
+
+      sku:
+        sql: '"SKU"'
+        description: SKU from product master for product-level detail analysis.
+        synonyms: [ item code, product code, product sku ]
+
+      cost:
+        sql: '"COST"'
+        description: The standard cost for this product SKU, used as the baseline for
+          margin calculations and inventory valuation.
+        synonyms: [ base cost, product cost, wholesale price ]
+
+      distribution_center_id:
+        sql: '"DISTRIBUTION_CENTER_ID"'
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      retail_price:
+        sql: '"RETAIL_PRICE"'
+        description: The standard retail price for this product before any discounts or
+          promotions are applied.
+        synonyms: [ full price, list price, msrp, recommended price ]
+
+    measures:
+      total_cost:
+        sql: SUM(${ecomm__sales__products.cost})
+        description: Total product costs from the product master, useful for cost
+          variance analysis.
+        synonyms: [ merchandise cost, product costs ]
+
+      unique_brands_sold:
+        sql: COUNT(DISTINCT ${ecomm__sales__products.brand})
+        description: Number of unique brands represented in sales, useful for brand
+          portfolio analysis.
+        synonyms: [ brand count, brand variety ]
+
+      unique_products_sold:
+        sql: COUNT(DISTINCT ${ecomm__sales__products.id})
+        description: Number of unique products/SKUs sold, indicating catalog breadth and
+          product diversity.
+        synonyms: [ product count, product variety, sku count ]
+
+  ecomm__sales__users:
+    label: Users
+
+    schema: ECOMM
+    table_name: USERS
+
+    dimensions:
+      city:
+        sql: '"CITY"'
+        description: City where the customer is located. Key geographic dimension for
+          regional sales analysis and market planning.
+        synonyms: [ customer city, location, market, metro area ]
+
+      country:
+        sql: '"COUNTRY"'
+        description: Country where the customer is located for international market
+          segmentation.
+        synonyms: [ customer country, market country, nation ]
+
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the customer account was created. Foundation for
+          customer lifetime value and cohort analysis.
+        synonyms: [ account created, customer since, registration date, signup date ]
+
+      email:
+        sql: '"EMAIL"'
+        description: Customer email address for identification and communication analysis.
+        synonyms: [ contact email, customer email, email address ]
+
+      first_name:
+        sql: '"FIRST_NAME"'
+        description: Customer first name for personalization and identity.
+        synonyms: [ customer first name, given name ]
+
+      gender:
+        sql: '"GENDER"'
+        description: Customer gender for demographic segmentation and targeted marketing
+          analysis.
+        synonyms: [ customer gender, demographic gender, sex ]
+
+      last_name:
+        sql: '"LAST_NAME"'
+        description: Customer last name for identification.
+        synonyms: [ customer last name, family name, surname ]
+
+      state:
+        sql: '"STATE"'
+        description: State or province where the customer is located. Essential for
+          regional performance, tax analysis, and territory management.
+        synonyms: [ customer state, province, region, territory ]
+
+      traffic_source:
+        sql: '"TRAFFIC_SOURCE"'
+        description: The marketing channel that acquired this customer (e.g., Organic,
+          Facebook, Google, Email). Critical for marketing ROI and attribution
+          analysis.
+        synonyms:
+          [
+            acquisition channel,
+            how they found us,
+            marketing channel,
+            referral source,
+            utm source
+          ]
+
+      zip:
+        sql: '"ZIP"'
+        description: Customer postal/zip code for micro-geographic analysis and delivery
+          planning.
+        synonyms: [ postal code, postcode, zip code ]
+
+      age:
+        sql: '"AGE"'
+        description: The age of the customer in years, useful for demographic
+          segmentation and targeted marketing analysis.
+        synonyms: [ customer age, user age, years old ]
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: Geographic latitude coordinate of the customer location for mapping
+          and regional analysis.
+        synonyms: [ geo latitude, lat ]
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Geographic longitude coordinate of the customer location for
+          mapping and regional analysis.
+        synonyms: [ geo longitude, lng, long ]
+
+    measures:
+      avg_customer_age:
+        sql: AVG(${ecomm__sales__users.age})
+        description: Average age of customers for demographic profiling and targeting.
+        synonyms: [ average age, demographic age, mean customer age ]
+
+relationships:
+  - join_from_view: ecomm__sales__inventory_items
+    join_to_view: ecomm__sales__products
+    join_type: always_left
+    on_sql: ${ecomm__sales__inventory_items.product_id} = ${ecomm__sales__products.id}
+    relationship_type: many_to_one
+
+  - join_from_view: ecomm__sales__order_items
+    join_to_view: ecomm__sales__inventory_items
+    join_type: always_left
+    on_sql: ${ecomm__sales__order_items.inventory_item_id} =
+      ${ecomm__sales__inventory_items.id}
+    relationship_type: many_to_one
+
+  - join_from_view: ecomm__sales__order_items
+    join_to_view: ecomm__sales__users
+    join_type: always_left
+    on_sql: ${ecomm__sales__order_items.user_id} = ${ecomm__sales__users.id}
+    relationship_type: many_to_one
+
+ai_context: |-
+  Use these instructions for question categorization: THis should be mapped to context
+
+  Use these instructions for SQL generation: When generating SQL: 1) Always round monetary values to 2 decimal places, 2) Round percentages to 1 decimal place, 3) Exclude cancelled and returned orders from revenue calculations unless specifically asked about returns, 4) Use appropriate date truncation for time-based analysis

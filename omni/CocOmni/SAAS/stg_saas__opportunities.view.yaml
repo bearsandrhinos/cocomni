@@ -1,0 +1,116 @@
+# Reference this view as saas__stg_saas__opportunities
+schema: SAAS
+table_name: STG_SAAS__OPPORTUNITIES
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  name:
+    sql: '"NAME"'
+
+  stage_name:
+    sql: '"STAGE_NAME"'
+
+  amount:
+    sql: '"AMOUNT"'
+
+  arr:
+    sql: '"ARR"'
+
+  acv:
+    sql: '"ACV"'
+
+  tcv:
+    sql: '"TCV"'
+
+  contract_term_months:
+    sql: '"CONTRACT_TERM_MONTHS"'
+
+  probability:
+    sql: '"PROBABILITY"'
+
+  close_date:
+    sql: '"CLOSE_DATE"'
+
+  type:
+    sql: '"TYPE"'
+
+  next_steps:
+    sql: '"NEXT_STEPS"'
+
+  lead_source:
+    sql: '"LEAD_SOURCE"'
+
+  is_won:
+    sql: '"IS_WON"'
+
+  forecast_category:
+    sql: '"FORECAST_CATEGORY"'
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  sales_engineer_id:
+    sql: '"SALES_ENGINEER_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  contact_id:
+    sql: '"CONTACT_ID"'
+    format: ID
+
+  last_stage_change_date:
+    sql: '"LAST_STAGE_CHANGE_DATE"'
+
+  first_demo_date:
+    sql: '"FIRST_DEMO_DATE"'
+
+  trial_start_date:
+    sql: '"TRIAL_START_DATE"'
+
+  competitor:
+    sql: '"COMPETITOR"'
+
+  loss_reason:
+    sql: '"LOSS_REASON"'
+
+  win_reason:
+    sql: '"WIN_REASON"'
+
+  risk_score:
+    sql: '"RISK_SCORE"'
+
+  risk_flags:
+    sql: '"RISK_FLAGS"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  identified_pain:
+    sql: '"IDENTIFIED_PAIN"'
+
+  ae_notes:
+    sql: '"AE_NOTES"'
+
+  risk_details:
+    sql: '"RISK_DETAILS"'
+
+  industry:
+    sql: '"INDUSTRY"'
+
+  account_name:
+    sql: '"ACCOUNT_NAME"'
+
+measures:
+  count:
+    aggregate_type: count

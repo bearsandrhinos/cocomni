@@ -1,0 +1,36 @@
+# Reference this view as demo__fernway_dim_suppliers_raw
+schema: DEMO
+table_name: FERNWAY_DIM_SUPPLIERS_RAW
+
+dimensions:
+  supplier_sk:
+    sql: '"SUPPLIER_SK"'
+
+  supplier_id:
+    sql: '"SUPPLIER_ID"'
+    format: ID
+
+  supplier_name:
+    sql: '"SUPPLIER_NAME"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  quality_tier:
+    sql: '"QUALITY_TIER"'
+
+  effective_from_fake_year:
+    sql: '"EFFECTIVE_FROM_FAKE_YEAR"'
+
+  effective_from_day_ordinal:
+    sql: '"EFFECTIVE_FROM_DAY_ORDINAL"'
+
+  effective_to_fake_year:
+    sql: '"EFFECTIVE_TO_FAKE_YEAR"'
+
+  effective_to_day_ordinal:
+    sql: '"EFFECTIVE_TO_DAY_ORDINAL"'
+
+measures:
+  count:
+    aggregate_type: count

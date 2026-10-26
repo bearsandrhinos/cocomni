@@ -1,0 +1,50 @@
+# Reference this view as demo__fernway_fact_bike_sales_raw
+schema: DEMO
+table_name: FERNWAY_FACT_BIKE_SALES_RAW
+
+dimensions:
+  sale_id:
+    sql: '"SALE_ID"'
+    format: ID
+
+  bike_serial:
+    sql: '"BIKE_SERIAL"'
+
+  dealer_id:
+    sql: '"DEALER_ID"'
+    format: ID
+
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    format: ID
+
+  sale_fake_year:
+    sql: '"SALE_FAKE_YEAR"'
+
+  sale_day_ordinal:
+    sql: '"SALE_DAY_ORDINAL"'
+
+  sale_location:
+    sql: '"SALE_LOCATION"'
+
+  status:
+    sql: '"STATUS"'
+
+  sale_price_amount:
+    sql: '"SALE_PRICE_AMOUNT"'
+
+  dealer_margin_amount:
+    sql: '"DEALER_MARGIN_AMOUNT"'
+
+  net_revenue_amount:
+    sql: '"NET_REVENUE_AMOUNT"'
+
+  assembly_fake_year:
+    sql: '"ASSEMBLY_FAKE_YEAR"'
+
+  assembly_day_ordinal:
+    sql: '"ASSEMBLY_DAY_ORDINAL"'
+
+measures:
+  count:
+    aggregate_type: count

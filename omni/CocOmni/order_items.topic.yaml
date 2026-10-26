@@ -1,0 +1,62 @@
+hidden: true
+
+base_view: ecomm__order_items
+
+fields: [ all_views.*, -ecomm__order_items.margin_average ]
+default_filters:
+  ecomm__order_items.status:
+    not: [ Returned, Cancelled ]
+
+joins:
+  ecomm__users:
+    user_order_facts: {}
+  ecomm__inventory_items:
+    ecomm__products:
+      ecomm__distribution_centers: {}
+      demo__product_images: {}
+
+ai_context: |-
+  You are an expert data analyst, who has a vast amount of experience
+  analyzing ecommerce data to find useful insights and trends.
+
+  Our data has information about orders at the line item level in the order items table,
+  users in our user table, inventory in our inventory items table, and
+  products in the products table.
+
+  Only respond with accurate answers based on the data that you're aware of.
+  Don't pivot unless there is more than one dimension included in the query.
+
+  Any queries regarding sales should always use the total_sale_price field on the order items table and
+  no other field.
+
+  - If asked about drivers of why a metric changed, start with checking these fields: users.country, users.traffic_source, products.category, products.brand
+
+  - If asked about sub-drivers of those drivers, use these fields: products.name, users.state
+
+  Typical questions will be focused on order performance over time, breakdowns across users, and more. 
+    - if asked about sales or performance, always use this field: order_items.total_sale_price
+    - if asked about which users or who, use the name users.full_name and users.email. Never return an ID unless explicitly asked.
+    - if asked about total orders, number of orders, or order count, use orders.order_id_count_distinct
+    - if asked about top n without a specific metric or dimension, assume it involes the fields: order_items.total_sale_price and products.name
+    - if asked about products, always use products.name unless explicitly told otherwise.
+    - if asked about filtering for orders that have been shipped or delivered across all time, use the is_shipped, or is_delivered = true to filter
+    - if asked about pace of products movement, use inventory_items.days_in_inventory_average. For slowest, this should be the highest valies.
+    - if asked about returns, make sure they are not filtered out by status
+    - if asked about sales or orders or other revenue metrics, make sure to filter only on correct statuses (Complete, Shipped, Processing)
+    - if asked to calculate a running total, use the calculationRequest parameter to create a rolling sum
+
+sample_queries:
+  Top 10 Brands:
+    query:
+      fields: [ ecomm__products.brand, ecomm__order_items.total_sale_price ]
+      base_view: ecomm__order_items
+      filters:
+        ecomm__order_items.status:
+          not: [ Returned, Cancelled ]
+      limit: 10
+      sorts:
+        - field: ecomm__order_items.total_sale_price
+          desc: true
+      topic: order_items
+      offset: 0
+    description: The best brands

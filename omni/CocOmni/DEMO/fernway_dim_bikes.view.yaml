@@ -1,0 +1,22 @@
+# Reference this view as demo__fernway_dim_bikes
+schema: DEMO
+table_name: FERNWAY_DIM_BIKES
+
+dimensions:
+  bike_serial:
+    sql: '"BIKE_SERIAL"'
+
+  model_id:
+    sql: '"MODEL_ID"'
+    format: ID
+
+  plant_id:
+    sql: '"PLANT_ID"'
+    format: ID
+
+  assembly_date:
+    sql: '"ASSEMBLY_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

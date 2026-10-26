@@ -1,0 +1,47 @@
+# Reference this view as saas__v_opp_training
+schema: SAAS
+table_name: V_OPP_TRAINING
+
+dimensions:
+  is_won:
+    sql: '"IS_WON"'
+
+  deal_size_bucket:
+    sql: '"DEAL_SIZE_BUCKET"'
+
+  acv_to_tcv_ratio:
+    sql: '"ACV_TO_TCV_RATIO"'
+
+  contract_term_months:
+    sql: '"CONTRACT_TERM_MONTHS"'
+
+  risk_score:
+    sql: '"RISK_SCORE"'
+
+  risk_bucket:
+    sql: '"RISK_BUCKET"'
+
+  days_in_pipeline:
+    sql: '"DAYS_IN_PIPELINE"'
+
+  days_demo_to_close:
+    sql: '"DAYS_DEMO_TO_CLOSE"'
+
+  days_trial_to_close:
+    sql: '"DAYS_TRIAL_TO_CLOSE"'
+
+  days_since_last_stage_change:
+    sql: '"DAYS_SINCE_LAST_STAGE_CHANGE"'
+
+  type:
+    sql: '"TYPE"'
+
+  lead_source:
+    sql: '"LEAD_SOURCE"'
+
+  competitor:
+    sql: '"COMPETITOR"'
+
+measures:
+  count:
+    aggregate_type: count

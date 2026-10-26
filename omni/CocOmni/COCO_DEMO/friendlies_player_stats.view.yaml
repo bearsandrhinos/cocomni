@@ -1,0 +1,242 @@
+# Reference this view as coco_demo__friendlies_player_stats
+label: Friendlies Player Stats
+description: Individual player performance statistics for each friendly match
+  including goals, assists, passes, tackles, cards, and ratings
+
+schema: COCO_DEMO
+table_name: FRIENDLIES_PLAYER_STATS
+
+dimensions:
+  offsides: {}
+  goals_conceded: {}
+  goals_assists: {}
+  goals_saves: {}
+  passes_key: {}
+  tackles_blocks: {}
+  tackles_interceptions: {}
+  dribbles_past: {}
+  fouls_drawn: {}
+  fouls_committed: {}
+  cards_yellow: {}
+  cards_red: {}
+  penalty_won: {}
+  penalty_commited: {}
+  penalty_scored: {}
+  penalty_missed: {}
+  penalty_saved: {}
+
+  team_name:
+    sql: team_name
+    label: Team Name
+    description: Name of the team
+
+  player_name:
+    sql: player_name
+    label: Player Name
+    description: Name of the player
+
+  games_minutes:
+    sql: games_minutes
+    label: Minutes Played
+    description: Minutes played in the match
+
+  games_number:
+    sql: games_number
+    label: Jersey Number
+    description: Player's jersey number
+
+  games_position:
+    sql: games_position
+    label: Position
+    description: Player's position (e.g., Forward, Midfielder, Defender, Goalkeeper)
+
+  games_rating:
+    sql: games_rating
+    hidden: true
+
+  games_captain:
+    sql: games_captain
+    label: Was Captain
+    description: Whether the player was captain
+
+  games_substitute:
+    sql: games_substitute
+    label: Was Substitute
+    description: Whether the player came on as a substitute
+
+  shots_total:
+    sql: shots_total
+    hidden: true
+
+  shots_on:
+    sql: shots_on
+    hidden: true
+
+  goals_total:
+    sql: goals_total
+    hidden: true
+
+  passes_total:
+    sql: passes_total
+    hidden: true
+
+  passes_accuracy:
+    sql: passes_accuracy
+    hidden: true
+
+  tackles_total:
+    sql: tackles_total
+    hidden: true
+
+  duels_total:
+    sql: duels_total
+    hidden: true
+
+  duels_won:
+    sql: duels_won
+    hidden: true
+
+  dribbles_attempts:
+    sql: dribbles_attempts
+    hidden: true
+
+  dribbles_success:
+    sql: dribbles_success
+    hidden: true
+
+  league_name:
+    sql: league_name
+    label: League Name
+    description: Name of the league or competition
+
+  season:
+    sql: season
+    label: Season
+    description: Season year for the friendly matches
+
+  fixture_id:
+    sql: fixture_id
+    label: Fixture ID
+    format: ID
+    description: Identifier for the match fixture
+
+  team_id:
+    sql: team_id
+    label: Team ID
+    format: ID
+    description: Identifier for the team
+
+  player_id:
+    sql: player_id
+    label: Player ID
+    format: ID
+    description: Unique identifier for the player
+
+  league_id:
+    sql: league_id
+    label: League ID
+    format: ID
+    description: Identifier for the league or competition
+
+measures:
+  count:
+    label: Player Match Records Count
+    description: Total number of player match records
+    aggregate_type: count
+
+  assists_total:
+    sql: goals_assists
+    label: Assists Total
+    description: Total assists by players
+    aggregate_type: sum
+
+  average_dribble_success_rate:
+    sql: ${coco_demo__friendlies_player_stats.dribbles_success} /
+      NULLIF(${coco_demo__friendlies_player_stats.dribbles_attempts}, 0)
+    label: Average Dribble Success Rate
+    format: percent_2
+    description: Average success rate of dribble attempts
+    aggregate_type: average
+
+  average_duel_win_rate:
+    sql: ${coco_demo__friendlies_player_stats.duels_won} /
+      NULLIF(${coco_demo__friendlies_player_stats.duels_total}, 0)
+    label: Average Duel Win Rate
+    format: percent_2
+    description: Average percentage of duels won
+    aggregate_type: average
+
+  average_pass_accuracy:
+    sql: CAST(${coco_demo__friendlies_player_stats.passes_accuracy} AS FLOAT)
+    label: Average Pass Accuracy
+    format: percent_2
+    description: Average pass accuracy percentage
+    aggregate_type: average
+
+  average_rating:
+    sql: CAST(${coco_demo__friendlies_player_stats.games_rating} AS FLOAT)
+    label: Average Rating
+    description: Average player match rating
+    aggregate_type: average
+
+  average_shot_accuracy:
+    sql: ${coco_demo__friendlies_player_stats.shots_on} /
+      NULLIF(${coco_demo__friendlies_player_stats.shots_total}, 0)
+    label: Average Shot Accuracy
+    format: percent_2
+    description: Average percentage of shots on target
+    aggregate_type: average
+
+  goals_conceded_total:
+    sql: goals_conceded
+    label: Goals Conceded Total
+    description: Total goals conceded (for goalkeepers)
+    aggregate_type: sum
+
+  key_passes_total:
+    sql: passes_key
+    label: Key Passes Total
+    description: Total key passes (passes leading to shots)
+    aggregate_type: sum
+
+  red_cards_total:
+    sql: cards_red
+    label: Red Cards Total
+    description: Total red cards received
+    aggregate_type: sum
+
+  saves_total:
+    sql: goals_saves
+    label: Saves Total
+    description: Total saves by goalkeepers
+    aggregate_type: sum
+
+  total_minutes_played:
+    sql: ${coco_demo__friendlies_player_stats.games_minutes}
+    label: Total Minutes Played
+    description: Total minutes played across all matches
+    aggregate_type: sum
+
+  unique_players:
+    sql: ${coco_demo__friendlies_player_stats.player_id}
+    label: Unique Players
+    description: Number of unique players
+    aggregate_type: count_distinct
+
+  yellow_cards_total:
+    sql: cards_yellow
+    label: Yellow Cards Total
+    description: Total yellow cards received
+    aggregate_type: sum
+
+  goals_total_sum:
+    sql: ${coco_demo__friendlies_player_stats.goals_total}
+    label: Goals Total
+    description: Total goals scored by players
+    aggregate_type: sum
+
+  tackles_total_sum:
+    sql: ${coco_demo__friendlies_player_stats.tackles_total}
+    label: Tackles Total
+    description: Total tackles made by players
+    aggregate_type: sum

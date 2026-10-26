@@ -1,0 +1,27 @@
+# Reference this view as demo__contact
+schema: DEMO
+table_name: CONTACT
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  name:
+    sql: '"NAME"'
+
+measures:
+  count:
+    aggregate_type: count

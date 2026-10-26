@@ -1,0 +1,27 @@
+# Reference this view as demo__fernway_dim_parts
+schema: DEMO
+table_name: FERNWAY_DIM_PARTS
+
+dimensions:
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  part_name:
+    sql: '"PART_NAME"'
+
+  category:
+    sql: '"CATEGORY"'
+
+  subcategory:
+    sql: '"SUBCATEGORY"'
+
+  is_critical:
+    sql: '"IS_CRITICAL"'
+
+  tracked:
+    sql: '"TRACKED"'
+
+measures:
+  count:
+    aggregate_type: count

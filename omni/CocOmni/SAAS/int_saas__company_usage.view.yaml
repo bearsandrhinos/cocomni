@@ -1,0 +1,78 @@
+# Reference this view as saas__int_saas__company_usage
+schema: SAAS
+table_name: INT_SAAS__COMPANY_USAGE
+
+dimensions:
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  snapshot_month:
+    sql: '"SNAPSHOT_MONTH"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  region:
+    sql: '"REGION"'
+
+  product_tier:
+    sql: '"PRODUCT_TIER"'
+
+  total_users:
+    sql: '"TOTAL_USERS"'
+
+  total_admin_users:
+    sql: '"TOTAL_ADMIN_USERS"'
+
+  total_creator_users:
+    sql: '"TOTAL_CREATOR_USERS"'
+
+  total_viewer_users:
+    sql: '"TOTAL_VIEWER_USERS"'
+
+  total_events:
+    sql: '"TOTAL_EVENTS"'
+
+  total_agentic_events:
+    sql: '"TOTAL_AGENTIC_EVENTS"'
+
+  total_api_events:
+    sql: '"TOTAL_API_EVENTS"'
+
+  total_ui_events:
+    sql: '"TOTAL_UI_EVENTS"'
+
+  total_admin_other_events:
+    sql: '"TOTAL_ADMIN_OTHER_EVENTS"'
+
+  events_per_user:
+    sql: '"EVENTS_PER_USER"'
+
+  agentic_events_per_user:
+    sql: '"AGENTIC_EVENTS_PER_USER"'
+
+  api_events_per_user:
+    sql: '"API_EVENTS_PER_USER"'
+
+  ui_events_per_user:
+    sql: '"UI_EVENTS_PER_USER"'
+
+  admin_other_events_per_user:
+    sql: '"ADMIN_OTHER_EVENTS_PER_USER"'
+
+  admin_other_events_per_admin_user:
+    sql: '"ADMIN_OTHER_EVENTS_PER_ADMIN_USER"'
+
+  agentic_events_per_creator_user:
+    sql: '"AGENTIC_EVENTS_PER_CREATOR_USER"'
+
+  ui_events_per_creator_user:
+    sql: '"UI_EVENTS_PER_CREATOR_USER"'
+
+  ui_events_per_viewer_user:
+    sql: '"UI_EVENTS_PER_VIEWER_USER"'
+
+measures:
+  count:
+    aggregate_type: count

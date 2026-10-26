@@ -1,0 +1,257 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.DEMO.TRANSACTIONS
+semantic_view: ANALYTICS_PROD.DEMO.TRANSACTIONS
+label: Transactions
+
+views:
+  demo__transactions__inventory_items:
+    label: Inventory Items
+    description: This table stores information about individual inventory items,
+      includng their product details, cost, and sales history. It tracks when
+      each item was created and sold, as well as its category, brand, retail
+      price, and distribution center.
+
+    schema: ECOMM
+    table_name: INVENTORY_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Date and time when the inventory item was created.
+
+      product_brand:
+        sql: '"PRODUCT_BRAND"'
+        description: The brand name of the product.
+
+      product_category:
+        sql: '"PRODUCT_CATEGORY"'
+        description: The category of the product, such as clothing type or accessory
+          classification, used to group similar items together for reporting and
+          analysis purposes.
+
+      product_department:
+        sql: '"PRODUCT_DEPARTMENT"'
+        description: The department within the store where the product is typically
+          located, such as Men's or Women's section.
+
+      product_name:
+        sql: '"PRODUCT_NAME"'
+        description: The name of the product in the inventory.
+
+      product_sku:
+        sql: '"PRODUCT_SKU"'
+        description: Unique identifier for a product in the inventory.
+
+      sold_at:
+        sql: '"SOLD_AT"'
+        description: Date and time when the inventory item was sold.
+
+      cost:
+        sql: '"COST"'
+        description: The cost of each inventory item.
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each inventory item.
+
+      product_distribution_center_id:
+        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
+        description: The unique identifier for the distribution center where the
+          inventory item is stored.
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+        description: Unique identifier for a product in the inventory.
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+        description: The retail price at which each product is sold to customers.
+
+    measures:
+      total_cost:
+        sql: SUM(${demo__transactions__inventory_items.cost})
+
+  demo__transactions__order_items:
+    label: Order Items
+    description: This table stores information about individual items within custome
+      orders, including the order and user details, item specifics, pricing,
+      shipping and delivery status, and additional metrics such as margin and
+      time to ship.
+
+    schema: ECOMM
+    table_name: ORDER_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+        description: The date and time when the order item was created.
+
+      delivered_at:
+        sql: '"DELIVERED_AT"'
+        description: The date and time when the order item was delivered to the customer.
+
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+        description: Indicates whether the order item has been delivered to the customer.
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+        description: Indicates whether the order item was returned by the customer.
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+        description: Indicates whether the order item has been shipped to the customer.
+
+      returned_at:
+        sql: '"RETURNED_AT"'
+        description: The date and time when the order item was returned, if applicable.
+
+      shipped_at:
+        sql: '"SHIPPED_AT"'
+        description: The date and time when the order item was shipped.
+
+      status:
+        sql: '"STATUS"'
+        description: The status of the order item, indicating whether it was
+          successfully completed, cancelled by the customer or vendor, or
+          returned by the customer.
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each order item.
+
+      inventory_item_id:
+        sql: '"INVENTORY_ITEM_ID"'
+        description: Unique identifier for the inventory item being ordered.
+
+      margin:
+        sql: '"MARGIN"'
+        description: The profit margin earned on each order item, calculated as the
+          difference between the selling price and the cost of the item,
+          expressed as a percentage.
+
+      months_since_signup:
+        sql: '"MONTHS_SINCE_SIGNUP"'
+        description: The number of months that have passed since the customer signed up
+          for the service, with 0 indicating the month of signup.
+
+      order_id:
+        sql: '"ORDER_ID"'
+        description: Unique identifier for the order that the item belongs to.
+
+      sale_price:
+        sql: '"SALE_PRICE"'
+        description: The sale price of an item in an order, representing the amount the
+          customer paid for the item.
+
+      time_to_ship:
+        sql: '"TIME_TO_SHIP"'
+        description: The time it takes to ship an order item after it has been
+          processed, measured in business days.
+
+      user_id:
+        sql: '"USER_ID"'
+        description: The unique identifier of the user who placed the order.
+
+    measures:
+      average_sales:
+        sql: AVG(${demo__transactions__order_items.sale_price})
+
+      total_revenue:
+        sql: SUM(${demo__transactions__order_items.sale_price})
+        description: This is the revenue of all the orders
+
+  demo__transactions__users:
+    label: Users
+    description: This table stores information about users, including their personal
+      details suc as name, email, age, location, and demographic information, as
+      well as their online activity data such as traffic source and creation
+      timestamp.
+
+    schema: ECOMM
+    table_name: USERS
+
+    dimensions:
+      city:
+        sql: '"CITY"'
+        description: The CITY column represents the geographical location or urban area
+          where a user is based, providing a way tounderstand the user's
+          regional context and potentially inform location-based analysis or
+          targeting.
+
+      country:
+        sql: '"COUNTRY"'
+        description: The country of origin or residence of the user.
+
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Date and time when the user account was created.
+
+      email:
+        sql: '"EMAIL"'
+        description: The email address associated with a user's account.
+
+      first_name:
+        sql: '"FIRST_NAME"'
+        description: The first name of the user.
+
+      gender:
+        sql: '"GENDER"'
+        description: The GENDER column captures the biological or self-identified sex of
+          a user, categorized as either Male or Female, to facilitate analysis
+          and reporting by demographic characteristics.
+
+      last_name:
+        sql: '"LAST_NAME"'
+        description: The LAST_NAME column stores the surname of a user, representing
+          their family name or the name they are commonly known by.
+
+      state:
+        sql: '"STATE"'
+        description: The geographic area within London where a user is located,
+          categorized by local authority borough.
+
+      traffic_source:
+        sql: '"TRAFFIC_SOURCE"'
+        description: The source of traffic that led a user to the website or
+          application, such as search engines, organic browsing, or email
+          marketing campaigns.
+
+      zip:
+        sql: '"ZIP"'
+        description: Postal Code of the user's location.
+
+      age:
+        sql: '"AGE"'
+        description: The age of the user in years.
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each user in the system.
+        primary_key: true
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: The latitude coordinate of the user's location, representing the
+          angular distance north or south of the equator, measured in decimal
+          degrees.
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Longitude coordinate of the user's location, representing the
+          distance east or west of the prime meridian, measured in decimal
+          degrees.
+
+relationships:
+  - join_from_view: demo__transactions__order_items
+    join_to_view: demo__transactions__users
+    join_type: always_left
+    on_sql: ${demo__transactions__order_items.user_id} =
+      ${demo__transactions__users.id}
+    relationship_type: many_to_one
+
+  - join_from_view: demo__transactions__order_items
+    join_to_view: demo__transactions__inventory_items
+    join_type: always_left
+    on_sql: ${demo__transactions__order_items.inventory_item_id} =
+      ${demo__transactions__inventory_items.id}
+    relationship_type: many_to_one

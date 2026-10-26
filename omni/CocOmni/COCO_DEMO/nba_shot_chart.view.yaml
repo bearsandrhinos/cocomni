@@ -1,0 +1,135 @@
+# Reference this view as coco_demo__nba_shot_chart
+label: NBA Shot Chart
+description: One row per shot attempt with court location, zone, distance and
+  made/missed flag.
+
+schema: COCO_DEMO
+table_name: NBA_SHOT_CHART
+
+dimensions:
+  grid_type:
+    sql: '"GRID_TYPE"'
+
+  game_id:
+    sql: '"GAME_ID"'
+    format: ID
+
+  game_event_id:
+    sql: '"GAME_EVENT_ID"'
+    format: ID
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+    label: Player
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+    label: Team
+
+  period:
+    sql: '"PERIOD"'
+
+  minutes_remaining:
+    sql: '"MINUTES_REMAINING"'
+
+  seconds_remaining:
+    sql: '"SECONDS_REMAINING"'
+
+  event_type:
+    sql: '"EVENT_TYPE"'
+
+  action_type:
+    sql: '"ACTION_TYPE"'
+
+  shot_type:
+    sql: '"SHOT_TYPE"'
+
+  shot_zone_basic:
+    sql: '"SHOT_ZONE_BASIC"'
+
+  shot_zone_area:
+    sql: '"SHOT_ZONE_AREA"'
+
+  shot_zone_range:
+    sql: '"SHOT_ZONE_RANGE"'
+
+  shot_distance:
+    sql: '"SHOT_DISTANCE"'
+
+  loc_x:
+    sql: '"LOC_X"'
+
+  loc_y:
+    sql: '"LOC_Y"'
+
+  shot_attempted_flag:
+    sql: '"SHOT_ATTEMPTED_FLAG"'
+
+  shot_made_flag:
+    sql: '"SHOT_MADE_FLAG"'
+
+  game_date:
+    sql: '"GAME_DATE"'
+
+  htm:
+    sql: '"HTM"'
+
+  vtm:
+    sql: '"VTM"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${game_id}, '|', ${game_event_id}, '|', ${player_id})
+    hidden: true
+    primary_key: true
+
+  pic:
+    sql: CONCAT('https://cdn.nba.com/headshots/nba/latest/1040x760/',
+      CAST(${coco_demo__nba_shot_chart.player_id} AS VARCHAR), '.png')
+    label: Pic
+
+  team_image:
+    sql: CONCAT('https://cdn.nba.com/logos/nba/',
+      CAST(${coco_demo__nba_shot_chart.team_id} AS VARCHAR),
+      '/primary/L/logo.svg')
+    label: Team Image
+
+measures:
+  count:
+    aggregate_type: count
+
+  shot_attempts:
+    label: Shot Attempts
+    aggregate_type: count
+
+  shots_made:
+    sql: ${shot_made_flag}
+    label: Shots Made
+    aggregate_type: sum
+
+  shooting_pct:
+    sql: SUM(${shot_made_flag}) / NULLIF(COUNT(*), 0)
+    label: Shooting %
+    format: percent_1
+
+  avg_shot_distance:
+    sql: ${shot_distance}
+    label: Avg Shot Distance (ft)
+    format: number_1
+    aggregate_type: average

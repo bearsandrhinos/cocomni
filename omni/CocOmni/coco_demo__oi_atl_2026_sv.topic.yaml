@@ -1,0 +1,307 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.COCO_DEMO.OI_ATL_2026_SV
+semantic_view: ANALYTICS_PROD.COCO_DEMO.OI_ATL_2026_SV
+label: Oi Atl 2026 Sv
+description: E-commerce analytics model supporting order lifecycle, product
+  catalog, customer behavior, and inventory management analysis. Covers the full
+  order funnel from user acquisition events through purchase, shipment, and
+  returns. Primary grain is order line items, with supporting dimensions for
+  products, users, inventory, and distribution centers across all geographies.
+
+views:
+  coco_demo__oi_atl_2026_sv__distribution_centers:
+    label: Distribution Centers
+    description: Physical warehouse and fulfillment locations. Each row represents a
+      single distribution center with its geographic coordinates. Used to
+      analyze shipping logistics and regional inventory distribution.
+
+    schema: COCO_DEMO
+    table_name: DISTRIBUTION_CENTERS
+
+    dimensions:
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      name:
+        sql: '"NAME"'
+
+      latitude:
+        sql: '"LATITUDE"'
+
+      longitude:
+        sql: '"LONGITUDE"'
+
+  coco_demo__oi_atl_2026_sv__inventory_items:
+    label: Inventory Items
+    description: Individual inventory units in stock or sold. Each row represents a
+      single physical item tracked from creation (receipt into inventory)
+      through sale. Links products to distribution centers and tracks item-level
+      cost and pricing.
+
+    schema: COCO_DEMO
+    table_name: INVENTORY_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      product_brand:
+        sql: '"PRODUCT_BRAND"'
+
+      product_category:
+        sql: '"PRODUCT_CATEGORY"'
+
+      product_department:
+        sql: '"PRODUCT_DEPARTMENT"'
+
+      product_distribution_center_id:
+        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+
+      product_name:
+        sql: '"PRODUCT_NAME"'
+
+      product_sku:
+        sql: '"PRODUCT_SKU"'
+
+      sold_at:
+        sql: '"SOLD_AT"'
+
+      cost:
+        sql: '"COST"'
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+
+    measures:
+      total_inventory:
+        sql: COUNT(*)
+        description: Total count of inventory items.
+
+      total_inventory_cost:
+        sql: SUM(${coco_demo__oi_atl_2026_sv__inventory_items.cost})
+        description: Total cost of inventory items.
+
+  coco_demo__oi_atl_2026_sv__order_items:
+    label: Order Items
+    description: Individual line items within customer orders. Each row represents a
+      single product purchased in an order, tracking the full lifecycle from
+      creation through shipment, delivery, and potential return. Primary fact
+      table for revenue and margin analysis.
+
+    schema: COCO_DEMO
+    table_name: ORDER_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+
+      delivered_at:
+        sql: '"DELIVERED_AT"'
+
+      id:
+        sql: '"ID"'
+
+      inventory_item_id:
+        sql: '"INVENTORY_ITEM_ID"'
+        primary_key: true
+
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+
+      months_since_signup:
+        sql: '"MONTHS_SINCE_SIGNUP"'
+
+      order_id:
+        sql: '"ORDER_ID"'
+
+      returned_at:
+        sql: '"RETURNED_AT"'
+
+      shipped_at:
+        sql: '"SHIPPED_AT"'
+
+      status:
+        sql: '"STATUS"'
+
+      time_to_ship:
+        sql: '"TIME_TO_SHIP"'
+
+      user_id:
+        sql: '"USER_ID"'
+
+      margin:
+        sql: '"MARGIN"'
+
+      sale_price:
+        sql: '"SALE_PRICE"'
+
+    measures:
+      avg_order_value:
+        sql: AVG(${coco_demo__oi_atl_2026_sv__order_items.sale_price})
+        description: Average sale price per order item.
+
+      avg_time_to_ship:
+        sql: AVG(${coco_demo__oi_atl_2026_sv__order_items.time_to_ship})
+        description: Average number of days from order placement to shipment.
+
+      order_count:
+        sql: COUNT(DISTINCT ${coco_demo__oi_atl_2026_sv__order_items.order_id})
+        description: Number of distinct orders placed.
+
+      return_rate:
+        sql: SUM(CASE WHEN ${coco_demo__oi_atl_2026_sv__order_items.is_returned} THEN 1
+          ELSE 0 END) / NULLIF(COUNT(*), 0)
+        description: Percentage of order items that were returned.
+
+      total_margin:
+        sql: SUM(${coco_demo__oi_atl_2026_sv__order_items.margin})
+        description: Total profit margin across order items.
+
+      total_revenue:
+        sql: SUM(${coco_demo__oi_atl_2026_sv__order_items.sale_price})
+        description: Total revenue from order item sale prices.
+
+  coco_demo__oi_atl_2026_sv__products:
+    label: Products
+    description: Product catalog master data. Each row represents a unique product
+      with its category, brand, department, and pricing information. Serves as
+      the reference dimension for all product-related analysis.
+
+    schema: COCO_DEMO
+    table_name: PRODUCTS
+
+    dimensions:
+      brand:
+        sql: '"BRAND"'
+
+      category:
+        sql: '"CATEGORY"'
+
+      department:
+        sql: '"DEPARTMENT"'
+
+      distribution_center_id:
+        sql: '"DISTRIBUTION_CENTER_ID"'
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      name:
+        sql: '"NAME"'
+
+      sku:
+        sql: '"SKU"'
+
+      cost:
+        sql: '"COST"'
+
+      retail_price:
+        sql: '"RETAIL_PRICE"'
+
+    measures:
+      id_count_distinct:
+        sql: COUNT(DISTINCT ${coco_demo__oi_atl_2026_sv__products.id})
+        description: "(Count Distinct) Product ID: Unique product identifier in the
+          catalog."
+
+  coco_demo__oi_atl_2026_sv__users:
+    label: Users
+    description: Registered customer accounts. Each row represents a single user
+      with demographic information, geographic location, and acquisition source.
+      Used for customer segmentation, cohort analysis, and geographic
+      distribution reporting.
+
+    schema: COCO_DEMO
+    table_name: USERS
+
+    dimensions:
+      age:
+        sql: '"AGE"'
+
+      city:
+        sql: '"CITY"'
+
+      country:
+        sql: '"COUNTRY"'
+
+      created_at:
+        sql: '"CREATED_AT"'
+
+      email:
+        sql: '"EMAIL"'
+
+      first_name:
+        sql: '"FIRST_NAME"'
+
+      gender:
+        sql: '"GENDER"'
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      last_name:
+        sql: '"LAST_NAME"'
+
+      state:
+        sql: '"STATE"'
+
+      traffic_source:
+        sql: '"TRAFFIC_SOURCE"'
+
+      zip:
+        sql: '"ZIP"'
+
+      latitude:
+        sql: '"LATITUDE"'
+
+      longitude:
+        sql: '"LONGITUDE"'
+
+    measures:
+      user_count:
+        sql: COUNT(DISTINCT ${coco_demo__oi_atl_2026_sv__users.id})
+        description: Total number of registered users.
+
+relationships:
+  - join_from_view: coco_demo__oi_atl_2026_sv__inventory_items
+    join_to_view: coco_demo__oi_atl_2026_sv__products
+    join_type: always_left
+    on_sql: ${coco_demo__oi_atl_2026_sv__inventory_items.product_id} =
+      ${coco_demo__oi_atl_2026_sv__products.id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__oi_atl_2026_sv__order_items
+    join_to_view: coco_demo__oi_atl_2026_sv__inventory_items
+    join_type: always_left
+    on_sql: ${coco_demo__oi_atl_2026_sv__order_items.inventory_item_id} =
+      ${coco_demo__oi_atl_2026_sv__inventory_items.id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__oi_atl_2026_sv__order_items
+    join_to_view: coco_demo__oi_atl_2026_sv__users
+    join_type: always_left
+    on_sql: ${coco_demo__oi_atl_2026_sv__order_items.user_id} =
+      ${coco_demo__oi_atl_2026_sv__users.id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__oi_atl_2026_sv__products
+    join_to_view: coco_demo__oi_atl_2026_sv__distribution_centers
+    join_type: always_left
+    on_sql: ${coco_demo__oi_atl_2026_sv__products.distribution_center_id} =
+      ${coco_demo__oi_atl_2026_sv__distribution_centers.id}
+    relationship_type: many_to_one

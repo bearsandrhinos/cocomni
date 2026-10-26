@@ -1,0 +1,70 @@
+# Reference this view as demo__customer_health
+schema: DEMO
+table_name: CUSTOMER_HEALTH
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_name:
+    sql: '"ACCOUNT_NAME"'
+
+  acv:
+    sql: '"ACV"'
+
+  dte:
+    sql: '"DTE"'
+
+  usage_minutes:
+    sql: '"USAGE_MINUTES"'
+
+  usage_change:
+    sql: '"USAGE_CHANGE"'
+
+  user_change:
+    sql: '"USER_CHANGE"'
+
+  concentration:
+    sql: '"CONCENTRATION"'
+
+  product_x:
+    sql: '"PRODUCT_X"'
+
+  product_y:
+    sql: '"PRODUCT_Y"'
+
+  product_z:
+    sql: '"PRODUCT_Z"'
+
+  product_a:
+    sql: '"PRODUCT_A"'
+
+  product_b:
+    sql: '"PRODUCT_B"'
+
+  usage_health:
+    sql: '"USAGE_HEALTH"'
+
+  usage_change_health:
+    sql: '"USAGE_CHANGE_HEALTH"'
+
+  user_change_health:
+    sql: '"USER_CHANGE_HEALTH"'
+
+  concentration_health:
+    sql: '"CONCENTRATION_HEALTH"'
+
+  product_health:
+    sql: '"PRODUCT_HEALTH"'
+
+  health:
+    sql: '"HEALTH"'
+
+  active_users:
+    sql: '"ACTIVE_USERS"'
+
+measures:
+  count:
+    aggregate_type: count

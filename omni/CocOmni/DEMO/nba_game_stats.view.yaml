@@ -1,0 +1,108 @@
+# Reference this view as demo__nba_game_stats
+schema: DEMO
+table_name: NBA_GAME_STATS
+
+dimensions:
+  game_id:
+    sql: '"GAME_ID"'
+    format: ID
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_abbreviation:
+    sql: '"TEAM_ABBREVIATION"'
+
+  team_city:
+    sql: '"TEAM_CITY"'
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  nickname:
+    sql: '"NICKNAME"'
+
+  start_position:
+    sql: '"START_POSITION"'
+
+  comment:
+    sql: '"COMMENT"'
+
+  min:
+    sql: '"MIN"'
+
+  fgm:
+    sql: '"FGM"'
+
+  fga:
+    sql: '"FGA"'
+
+  fg_pct:
+    sql: '"FG_PCT"'
+
+  fg3m:
+    sql: '"FG3M"'
+
+  fg3a:
+    sql: '"FG3A"'
+
+  fg3_pct:
+    sql: '"FG3_PCT"'
+
+  ftm:
+    sql: '"FTM"'
+
+  fta:
+    sql: '"FTA"'
+
+  ft_pct:
+    sql: '"FT_PCT"'
+
+  oreb:
+    sql: '"OREB"'
+
+  dreb:
+    sql: '"DREB"'
+
+  reb:
+    sql: '"REB"'
+
+  ast:
+    sql: '"AST"'
+
+  stl:
+    sql: '"STL"'
+
+  blk:
+    sql: '"BLK"'
+
+  tov:
+    sql: '"TOV"'
+
+  pf:
+    sql: '"PF"'
+
+  pts:
+    sql: '"PTS"'
+
+  plus_minus:
+    sql: '"PLUS_MINUS"'
+
+  person_id:
+    sql: '"PERSON_ID"'
+    format: ID
+
+  player_first_name:
+    sql: '"PLAYER_FIRST_NAME"'
+
+  player_last_name:
+    sql: '"PLAYER_LAST_NAME"'
+
+measures:
+  count:
+    aggregate_type: count

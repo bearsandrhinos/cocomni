@@ -1,0 +1,31 @@
+# Reference this view as saas__company_usage_metrics
+schema: SAAS
+table_name: COMPANY_USAGE_METRICS
+
+dimensions:
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  snapshot_month:
+    sql: '"SNAPSHOT_MONTH"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  region:
+    sql: '"REGION"'
+
+  product_tier:
+    sql: '"PRODUCT_TIER"'
+
+  metric_id:
+    sql: '"METRIC_ID"'
+    format: ID
+
+  value:
+    sql: '"VALUE"'
+
+measures:
+  count:
+    aggregate_type: count

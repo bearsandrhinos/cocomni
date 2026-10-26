@@ -1,0 +1,30 @@
+# Reference this view as demo__nba_teams
+schema: DEMO
+table_name: NBA_TEAMS
+
+dimensions:
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+
+  team_abbr:
+    sql: '"TEAM_ABBR"'
+
+  city:
+    sql: '"CITY"'
+
+  conference:
+    sql: '"CONFERENCE"'
+
+  division:
+    sql: '"DIVISION"'
+
+  is_expansion:
+    sql: '"IS_EXPANSION"'
+
+measures:
+  count:
+    aggregate_type: count

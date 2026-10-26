@@ -1,0 +1,50 @@
+base_view: coco_demo__friendlies_fixtures
+label: Friendlies
+group_label: Soccer
+description: International friendly match data including match fixtures and
+  individual player performance statistics
+
+joins:
+  coco_demo__friendlies_player_stats: {}
+
+ai_context: |-
+  This topic provides comprehensive international friendly match analytics across matches and players.
+
+  VIEWS:
+  - coco_demo__friendlies_fixtures: Match-level data (teams, scores, venue, date)
+  - coco_demo__friendlies_player_stats: Individual player performance per match (goals, assists, passes, tackles, ratings)
+
+  KEY METRICS AND WHERE TO FIND THEM:
+  - Match Count → coco_demo__friendlies_fixtures.count
+  - Total Goals → coco_demo__friendlies_fixtures.total_goals_scored
+  - Average Goals per Match → coco_demo__friendlies_fixtures.average_goals_per_match
+  - Home Wins / Away Wins / Draws → coco_demo__friendlies_fixtures.home_wins, away_wins, draws
+  - Player Goals → coco_demo__friendlies_player_stats.goals_total
+  - Player Assists → coco_demo__friendlies_player_stats.assists_total
+  - Player Rating → coco_demo__friendlies_player_stats.average_rating
+
+  COMMON ANALYSIS PATTERNS:
+  - Top scorers: goals_total grouped by player_name, sort desc
+  - Team performance: group by home_team or away_team, aggregate goals/wins
+  - Match trends over time: group by date[year] or season
+  - Player efficiency: average_shot_accuracy, average_pass_accuracy by player
+  - Venue analysis: group by venue_name or venue_city
+
+  QUERY TIPS:
+  - Use match_result dimension to filter/group by Home Win, Away Win, or Draw
+  - Filter went_to_penalties or went_to_extra_time for dramatic matches
+  - Use games_position to segment player stats by position (Forward, Midfielder, Defender, Goalkeeper)
+  - Use season to compare across different years
+  - Player stats are per-match, so use unique_players measure for player counts
+
+  COMMON QUESTIONS THIS TOPIC ANSWERS:
+  1. Who are the top goal scorers in friendlies?
+  2. Which teams have the most wins?
+  3. What's the average number of goals per match?
+  4. Which players have the highest match ratings?
+  5. Which venues host the most matches?
+  6. How many matches went to penalties or extra time?
+  7. What's the home team advantage (home wins vs away wins)?
+  8. Which players have the most assists?
+  9. How do player statistics vary by position?
+  10. What are the scoring trends over time?

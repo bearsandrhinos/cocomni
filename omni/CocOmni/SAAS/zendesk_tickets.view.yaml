@@ -1,0 +1,99 @@
+# Reference this view as saas__zendesk_tickets
+schema: SAAS
+table_name: ZENDESK_TICKETS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  ticket_id:
+    sql: '"TICKET_ID"'
+    format: ID
+
+  type:
+    sql: '"TYPE"'
+
+  subject:
+    sql: '"SUBJECT"'
+
+  description:
+    sql: '"DESCRIPTION"'
+
+  priority:
+    sql: '"PRIORITY"'
+
+  status:
+    sql: '"STATUS"'
+
+  channel:
+    sql: '"CHANNEL"'
+
+  requester_id:
+    sql: '"REQUESTER_ID"'
+    format: ID
+
+  assignee_id:
+    sql: '"ASSIGNEE_ID"'
+    format: ID
+
+  group_id:
+    sql: '"GROUP_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  updated_date:
+    sql: '"UPDATED_DATE"'
+
+  resolved_date:
+    sql: '"RESOLVED_DATE"'
+
+  first_response_time_hours:
+    sql: '"FIRST_RESPONSE_TIME_HOURS"'
+
+  resolution_time_hours:
+    sql: '"RESOLUTION_TIME_HOURS"'
+
+  satisfaction_score:
+    sql: '"SATISFACTION_SCORE"'
+
+  satisfaction_comment:
+    sql: '"SATISFACTION_COMMENT"'
+
+  tags:
+    sql: '"TAGS"'
+
+  account_segment:
+    sql: '"ACCOUNT_SEGMENT"'
+
+  brand_id:
+    sql: '"BRAND_ID"'
+    format: ID
+
+  locale:
+    sql: '"LOCALE"'
+
+  timezone:
+    sql: '"TIMEZONE"'
+
+  due_date:
+    sql: '"DUE_DATE"'
+
+  external_id:
+    sql: '"EXTERNAL_ID"'
+    format: ID
+
+  jira_issue_id:
+    sql: '"JIRA_ISSUE_ID"'
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count

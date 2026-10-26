@@ -1,0 +1,151 @@
+# Reference this view as opportunity_facts
+label: Opportunity Facts
+
+query:
+  fields:
+    saas__opportunity_history.id: id
+    saas__opportunity_history.created_date[date]: created_date_date
+    saas__opportunity_history.first_demo_date[date]: first_demo_date_date
+    saas__opportunity_history.last_stage_change_date_date_min: last_stage_change_date_date_min
+    saas__opportunity_history.qualified_date: qualified_date
+    saas__opportunity_history.trial_date: trial_date
+    saas__opportunity_history.trial_positive_date: trial_positive_date
+    saas__opportunity_history.negotiate_date: negotiate_date
+    saas__opportunity_history.closed_won_date: closed_won_date
+    saas__opportunity_history.closed_lost_date: closed_lost_date
+  base_view: saas__opportunity_history
+  sorts:
+    - field: saas__opportunity_history.first_demo_date[date]
+
+dimensions:
+  id: {}
+  created_date_date: {}
+  first_demo_date_date: {}
+  qualified_date: {}
+  trial_date: {}
+  trial_positive_date: {}
+  negotiate_date: {}
+  closed_won_date: {}
+  closed_lost_date: {}
+  last_stage_change_date_date_min: {}
+
+measures:
+  count:
+    aggregate_type: count
+
+  pre_qualified_count:
+    label: S1 Pre Qualified Count
+    group_label: Stage Opportunity Count
+    format: NUMBER_0
+    aggregate_type: count
+    filters:
+      last_stage_change_date_date_min:
+        not: null
+
+  qualified_date_1:
+    label: S2 Qualified Count
+    group_label: Stage Opportunity Count
+    format: NUMBER_0
+    aggregate_type: count
+    filters:
+      qualified_date:
+        not: null
+
+  trial_count:
+    label: S3 Trial Count
+    group_label: Stage Opportunity Count
+    format: NUMBER_0
+    aggregate_type: count
+    filters:
+      trial_date:
+        not: null
+
+  trial_positive_count:
+    label: S4 Trial Positive Count
+    group_label: Stage Opportunity Count
+    format: NUMBER_0
+    aggregate_type: count
+    filters:
+      trial_positive_date:
+        not: null
+
+  negotiate_count:
+    label: S5 Negotiate Count
+    group_label: Stage Opportunity Count
+    format: NUMBER_0
+    aggregate_type: count
+    filters:
+      negotiate_date:
+        not: null
+
+  closed_won_count:
+    label: S6 Closed Won Count
+    group_label: Stage Opportunity Count
+    format: NUMBER_0
+    aggregate_type: count
+    filters:
+      closed_won_date:
+        not: null
+
+  s1_to_s2_conversion_rate:
+    sql: ${opportunity_facts.qualified_date_1}/nullif(${opportunity_facts.pre_qualified_count},
+      0)
+    label: S1 to S2 Conversion Rate
+    group_label: Stage Conversion Rates
+    format: PERCENT
+
+  s2_to_s3_conversion_rate:
+    sql: ${opportunity_facts.trial_count}/nullif(${opportunity_facts.qualified_date_1},
+      0 )
+    label: S2 to S3 Conversion Rate
+    group_label: Stage Conversion Rates
+    format: PERCENT
+
+  s4_to_s5_conversion_rate:
+    sql: ${opportunity_facts.negotiate_count}/nullif(${opportunity_facts.trial_positive_count},
+      0)
+    label: S4 to S5 Conversion Rate
+    group_label: Stage Conversion Rates
+    format: PERCENT
+
+  s3_to_s4_conversion_rate:
+    sql: ${opportunity_facts.trial_positive_count}/nullif(${opportunity_facts.trial_count},
+      0)
+    label: S3 to S4 Conversion Rate
+    group_label: Stage Conversion Rates
+    format: PERCENT
+
+  s1_to_close_conversion_rate:
+    sql: ${opportunity_facts.closed_won_count}/nullif(${opportunity_facts.pre_qualified_count},
+      0)
+    label: S1 to Close Conversion Rate
+    group_label: Stage to Won Conversion Rate
+    format: PERCENT
+
+  s2_to_won_conversion_rate:
+    sql: ${opportunity_facts.closed_won_count}/nullif(${opportunity_facts.qualified_date_1},
+      0)
+    label: S2 to Won Conversion Rate
+    group_label: Stage to Won Conversion Rate
+    format: PERCENT
+
+  s3_to_won_conversion_rate:
+    sql: ${opportunity_facts.closed_won_count}/nullif(${opportunity_facts.trial_count},
+      0)
+    label: S3 to Won Conversion Rate
+    group_label: Stage to Won Conversion Rate
+    format: PERCENT
+
+  s4_to_won_conversion_rate:
+    sql: ${opportunity_facts.closed_won_count}/nullif(${opportunity_facts.trial_positive_count},
+      0)
+    label: S4 to Won Conversion Rate
+    group_label: Stage to Won Conversion Rate
+    format: PERCENT
+
+  s5_to_s6_conversion_rates:
+    sql: ${opportunity_facts.closed_won_count}/nullif(${opportunity_facts.negotiate_count},
+      0 )
+    label: S5 to Won Conversion Rates
+    group_label: Stage to Won Conversion Rate
+    format: PERCENT

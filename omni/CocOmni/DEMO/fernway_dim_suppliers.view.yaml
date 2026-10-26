@@ -1,0 +1,30 @@
+# Reference this view as demo__fernway_dim_suppliers
+schema: DEMO
+table_name: FERNWAY_DIM_SUPPLIERS
+
+dimensions:
+  supplier_sk:
+    sql: '"SUPPLIER_SK"'
+
+  supplier_id:
+    sql: '"SUPPLIER_ID"'
+    format: ID
+
+  supplier_name:
+    sql: '"SUPPLIER_NAME"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  quality_tier:
+    sql: '"QUALITY_TIER"'
+
+  effective_from:
+    sql: '"EFFECTIVE_FROM"'
+
+  effective_to:
+    sql: '"EFFECTIVE_TO"'
+
+measures:
+  count:
+    aggregate_type: count

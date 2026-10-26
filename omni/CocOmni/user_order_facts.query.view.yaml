@@ -1,0 +1,25 @@
+# Reference this view as user_order_facts
+query:
+  fields:
+    ecomm__order_items.user_id: user_id
+    ecomm__order_items.created_at_min: first_order
+    ecomm__order_items.count: lifetime_order_items
+    ecomm__order_items.total_sale_price: lifetime_spend
+  base_view: ecomm__order_items
+  default_group_by: false
+
+dimensions:
+  first_order: {}
+  lifetime_order_items: {}
+
+  user_id:
+    primary_key: true
+
+  lifetime_spend:
+    format: CURRENCY
+
+measures:
+  lifetime_spend_average:
+    sql: ${user_order_facts.lifetime_spend}
+    label: Lifetime Spend Average
+    aggregate_type: average

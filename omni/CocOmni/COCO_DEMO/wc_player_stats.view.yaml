@@ -1,0 +1,442 @@
+# Reference this view as coco_demo__wc_player_stats
+label: World Cup Player Stats
+description: Player performance statistics for each World Cup match, including
+  goals, assists, passes, tackles, cards, and ratings
+
+schema: COCO_DEMO
+table_name: WC_PLAYER_STATS
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    label: Fixture ID
+    format: ID
+    description: Unique identifier for the match
+    ai_context: Match ID linking to fixtures.
+
+  team_id:
+    sql: '"TEAM_ID"'
+    label: Team ID
+    format: ID
+    description: Unique identifier for the player's team
+    ai_context: Internal team ID.
+
+  team_name:
+    sql: '"TEAM_NAME"'
+    label: Team Name
+    description: Name of the player's national team
+    ai_context: Team name for grouping.
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    label: Player ID
+    format: ID
+    description: Unique identifier for the player
+    ai_context: Internal player ID.
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+    label: Player Name
+    description: Full name of the player
+    ai_context: Primary player dimension for display and grouping.
+
+  games_minutes:
+    sql: '"GAMES_MINUTES"'
+    label: Minutes Played
+    description: Minutes played in the match
+    group_label: Game Info
+    ai_context: Playing time in the match.
+
+  games_number:
+    sql: '"GAMES_NUMBER"'
+    label: Jersey Number
+    description: Jersey number worn by the player
+    group_label: Game Info
+    ai_context: Player's shirt number.
+
+  games_position:
+    sql: '"GAMES_POSITION"'
+    label: Position
+    description: Playing position (Forward, Midfielder, Defender, Goalkeeper)
+    group_label: Game Info
+    sample_values: [ G, D, M, F ]
+    ai_context: "Player's position on the field. Data values are single-letter
+      abbreviations: G = Goalkeeper, D = Defender, M = Midfielder, F = Forward.
+      When users ask about goalkeepers, keepers, or GK, filter on 'G'. When
+      users ask about defenders or backs, filter on 'D'. When users ask about
+      midfielders or midfield, filter on 'M'. When users ask about forwards,
+      strikers, or attackers, filter on 'F'."
+
+  games_rating:
+    sql: CAST("GAMES_RATING" AS FLOAT)
+    label: Match Rating
+    format: number_2
+    description: Player match rating (typically 1-10 scale)
+    group_label: Game Info
+    ai_context: Performance rating for the match.
+
+  games_captain:
+    sql: '"GAMES_CAPTAIN"'
+    label: Was Captain
+    description: Whether the player was team captain
+    group_label: Game Info
+    ai_context: Boolean captain flag.
+
+  games_substitute:
+    sql: '"GAMES_SUBSTITUTE"'
+    label: Was Substitute
+    description: Whether the player came on as a substitute
+    group_label: Game Info
+    ai_context: Boolean substitute flag.
+
+  offsides:
+    sql: '"OFFSIDES"'
+    label: Offsides
+    description: Number of times the player was caught offside
+    group_label: Shooting
+    ai_context: Player offside count.
+
+  shots_total:
+    sql: '"SHOTS_TOTAL"'
+    label: Total Shots
+    description: Total shots attempted by the player
+    group_label: Shooting
+    ai_context: All shot attempts.
+
+  shots_on:
+    sql: '"SHOTS_ON"'
+    label: Shots on Target
+    description: Shots on target by the player
+    group_label: Shooting
+    ai_context: Shots that were on target.
+
+  goals_total:
+    sql: '"GOALS_TOTAL"'
+    label: Goals Scored
+    description: Goals scored by the player in the match
+    group_label: Goals & Assists
+    ai_context: Player goals scored.
+
+  goals_conceded:
+    sql: '"GOALS_CONCEDED"'
+    label: Goals Conceded
+    description: Goals conceded (primarily for goalkeepers)
+    group_label: Goals & Assists
+    ai_context: Goals let in. Mainly relevant for goalkeepers.
+
+  goals_assists:
+    sql: '"GOALS_ASSISTS"'
+    label: Assists
+    description: Assists provided by the player
+    group_label: Goals & Assists
+    ai_context: Passes leading directly to goals.
+
+  goals_saves:
+    sql: '"GOALS_SAVES"'
+    label: Saves
+    description: Saves made (primarily for goalkeepers)
+    group_label: Goals & Assists
+    ai_context: Goalkeeper saves.
+
+  passes_total:
+    sql: '"PASSES_TOTAL"'
+    label: Total Passes
+    description: Total passes attempted by the player
+    group_label: Passing
+    ai_context: All pass attempts.
+
+  passes_key:
+    sql: '"PASSES_KEY"'
+    label: Key Passes
+    description: Key passes (passes leading to a shot)
+    group_label: Passing
+    ai_context: Passes that created a shooting opportunity.
+
+  passes_accuracy:
+    sql: '"PASSES_ACCURACY"'
+    label: Pass Accuracy
+    format: percent_0
+    description: Pass accuracy percentage
+    group_label: Passing
+    ai_context: Percentage of passes completed.
+
+  tackles_total:
+    sql: '"TACKLES_TOTAL"'
+    label: Total Tackles
+    description: Total tackles made by the player
+    group_label: Defending
+    ai_context: Tackle attempts.
+
+  tackles_blocks:
+    sql: '"TACKLES_BLOCKS"'
+    label: Blocks
+    description: Blocks made by the player
+    group_label: Defending
+    ai_context: Shot or pass blocks.
+
+  tackles_interceptions:
+    sql: '"TACKLES_INTERCEPTIONS"'
+    label: Interceptions
+    description: Interceptions made by the player
+    group_label: Defending
+    ai_context: Passes intercepted.
+
+  duels_total:
+    sql: '"DUELS_TOTAL"'
+    label: Total Duels
+    description: Total duels contested
+    group_label: Duels
+    ai_context: All 1v1 contests.
+
+  duels_won:
+    sql: '"DUELS_WON"'
+    label: Duels Won
+    description: Duels won by the player
+    group_label: Duels
+    ai_context: 1v1 contests won.
+
+  dribbles_attempts:
+    sql: '"DRIBBLES_ATTEMPTS"'
+    label: Dribble Attempts
+    description: Dribble attempts by the player
+    group_label: Dribbling
+    ai_context: Attempted take-ons.
+
+  dribbles_success:
+    sql: '"DRIBBLES_SUCCESS"'
+    label: Successful Dribbles
+    description: Successful dribbles completed
+    group_label: Dribbling
+    ai_context: Successful take-ons.
+
+  dribbles_past:
+    sql: '"DRIBBLES_PAST"'
+    label: Dribbles Past Opponent
+    description: Times the player dribbled past an opponent
+    group_label: Dribbling
+    ai_context: Opponents beaten by dribbling.
+
+  fouls_drawn:
+    sql: '"FOULS_DRAWN"'
+    label: Fouls Drawn
+    description: Fouls drawn by the player
+    group_label: Discipline
+    ai_context: Fouls won.
+
+  fouls_committed:
+    sql: '"FOULS_COMMITTED"'
+    label: Fouls Committed
+    description: Fouls committed by the player
+    group_label: Discipline
+    ai_context: Fouls given away.
+
+  cards_yellow:
+    sql: '"CARDS_YELLOW"'
+    label: Yellow Cards
+    description: Yellow cards received
+    group_label: Discipline
+    ai_context: Cautions received.
+
+  cards_red:
+    sql: '"CARDS_RED"'
+    label: Red Cards
+    description: Red cards received
+    group_label: Discipline
+    ai_context: Dismissals.
+
+  penalty_won:
+    sql: '"PENALTY_WON"'
+    label: Penalties Won
+    description: Penalties won by the player
+    group_label: Penalties
+    ai_context: Penalties earned.
+
+  penalty_commited:
+    sql: '"PENALTY_COMMITED"'
+    label: Penalties Committed
+    description: Penalties conceded by the player
+    group_label: Penalties
+    ai_context: Penalties given away.
+
+  penalty_scored:
+    sql: '"PENALTY_SCORED"'
+    label: Penalties Scored
+    description: Penalties scored by the player
+    group_label: Penalties
+    ai_context: Penalties converted.
+
+  penalty_missed:
+    sql: '"PENALTY_MISSED"'
+    label: Penalties Missed
+    description: Penalties missed by the player
+    group_label: Penalties
+    ai_context: Penalties not converted.
+
+  penalty_saved:
+    sql: '"PENALTY_SAVED"'
+    label: Penalties Saved
+    description: Penalties saved (for goalkeepers)
+    group_label: Penalties
+    ai_context: Penalties stopped by the goalkeeper.
+
+  season:
+    sql: '"SEASON"'
+    label: Season
+    description: World Cup tournament year
+    ai_context: Use to filter by World Cup edition.
+
+  dribbles_success_rate:
+    sql: CASE WHEN ${coco_demo__wc_player_stats.dribbles_attempts} > 0 THEN
+      ${coco_demo__wc_player_stats.dribbles_success}::FLOAT /
+      ${coco_demo__wc_player_stats.dribbles_attempts} END
+    label: Dribble Success Rate
+    format: percent_2
+    description: Percentage of successful dribbles
+    group_label: Dribbling
+    ai_context: Dribble completion rate.
+
+  duels_won_rate:
+    sql: CASE WHEN ${coco_demo__wc_player_stats.duels_total} > 0 THEN
+      ${coco_demo__wc_player_stats.duels_won}::FLOAT /
+      ${coco_demo__wc_player_stats.duels_total} END
+    label: Duel Win Rate
+    format: percent_2
+    description: Percentage of duels won
+    group_label: Duels
+    ai_context: Duel win rate.
+
+  shots_on_target_rate:
+    sql: CASE WHEN ${coco_demo__wc_player_stats.shots_total} > 0 THEN
+      ${coco_demo__wc_player_stats.shots_on}::FLOAT /
+      ${coco_demo__wc_player_stats.shots_total} END
+    label: Shot Accuracy
+    format: percent_2
+    description: Percentage of shots on target
+    group_label: Shooting
+    ai_context: Shot accuracy rate.
+
+  player_photo:
+    sql: '"PLAYER_PHOTO"'
+    description: URL to the player's photo
+    group_label: Game Info
+    ai_context: Player photo for visual displays.
+
+measures:
+  count:
+    label: Player Appearances
+    description: Total player-match appearances
+    aggregate_type: count
+    ai_context: Count of player appearances across matches.
+
+  assists_total:
+    sql: ${goals_assists}
+    label: Total Assists
+    group_label: Goals & Assists
+    description: Sum of assists across all matches
+    aggregate_type: sum
+    ai_context: Aggregate assists.
+
+  average_minutes_played:
+    sql: ${games_minutes}
+    label: Average Minutes Played
+    group_label: Game Info
+    format: number_1
+    description: Average minutes played per match
+    aggregate_type: average
+    ai_context: Mean playing time per appearance.
+
+  average_rating:
+    sql: ${games_rating}
+    label: Average Player Rating
+    group_label: Game Info
+    format: number_2
+    description: Average player match rating
+    aggregate_type: average
+    ai_context: Mean performance rating.
+
+  fouls_committed_total:
+    sql: ${fouls_committed}
+    label: Total Fouls Committed
+    group_label: Discipline
+    description: Sum of fouls committed across all matches
+    aggregate_type: sum
+    ai_context: Aggregate fouls committed.
+
+  fouls_drawn_total:
+    sql: ${fouls_drawn}
+    label: Total Fouls Drawn
+    group_label: Discipline
+    description: Sum of fouls drawn across all matches
+    aggregate_type: sum
+    ai_context: Aggregate fouls won.
+
+  goals_conceded_total:
+    sql: ${goals_conceded}
+    label: Total Goals Conceded
+    group_label: Goals & Assists
+    description: Sum of goals conceded across all matches (primarily goalkeepers)
+    aggregate_type: sum
+    ai_context: Aggregate goals conceded.
+
+  key_passes_total:
+    sql: ${passes_key}
+    label: Total Key Passes
+    group_label: Passing
+    description: Sum of key passes across all matches
+    aggregate_type: sum
+    ai_context: Aggregate key passes.
+
+  red_cards_total:
+    sql: ${cards_red}
+    label: Total Red Cards
+    group_label: Discipline
+    description: Sum of red cards across all matches
+    aggregate_type: sum
+    ai_context: Aggregate dismissals.
+
+  saves_total:
+    sql: ${goals_saves}
+    label: Total Saves
+    group_label: Goals & Assists
+    description: Sum of saves across all matches (primarily goalkeepers)
+    aggregate_type: sum
+    ai_context: Aggregate goalkeeper saves.
+
+  shots_on_target_total:
+    sql: ${shots_on}
+    label: Total Shots on Target
+    group_label: Shooting
+    description: Sum of shots on target across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots on target.
+
+  unique_players:
+    sql: ${player_id}
+    label: Unique Players
+    description: Count of distinct players
+    aggregate_type: count_distinct
+    ai_context: Number of unique players. Use instead of count for player counts.
+
+  yellow_cards_total:
+    sql: ${cards_yellow}
+    label: Total Yellow Cards
+    group_label: Discipline
+    description: Sum of yellow cards across all matches
+    aggregate_type: sum
+    ai_context: Aggregate cautions.
+
+  total_goals:
+    sql: ${goals_total}
+    label: Total Goals
+    group_label: Goals & Assists
+    description: Sum of all goals scored by players across World Cup matches
+    drill_fields: [ player_name, team_name, season, games_position ]
+    aggregate_type: sum
+    ai_context: Aggregate player goals. Use for top scorer rankings.
+
+ai_context: This view contains per-player, per-match statistics for FIFA World
+  Cup matches. Each row is one player's performance in one match. Use it to
+  analyze individual player performance including goals, assists, passes,
+  tackles, dribbles, duels, cards, and ratings. Use games_position to segment by
+  position (Forward, Midfielder, Defender, Goalkeeper). Player stats are
+  per-match, so use unique_players measure for player counts.

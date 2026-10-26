@@ -1,0 +1,32 @@
+# Reference this view as demo__fernway_dim_part_lots
+schema: DEMO
+table_name: FERNWAY_DIM_PART_LOTS
+
+dimensions:
+  lot_id:
+    sql: '"LOT_ID"'
+    format: ID
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  supplier_sk:
+    sql: '"SUPPLIER_SK"'
+
+  lot_number:
+    sql: '"LOT_NUMBER"'
+
+  recall_event_id:
+    sql: '"RECALL_EVENT_ID"'
+    format: ID
+
+  manufacture_date:
+    sql: '"MANUFACTURE_DATE"'
+
+  received_date:
+    sql: '"RECEIVED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

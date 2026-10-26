@@ -1,0 +1,412 @@
+# Reference this view as coco_demo__tournament_team_facts
+description: Team-level statistics for international soccer tournament matches.
+  Each row represents one team's performance in a single tournament match,
+  including goals scored and conceded across all match periods (half-time,
+  full-time, extra time, penalties), along with tournament and round context.
+
+schema: COCO_DEMO
+table_name: TOURNAMENT_TEAM_FACTS
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    format: ID
+    description: Unique identifier for the match fixture
+    ai_context: Primary key for the match. Each fixture has two rows — one per team.
+
+  league_id:
+    sql: '"LEAGUE_ID"'
+    format: ID
+    description: Identifier for the league or tournament
+    ai_context: Internal league/tournament ID. Prefer using 'league_name' for
+      display purposes.
+
+  league_name:
+    sql: '"LEAGUE_NAME"'
+    description: Name of the league or tournament (e.g., UEFA Nations League, Copa America)
+    ai_context: Use to filter or group matches by competition. Key dimension for
+      comparing team performance across different tournaments.
+
+  season:
+    sql: '"SEASON"'
+    description: Season or year the tournament match took place
+    ai_context: Use to filter or group matches by season/year for trend analysis
+      across tournaments.
+
+  date:
+    sql: '"DATE"'
+    description: Date the tournament match was played
+    ai_context: Match date. Use date parts (year, month, week) for time-based
+      analysis of tournament match trends.
+
+  round:
+    sql: '"ROUND"'
+    description: Tournament round or stage (e.g., Group Stage, Round of 16,
+      Quarter-finals, Semi-finals, Final)
+    ai_context: Use to analyze performance by tournament stage. Filter to knockout
+      rounds for elimination match analysis or group stage for pool play.
+
+  venue_name:
+    sql: '"VENUE_NAME"'
+    description: Name of the stadium or venue where the match was played
+    ai_context: Use to analyze performance at specific venues or stadiums.
+
+  venue_city:
+    sql: '"VENUE_CITY"'
+    description: City where the match venue is located
+    ai_context: Use to analyze match distribution and team performance by city.
+
+  status:
+    sql: '"STATUS"'
+    description: Match status indicating how the match concluded (e.g., FT for
+      full-time, AET for after extra time, PEN for penalties)
+    ai_context: Indicates the final match status. Filter on this to find matches
+      that went to extra time or penalties.
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+    description: Unique identifier for the team
+    ai_context: Internal team ID. Prefer using the 'team' dimension for display purposes.
+
+  team:
+    sql: '"TEAM"'
+    description: Name of the national team
+    ai_context: The primary team dimension. Use this to group or filter by team name
+      for performance analysis.
+
+  opponent_id:
+    sql: '"OPPONENT_ID"'
+    format: ID
+    description: Unique identifier for the opposing team
+    ai_context: Internal opponent ID. Prefer using the 'opponent' dimension for
+      display purposes.
+
+  opponent:
+    sql: '"OPPONENT"'
+    description: Name of the opposing national team
+    ai_context: Use this for head-to-head analysis or to filter matches against
+      specific opponents.
+
+  is_home:
+    sql: '"IS_HOME"'
+    description: Whether the team was the home team in the match
+    ai_context: Boolean flag indicating home (true) or away (false). Use to analyze
+      home vs away performance.
+
+  goals_scored:
+    sql: '"GOALS_SCORED"'
+    description: Total goals scored by the team in the match (all periods combined)
+    group_label: Goals
+    ai_context: Overall goals scored including regular time, extra time, and
+      penalties. Use the period-specific fields (ht_, ft_, et_, pen_) for
+      breakdown by match phase.
+
+  goals_conceded:
+    sql: '"GOALS_CONCEDED"'
+    description: Total goals conceded by the team in the match (all periods combined)
+    group_label: Goals
+    ai_context: Overall goals conceded including all match periods. Use to assess
+      defensive performance.
+
+  ht_goals_scored:
+    sql: '"HT_GOALS_SCORED"'
+    description: Goals scored by the team in the first half (half-time)
+    group_label: Goals
+    ai_context: First-half goals scored. Use to analyze early match scoring patterns.
+
+  ht_goals_conceded:
+    sql: '"HT_GOALS_CONCEDED"'
+    description: Goals conceded by the team in the first half (half-time)
+    group_label: Goals
+    ai_context: First-half goals conceded. Use to assess first-half defensive performance.
+
+  ft_goals_scored:
+    sql: '"FT_GOALS_SCORED"'
+    description: Goals scored by the team in regular time (full-time, 90 minutes)
+    group_label: Goals
+    ai_context: Goals scored in regular 90-minute play. This excludes extra time and
+      penalties.
+
+  ft_goals_conceded:
+    sql: '"FT_GOALS_CONCEDED"'
+    description: Goals conceded by the team in regular time (full-time, 90 minutes)
+    group_label: Goals
+    ai_context: Goals conceded in regular 90-minute play. This excludes extra time
+      and penalties.
+
+  et_goals_scored:
+    sql: '"ET_GOALS_SCORED"'
+    description: Goals scored by the team in extra time
+    group_label: Goals
+    ai_context: Extra time goals scored. Only populated for matches that went to
+      extra time.
+
+  et_goals_conceded:
+    sql: '"ET_GOALS_CONCEDED"'
+    description: Goals conceded by the team in extra time
+    group_label: Goals
+    ai_context: Extra time goals conceded. Only populated for matches that went to
+      extra time.
+
+  pen_goals_scored:
+    sql: '"PEN_GOALS_SCORED"'
+    description: Goals scored by the team in a penalty shootout
+    group_label: Goals
+    ai_context: Penalty shootout goals scored. Only populated for matches decided by
+      penalties.
+
+  pen_goals_conceded:
+    sql: '"PEN_GOALS_CONCEDED"'
+    description: Goals conceded by the team in a penalty shootout
+    group_label: Goals
+    ai_context: Penalty shootout goals conceded. Only populated for matches decided
+      by penalties.
+
+  is_won:
+    sql: CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" THEN true ELSE false END
+    description: Whether the team won the match (scored more goals than conceded)
+    ai_context: Boolean dimension indicating a win. Use to calculate win rates,
+      filter to only wins, or compare winning vs losing performance. A draw
+      (equal goals) is not considered a win.
+
+  round_rank:
+    sql: |-
+      CASE
+        WHEN "ROUND" ILIKE 'Qualifying%' THEN 1
+        WHEN "ROUND" ILIKE '1st Round%' OR "ROUND" = '1' THEN 2
+        WHEN "ROUND" ILIKE '2nd Round%' OR "ROUND" = '2' THEN 3
+        WHEN "ROUND" ILIKE '3rd Round%' THEN 4
+        WHEN "ROUND" ILIKE 'Group%' THEN 5
+        WHEN "ROUND" ILIKE 'Relegation%' THEN 6
+        WHEN "ROUND" ILIKE 'Play-offs%' THEN 7
+        WHEN "ROUND" ILIKE 'Round of 16%' THEN 8
+        WHEN "ROUND" ILIKE 'Quarter%' THEN 9
+        WHEN "ROUND" ILIKE 'Semi%' THEN 10
+        WHEN "ROUND" ILIKE '3rd Place%' OR "ROUND" ILIKE '3rd place%' THEN 11
+        WHEN "ROUND" ILIKE 'Final' THEN 12
+        ELSE 0
+      END
+    description: Numeric ranking of tournament rounds for ordering and comparison.
+      Higher values represent later stages of the tournament.
+    hidden: true
+    ai_context: Internal ranking used to determine farthest round reached and
+      tournament result. Not intended for direct use in queries.
+
+  farthest_round_reached:
+    sql: |-
+      CASE
+        MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season})
+        WHEN 12 THEN 'Final'
+        WHEN 11 THEN '3rd Place Final'
+        WHEN 10 THEN 'Semi-finals'
+        WHEN 9 THEN 'Quarter-finals'
+        WHEN 8 THEN 'Round of 16'
+        WHEN 7 THEN 'Play-offs'
+        WHEN 6 THEN 'Relegation Play-out'
+        WHEN 5 THEN 'Group Stage'
+        WHEN 4 THEN '3rd Round'
+        WHEN 3 THEN '2nd Round'
+        WHEN 2 THEN '1st Round'
+        WHEN 1 THEN 'Qualifying Round'
+        ELSE 'Unknown'
+      END
+    description: The latest tournament stage the team reached in a given competition
+      and season
+    group_label: Other Stats
+    ai_context: Shows the deepest round a team advanced to within a specific
+      tournament and season. Use to analyze how far teams progress in
+      competitions. Calculated per team, league, and season combination.
+
+  tournament_result:
+    sql: |-
+      CASE
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 12
+          AND MAX(CASE WHEN ${coco_demo__tournament_team_facts.round_rank} = 12 THEN CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" OR ("GOALS_SCORED" = "GOALS_CONCEDED" AND "PEN_GOALS_SCORED" > "PEN_GOALS_CONCEDED") THEN 1 ELSE 0 END END) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 1
+          THEN 'Winner'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 12
+          THEN 'Runner-up'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 11
+          AND MAX(CASE WHEN ${coco_demo__tournament_team_facts.round_rank} = 11 THEN CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" OR ("GOALS_SCORED" = "GOALS_CONCEDED" AND "PEN_GOALS_SCORED" > "PEN_GOALS_CONCEDED") THEN 1 ELSE 0 END END) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 1
+          THEN 'Third Place'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 11
+          THEN 'Fourth Place'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 10
+          THEN 'Semi-finalist'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 9
+          THEN 'Quarter-finalist'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) = 8
+          THEN 'Round of 16'
+        WHEN MAX(${coco_demo__tournament_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__tournament_team_facts.team_id}, ${coco_demo__tournament_team_facts.league_id}, ${coco_demo__tournament_team_facts.season}) >= 5
+          THEN 'Group Stage'
+        ELSE 'Early Round'
+      END
+    description: The team's final tournament placement or exit stage for a given
+      competition and season (e.g., Winner, Runner-up, Third Place,
+      Semi-finalist)
+    group_label: Other Stats
+    ai_context: Classifies each team's tournament outcome. 'Winner' and 'Runner-up'
+      are determined by whether the team won the Final, including penalty
+      shootout wins. 'Third Place' and 'Fourth Place' are based on the 3rd Place
+      Final result. Other values reflect the stage where the team was
+      eliminated. Use to filter for champions, analyze tournament depth, or
+      compare team achievements across seasons.
+
+measures:
+  count:
+    description: Total number of team-match records
+    aggregate_type: count
+    ai_context: Counts the number of team-match appearances. Since each fixture has
+      two rows (one per team), divide by 2 to get match count, or use this
+      directly for team appearance counts.
+
+  total_goals_scored:
+    sql: ${coco_demo__tournament_team_facts.goals_scored}
+    label: Total Goals Scored
+    group_label: Goals
+    description: Sum of all goals scored across matches (all periods)
+    aggregate_type: sum
+    ai_context: Aggregate total of goals scored. Use to rank teams by offensive
+      output in tournaments.
+
+  total_goals_conceded:
+    sql: ${coco_demo__tournament_team_facts.goals_conceded}
+    label: Total Goals Conceded
+    group_label: Goals
+    description: Sum of all goals conceded across matches (all periods)
+    aggregate_type: sum
+    ai_context: Aggregate total of goals conceded. Use to rank teams by defensive
+      record in tournaments.
+
+  total_ht_goals_scored:
+    sql: ${coco_demo__tournament_team_facts.ht_goals_scored}
+    label: Total Goals Scored H1
+    group_label: Goals
+    description: Sum of goals scored in the first half across all matches
+    aggregate_type: sum
+    ai_context: Aggregate first-half goals scored. Use to analyze early-match
+      offensive patterns.
+
+  total_ht_goals_conceded:
+    sql: ${coco_demo__tournament_team_facts.ht_goals_conceded}
+    label: Total Goals Conceded H1
+    group_label: Goals
+    description: Sum of goals conceded in the first half across all matches
+    aggregate_type: sum
+    ai_context: Aggregate first-half goals conceded. Use to assess early-match
+      defensive vulnerability.
+
+  total_ft_goals_scored:
+    sql: ${coco_demo__tournament_team_facts.ft_goals_scored}
+    label: Total Goals Scored FT
+    group_label: Goals
+    description: Sum of goals scored in regular time (90 minutes) across all matches
+    aggregate_type: sum
+    ai_context: Aggregate full-time goals scored, excluding extra time and penalties.
+
+  total_ft_goals_conceded:
+    sql: ${coco_demo__tournament_team_facts.ft_goals_conceded}
+    label: Total Goals Conceded FT
+    group_label: Goals
+    description: Sum of goals conceded in regular time (90 minutes) across all matches
+    aggregate_type: sum
+    ai_context: Aggregate full-time goals conceded, excluding extra time and penalties.
+
+  total_et_goals_scored:
+    sql: ${coco_demo__tournament_team_facts.et_goals_scored}
+    label: Total Goals Scored ET
+    group_label: Goals
+    description: Sum of goals scored in extra time across all matches
+    aggregate_type: sum
+    ai_context: Aggregate extra-time goals scored. Only includes matches that went
+      to extra time.
+
+  total_et_goals_conceded:
+    sql: ${coco_demo__tournament_team_facts.et_goals_conceded}
+    label: Total Goals Conceded ET
+    group_label: Goals
+    description: Sum of goals conceded in extra time across all matches
+    aggregate_type: sum
+    ai_context: Aggregate extra-time goals conceded. Only includes matches that went
+      to extra time.
+
+  total_pen_goals_scored:
+    sql: ${coco_demo__tournament_team_facts.pen_goals_scored}
+    label: Total Penalty Goals Scored
+    group_label: Goals
+    description: Sum of penalty shootout goals scored across all matches
+    aggregate_type: sum
+    ai_context: Aggregate penalty shootout goals scored. Only includes matches
+      decided by penalties.
+
+  total_pen_goals_conceded:
+    sql: ${coco_demo__tournament_team_facts.pen_goals_conceded}
+    label: Total Penalty Goals Conceded
+    group_label: Goals
+    description: Sum of penalty shootout goals conceded across all matches
+    aggregate_type: sum
+    ai_context: Aggregate penalty shootout goals conceded. Only includes matches
+      decided by penalties.
+
+  total_wins:
+    sql: ${coco_demo__tournament_team_facts.is_won}
+    label: Total Wins
+    group_label: Other Stats
+    description: Total number of matches won (goals scored > goals conceded)
+    aggregate_type: count
+    filters:
+      is_won:
+        is: true
+    ai_context: Count of matches where the team won. Use to rank teams by win record
+      or calculate win rate.
+
+  win_rate:
+    sql: ${coco_demo__tournament_team_facts.total_wins} * 1.0 /
+      NULLIF(${coco_demo__tournament_team_facts.count}, 0)
+    label: Win Rate
+    group_label: Other Stats
+    format: percent_1
+    description: Percentage of matches won out of total matches played
+    ai_context: Win percentage calculated as total wins divided by total matches.
+      Use to compare team success rates across tournaments.
+
+  total_matches_home:
+    sql: ${coco_demo__tournament_team_facts.is_home}
+    label: Total Home Matches
+    group_label: Other Stats
+    description: Total number of matches played as the home team
+    aggregate_type: count
+    filters:
+      is_home:
+        is: true
+    ai_context: Count of home matches. Use to analyze home vs away splits.
+
+  total_matches_away:
+    sql: ${coco_demo__tournament_team_facts.is_home}
+    label: Total Away Matches
+    group_label: Other Stats
+    description: Total number of matches played as the away team
+    aggregate_type: count
+    filters:
+      is_home:
+        is: false
+    ai_context: Count of away matches. Use to analyze home vs away splits.
+
+  goal_difference:
+    sql: ${coco_demo__tournament_team_facts.total_goals_scored} -
+      ${coco_demo__tournament_team_facts.total_goals_conceded}
+    label: Goal Difference
+    group_label: Other Stats
+    description: Net goal difference (goals scored minus goals conceded) across all matches
+    ai_context: Overall goal difference. Positive means the team scored more than
+      they conceded. A key indicator of overall team strength in tournaments.
+
+ai_context: "This view contains per-team, per-match statistics for international
+  soccer tournament matches. Use it to analyze team performance in tournaments
+  including win/loss records, goal-scoring patterns across match periods,
+  head-to-head matchups, and round-by-round progression. The 'is_won' dimension
+  indicates whether the team won the match (goals_scored > goals_conceded).
+  Goals are broken down by period: HT (half-time/first half), FT
+  (full-time/second half), ET (extra time), and PEN (penalties). Each fixture
+  appears twice — once for each team. Use league_name to filter by specific
+  tournament and round to analyze knockout vs group stage performance."

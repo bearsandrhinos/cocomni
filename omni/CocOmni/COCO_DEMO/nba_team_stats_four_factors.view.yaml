@@ -1,0 +1,109 @@
+# Reference this view as coco_demo__nba_team_stats_four_factors
+label: NBA Team Four Factors
+
+schema: COCO_DEMO
+table_name: NBA_TEAM_STATS_FOUR_FACTORS
+
+dimensions:
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+
+  gp:
+    sql: '"GP"'
+
+  w:
+    sql: '"W"'
+
+  l:
+    sql: '"L"'
+
+  w_pct:
+    sql: '"W_PCT"'
+
+  min:
+    sql: '"MIN"'
+
+  efg_pct:
+    sql: '"EFG_PCT"'
+
+  fta_rate:
+    sql: '"FTA_RATE"'
+
+  tm_tov_pct:
+    sql: '"TM_TOV_PCT"'
+
+  oreb_pct:
+    sql: '"OREB_PCT"'
+
+  opp_efg_pct:
+    sql: '"OPP_EFG_PCT"'
+
+  opp_fta_rate:
+    sql: '"OPP_FTA_RATE"'
+
+  opp_tov_pct:
+    sql: '"OPP_TOV_PCT"'
+
+  opp_oreb_pct:
+    sql: '"OPP_OREB_PCT"'
+
+  gp_rank:
+    sql: '"GP_RANK"'
+
+  w_rank:
+    sql: '"W_RANK"'
+
+  l_rank:
+    sql: '"L_RANK"'
+
+  w_pct_rank:
+    sql: '"W_PCT_RANK"'
+
+  min_rank:
+    sql: '"MIN_RANK"'
+
+  efg_pct_rank:
+    sql: '"EFG_PCT_RANK"'
+
+  fta_rate_rank:
+    sql: '"FTA_RATE_RANK"'
+
+  tm_tov_pct_rank:
+    sql: '"TM_TOV_PCT_RANK"'
+
+  oreb_pct_rank:
+    sql: '"OREB_PCT_RANK"'
+
+  opp_efg_pct_rank:
+    sql: '"OPP_EFG_PCT_RANK"'
+
+  opp_fta_rate_rank:
+    sql: '"OPP_FTA_RATE_RANK"'
+
+  opp_tov_pct_rank:
+    sql: '"OPP_TOV_PCT_RANK"'
+
+  opp_oreb_pct_rank:
+    sql: '"OPP_OREB_PCT_RANK"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${team_id}, '|', ${season}, '|', ${season_type})
+    hidden: true
+    primary_key: true
+
+measures:
+  count:
+    aggregate_type: count

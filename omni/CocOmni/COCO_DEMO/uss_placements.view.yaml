@@ -1,0 +1,183 @@
+# Reference this view as coco_demo__uss_placements
+label: USS Placements
+description: Rental placements of USS assets at customer sites. One row per
+  placement — an asset delivered to a site, with delivery date, pickup date, and
+  days on rent.
+
+schema: COCO_DEMO
+table_name: USS_PLACEMENTS
+
+dimensions:
+  placement_id:
+    sql: '"PLACEMENT_ID"'
+    label: Placement ID
+    format: id
+    group_label: Keys
+    primary_key: true
+    synonyms: [ rental id, deployment id ]
+
+  asset_id:
+    sql: '"ASSET_ID"'
+    label: Asset ID
+    format: id
+    group_label: Keys
+    synonyms: [ unit, equipment id ]
+
+  site_id:
+    sql: '"SITE_ID"'
+    label: Site ID
+    format: id
+    group_label: Keys
+    synonyms: [ job site, location id ]
+
+  delivery_date:
+    sql: '"DELIVERY_DATE"'
+    label: Delivery Date
+    description: Date the asset was delivered to the site, starting the rental
+    group_label: Rental Dates
+    synonyms: [ drop off date, start date, rental start ]
+
+  pickup_date:
+    sql: '"PICKUP_DATE"'
+    label: Pickup Date
+    description: Date the asset was picked up, ending the rental. Null while still on rent.
+    group_label: Rental Dates
+    synonyms: [ removal date, end date, rental end ]
+
+  days_on_rent:
+    sql: '"DAYS_ON_RENT"'
+    label: Days on Rent
+    format: number_0
+    description: Duration of this placement in days
+    group_label: Rental Dates
+    synonyms: [ rental length, duration, days out ]
+    ai_context: Per-placement duration. Sum for utilization numerator, average for
+      typical rental length.
+
+  is_open_placement:
+    sql: CASE WHEN ${pickup_date} IS NULL THEN TRUE ELSE FALSE END
+    label: Is Open Placement
+    description: True when the asset has not yet been picked up
+    group_label: Rental Dates
+    synonyms: [ still on rent, active rental, open rental ]
+
+  rental_duration_bucket:
+    sql: CASE WHEN ${days_on_rent} < 8 THEN '0-7 Days' WHEN ${days_on_rent} < 31
+      THEN '8-30 Days' WHEN ${days_on_rent} < 91 THEN '31-90 Days' ELSE '90+
+      Days' END
+    label: Rental Duration Bucket
+    description: Length-of-rental cohort
+    group_label: Rental Dates
+    order_by_field: days_on_rent
+    sample_values: [ 0-7 Days, 8-30 Days, 31-90 Days, 90+ Days ]
+    synonyms: [ duration band, rental length band ]
+
+measures:
+  count:
+    label: Placement Count
+    description: Count of placements
+    drill_fields: [ placement_id, asset_id, site_id, delivery_date, days_on_rent ]
+    aggregate_type: count
+    synonyms: [ placements, rentals, deployments ]
+
+  total_placements:
+    label: Total Placements
+    group_label: Volume
+    drill_fields:
+      [
+        placement_id,
+        asset_id,
+        site_id,
+        delivery_date,
+        pickup_date,
+        days_on_rent
+      ]
+    aggregate_type: count
+    synonyms: [ placements, deliveries, rental count ]
+
+  total_days_on_rent:
+    sql: ${days_on_rent}
+    label: Total Days on Rent
+    group_label: Volume
+    format: number_0
+    description: Sum of rental days across placements — the utilization numerator
+    drill_fields: [ placement_id, asset_id, site_id, days_on_rent ]
+    aggregate_type: sum
+    synonyms: [ rental days, unit days, days out ]
+    ai_context: Numerator for fleet utilization. Divide by (total assets x days in
+      the period).
+
+  avg_rental_duration:
+    sql: ${days_on_rent}
+    label: Avg Rental Duration (Days)
+    group_label: Duration
+    format: number_1
+    description: Average days per placement
+    aggregate_type: average
+    synonyms: [ average rental length, typical duration, mean days on rent ]
+
+  max_rental_duration:
+    sql: ${days_on_rent}
+    label: Max Rental Duration (Days)
+    group_label: Duration
+    format: number_0
+    description: Longest single placement in days
+    aggregate_type: max
+    synonyms: [ longest rental ]
+
+  unique_assets_placed:
+    sql: ${asset_id}
+    label: Unique Assets Placed
+    group_label: Volume
+    description: Count of distinct assets placed — use with total_placements to
+      derive turns per asset
+    drill_fields: [ asset_id, placement_id, delivery_date ]
+    aggregate_type: count_distinct
+    synonyms: [ distinct assets rented, assets deployed ]
+
+  unique_sites_served:
+    sql: ${site_id}
+    label: Unique Sites Served
+    group_label: Volume
+    description: Count of distinct sites that received a placement
+    aggregate_type: count_distinct
+    synonyms: [ sites served, distinct job sites ]
+
+  asset_turns:
+    sql: ${total_placements} / NULLIF(${unique_assets_placed}, 0)
+    label: Asset Turns
+    group_label: Rates
+    format: number_2
+    description: Average number of placements per asset
+    synonyms: [ turns, turns per asset, placements per asset ]
+
+  open_placement_count:
+    label: Open Placements
+    group_label: Volume
+    description: Placements with no pickup date — still on rent
+    drill_fields: [ placement_id, asset_id, site_id, delivery_date, days_on_rent ]
+    aggregate_type: count
+    filters:
+      is_open_placement:
+        is: true
+    synonyms: [ active rentals, currently on rent ]
+
+default_drill_fields:
+  [
+    placement_id,
+    asset_id,
+    site_id,
+    delivery_date,
+    pickup_date,
+    days_on_rent
+  ]
+
+ai_context: |-
+  One row per rental placement (an asset deployed to a site for a period of time).
+
+  Use this view for utilization, asset turns, and rental duration analysis.
+  - 'utilization' -> total_days_on_rent divided by (asset count x days in period); asset count comes from coco_demo__uss_assets.total_assets
+  - 'asset turns' -> total_placements / unique_assets_placed
+  - 'rental duration' -> avg_rental_duration
+  - open placements have a null pickup_date
+  Join to coco_demo__uss_sites for customer/geography and coco_demo__uss_assets for product type.

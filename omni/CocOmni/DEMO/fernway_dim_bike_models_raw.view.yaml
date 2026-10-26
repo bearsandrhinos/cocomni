@@ -1,0 +1,30 @@
+# Reference this view as demo__fernway_dim_bike_models_raw
+schema: DEMO
+table_name: FERNWAY_DIM_BIKE_MODELS_RAW
+
+dimensions:
+  model_id:
+    sql: '"MODEL_ID"'
+    format: ID
+
+  model_name:
+    sql: '"MODEL_NAME"'
+
+  model_line:
+    sql: '"MODEL_LINE"'
+
+  category:
+    sql: '"CATEGORY"'
+
+  msrp:
+    sql: '"MSRP"'
+
+  launch_fake_year:
+    sql: '"LAUNCH_FAKE_YEAR"'
+
+  launch_day_ordinal:
+    sql: '"LAUNCH_DAY_ORDINAL"'
+
+measures:
+  count:
+    aggregate_type: count

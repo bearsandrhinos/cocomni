@@ -1,0 +1,374 @@
+# Reference this view as coco_demo__wc_fixtures
+label: World Cup Fixtures
+description: World Cup match fixtures including teams, scores, venues, and match
+  outcomes across all tournament rounds
+
+schema: COCO_DEMO
+table_name: WC_FIXTURES
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    label: Fixture ID
+    format: ID
+    description: Unique identifier for the match
+    primary_key: true
+    ai_context: Primary key for the match.
+
+  season:
+    sql: '"SEASON"'
+    label: Season
+    description: World Cup tournament year
+    ai_context: Use to filter by World Cup edition.
+
+  date:
+    sql: '"DATE"'
+    label: Match Date
+    description: Date the match was played
+    ai_context: Match date. Use date parts for time-based analysis.
+
+  venue_name:
+    sql: '"VENUE_NAME"'
+    label: Venue
+    description: Name of the stadium
+    ai_context: Use to analyze matches by venue.
+
+  venue_city:
+    sql: '"VENUE_CITY"'
+    label: City
+    description: City where the match was played
+    ai_context: Use to analyze matches by host city.
+
+  status_short:
+    sql: '"STATUS_SHORT"'
+    label: Status (Short)
+    description: Short match status code (FT, AET, PEN)
+    ai_context: Abbreviated match status.
+
+  status_long:
+    sql: '"STATUS_LONG"'
+    label: Match Status
+    description: Full match status description
+    ai_context: Detailed match conclusion status.
+
+  round:
+    sql: '"ROUND"'
+    label: Round
+    description: Tournament round (e.g., Group A - 1, Round of 16, Final)
+    ai_context: Use to analyze by tournament stage.
+
+  home_team_id:
+    sql: '"HOME_TEAM_ID"'
+    label: Home Team ID
+    format: ID
+    description: Unique identifier for the home team
+    ai_context: Internal home team ID.
+
+  home_team:
+    sql: '"HOME_TEAM"'
+    label: Home Team
+    description: Name of the home team
+    ai_context: Home team name for display.
+
+  away_team_id:
+    sql: '"AWAY_TEAM_ID"'
+    label: Away Team ID
+    format: ID
+    description: Unique identifier for the away team
+    ai_context: Internal away team ID.
+
+  away_team:
+    sql: '"AWAY_TEAM"'
+    label: Away Team
+    description: Name of the away team
+    ai_context: Away team name for display.
+
+  goals_home:
+    sql: '"GOALS_HOME"'
+    label: Home Goals
+    description: Total goals scored by the home team
+    group_label: Goals
+    ai_context: Home team goals (all periods).
+
+  goals_away:
+    sql: '"GOALS_AWAY"'
+    label: Away Goals
+    description: Total goals scored by the away team
+    group_label: Goals
+    ai_context: Away team goals (all periods).
+
+  ht_home:
+    sql: '"HT_HOME"'
+    label: Home Goals (Half Time)
+    description: Home team goals at half-time
+    group_label: Goals
+    ai_context: Home team first-half goals.
+
+  ht_away:
+    sql: '"HT_AWAY"'
+    label: Away Goals (Half Time)
+    description: Away team goals at half-time
+    group_label: Goals
+    ai_context: Away team first-half goals.
+
+  ft_home:
+    sql: '"FT_HOME"'
+    label: Home Goals (Full Time)
+    description: Home team goals at full-time (90 minutes)
+    group_label: Goals
+    ai_context: Home team regular-time goals.
+
+  ft_away:
+    sql: '"FT_AWAY"'
+    label: Away Goals (Full Time)
+    description: Away team goals at full-time (90 minutes)
+    group_label: Goals
+    ai_context: Away team regular-time goals.
+
+  et_home:
+    sql: '"ET_HOME"'
+    label: Home Goals (Extra Time)
+    description: Home team goals in extra time
+    group_label: Goals
+    ai_context: Home team extra-time goals. Null if no extra time.
+
+  et_away:
+    sql: '"ET_AWAY"'
+    label: Away Goals (Extra Time)
+    description: Away team goals in extra time
+    group_label: Goals
+    ai_context: Away team extra-time goals. Null if no extra time.
+
+  pen_home:
+    sql: '"PEN_HOME"'
+    label: Home Penalty Score
+    description: Home team penalty shootout score
+    group_label: Goals
+    ai_context: Home team penalty score. Null if no shootout.
+
+  pen_away:
+    sql: '"PEN_AWAY"'
+    label: Away Penalty Score
+    description: Away team penalty shootout score
+    group_label: Goals
+    ai_context: Away team penalty score. Null if no shootout.
+
+  total_goals:
+    sql: ${coco_demo__wc_fixtures.goals_home} + ${coco_demo__wc_fixtures.goals_away}
+    label: Total Goals
+    description: Combined goals scored by both teams
+    group_label: Goals
+    ai_context: Sum of home and away goals.
+
+  goal_difference:
+    sql: ${coco_demo__wc_fixtures.goals_home} - ${coco_demo__wc_fixtures.goals_away}
+    label: Goal Difference (Home - Away)
+    description: Goal difference (home goals minus away goals)
+    group_label: Goals
+    ai_context: Positive means home team scored more.
+
+  match_result:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.goals_home} >
+      ${coco_demo__wc_fixtures.goals_away} THEN 'Home Win' WHEN
+      ${coco_demo__wc_fixtures.goals_home} <
+      ${coco_demo__wc_fixtures.goals_away} THEN 'Away Win' ELSE 'Draw' END
+    label: Match Result
+    description: "Match outcome: Home Win, Away Win, or Draw"
+    ai_context: Use to filter or group by match result.
+
+  went_to_penalties:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.pen_home} IS NOT NULL OR
+      ${coco_demo__wc_fixtures.pen_away} IS NOT NULL THEN true ELSE false END
+    label: Went to Penalties
+    description: Whether the match was decided by a penalty shootout
+    ai_context: Boolean flag for penalty shootout matches.
+
+  went_to_extra_time:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.et_home} IS NOT NULL OR
+      ${coco_demo__wc_fixtures.et_away} IS NOT NULL THEN true ELSE false END
+    label: Went to Extra Time
+    description: Whether the match went to extra time
+    ai_context: Boolean flag for extra time matches.
+
+  referee:
+    sql: '"REFEREE"'
+    description: Name of the match referee
+    ai_context: Use to analyze referee assignments.
+
+  home_team_logo:
+    sql: '"HOME_TEAM_LOGO"'
+    description: URL to the home team's logo
+    ai_context: Home team logo for visual displays.
+
+  home_winner:
+    sql: '"HOME_WINNER"'
+    description: Whether the home team won the match
+    ai_context: Boolean home win indicator.
+
+  away_team_logo:
+    sql: '"AWAY_TEAM_LOGO"'
+    description: URL to the away team's logo
+    ai_context: Away team logo for visual displays.
+
+  away_winner:
+    sql: '"AWAY_WINNER"'
+    description: Whether the away team won the match
+    ai_context: Boolean away win indicator.
+
+  # 2026 World Cup group assignments
+  group_2026:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.season} = 2026 THEN CASE WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Mexico', 'South Africa', 'South
+      Korea', 'Czech Republic') OR ${coco_demo__wc_fixtures.away_team} IN
+      ('Mexico', 'South Africa', 'South Korea', 'Czech Republic') THEN 'Group A'
+      WHEN ${coco_demo__wc_fixtures.home_team} IN ('Canada', 'Bosnia and
+      Herzegovina', 'Qatar', 'Switzerland') OR
+      ${coco_demo__wc_fixtures.away_team} IN ('Canada', 'Bosnia and
+      Herzegovina', 'Qatar', 'Switzerland') THEN 'Group B' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Brazil', 'Morocco', 'Haiti',
+      'Scotland') OR ${coco_demo__wc_fixtures.away_team} IN ('Brazil',
+      'Morocco', 'Haiti', 'Scotland') THEN 'Group C' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('United States', 'Paraguay',
+      'Australia', 'Turkey') OR ${coco_demo__wc_fixtures.away_team} IN ('United
+      States', 'Paraguay', 'Australia', 'Turkey') THEN 'Group D' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Germany', 'Curaçao', 'Ivory
+      Coast', 'Ecuador') OR ${coco_demo__wc_fixtures.away_team} IN ('Germany',
+      'Curaçao', 'Ivory Coast', 'Ecuador') THEN 'Group E' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Netherlands', 'Japan', 'Sweden',
+      'Tunisia') OR ${coco_demo__wc_fixtures.away_team} IN ('Netherlands',
+      'Japan', 'Sweden', 'Tunisia') THEN 'Group F' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Belgium', 'Egypt', 'Iran', 'New
+      Zealand') OR ${coco_demo__wc_fixtures.away_team} IN ('Belgium', 'Egypt',
+      'Iran', 'New Zealand') THEN 'Group G' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Spain', 'Cape Verde', 'Saudi
+      Arabia', 'Uruguay') OR ${coco_demo__wc_fixtures.away_team} IN ('Spain',
+      'Cape Verde', 'Saudi Arabia', 'Uruguay') THEN 'Group H' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('France', 'Senegal', 'Iraq',
+      'Norway') OR ${coco_demo__wc_fixtures.away_team} IN ('France', 'Senegal',
+      'Iraq', 'Norway') THEN 'Group I' WHEN ${coco_demo__wc_fixtures.home_team}
+      IN ('Argentina', 'Algeria', 'Austria', 'Jordan') OR
+      ${coco_demo__wc_fixtures.away_team} IN ('Argentina', 'Algeria', 'Austria',
+      'Jordan') THEN 'Group J' WHEN ${coco_demo__wc_fixtures.home_team} IN
+      ('Portugal', 'DR Congo', 'Uzbekistan', 'Colombia') OR
+      ${coco_demo__wc_fixtures.away_team} IN ('Portugal', 'DR Congo',
+      'Uzbekistan', 'Colombia') THEN 'Group K' WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('England', 'Croatia', 'Ghana',
+      'Panama') OR ${coco_demo__wc_fixtures.away_team} IN ('England', 'Croatia',
+      'Ghana', 'Panama') THEN 'Group L' ELSE NULL END ELSE NULL END
+    label: 2026 Group
+    description: Group assignment for the 2026 World Cup (Groups A-L). Only
+      populated for 2026 season matches.
+    ai_context: Use to filter or group by 2026 World Cup groups. Only applies to
+      season 2026.
+
+  seed_2026:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.home_team} IN ('Mexico', 'Canada',
+      'Brazil', 'United States', 'Germany', 'Netherlands', 'Belgium', 'Spain',
+      'France', 'Argentina', 'Portugal', 'England') THEN 1 WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('South Africa', 'Bosnia and
+      Herzegovina', 'Morocco', 'Paraguay', 'Curaçao', 'Japan', 'Egypt', 'Cape
+      Verde', 'Senegal', 'Algeria', 'DR Congo', 'Croatia') THEN 2 WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('South Korea', 'Qatar', 'Haiti',
+      'Australia', 'Ivory Coast', 'Sweden', 'Iran', 'Saudi Arabia', 'Iraq',
+      'Austria', 'Uzbekistan', 'Ghana') THEN 3 WHEN
+      ${coco_demo__wc_fixtures.home_team} IN ('Czech Republic', 'Switzerland',
+      'Scotland', 'Turkey', 'Ecuador', 'Tunisia', 'New Zealand', 'Uruguay',
+      'Norway', 'Jordan', 'Colombia', 'Panama') THEN 4 ELSE NULL END
+    label: 2026 Seed
+    format: id
+    description: Seed position (1-4) for each team within their 2026 World Cup
+      group. Seed 1 is the top-seeded team in the group.
+    group_label: 2026 World Cup
+    ai_context: Use to identify team seeding within their 2026 World Cup group. Seed
+      1 is the highest-ranked/host team, seed 4 is the lowest.
+
+measures:
+  count:
+    label: Match Count
+    description: Total number of World Cup matches
+    aggregate_type: count
+    ai_context: Count of matches.
+
+  total_goals_scored:
+    sql: ${total_goals}
+    label: Total Goals Scored
+    group_label: Goals
+    description: Sum of total goals (both teams) across all matches
+    aggregate_type: sum
+    ai_context: Aggregate goals scored in all matches.
+
+  average_goals_per_match:
+    sql: ${total_goals}
+    label: Average Goals per Match
+    group_label: Goals
+    format: number_2
+    description: Average combined goals per match
+    aggregate_type: average
+    ai_context: Mean goals per match.
+
+  home_goals_total:
+    sql: ${goals_home}
+    label: Total Home Goals
+    group_label: Goals
+    description: Sum of home team goals across all matches
+    aggregate_type: sum
+    ai_context: Aggregate home goals.
+
+  away_goals_total:
+    sql: ${goals_away}
+    label: Total Away Goals
+    group_label: Goals
+    description: Sum of away team goals across all matches
+    aggregate_type: sum
+    ai_context: Aggregate away goals.
+
+  home_wins:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.goals_home} >
+      ${coco_demo__wc_fixtures.goals_away} THEN 1 ELSE 0 END
+    label: Home Wins
+    group_label: Results
+    description: Number of matches won by the home team
+    aggregate_type: sum
+    ai_context: Count of home wins.
+
+  away_wins:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.goals_away} >
+      ${coco_demo__wc_fixtures.goals_home} THEN 1 ELSE 0 END
+    label: Away Wins
+    group_label: Results
+    description: Number of matches won by the away team
+    aggregate_type: sum
+    ai_context: Count of away wins.
+
+  draws:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.goals_home} =
+      ${coco_demo__wc_fixtures.goals_away} THEN 1 ELSE 0 END
+    label: Draws
+    group_label: Results
+    description: Number of drawn matches
+    aggregate_type: sum
+    ai_context: Count of draws.
+
+  matches_with_penalties:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.pen_home} IS NOT NULL OR
+      ${coco_demo__wc_fixtures.pen_away} IS NOT NULL THEN 1 ELSE 0 END
+    label: Matches with Penalties
+    group_label: Results
+    description: Number of matches decided by penalty shootout
+    aggregate_type: sum
+    ai_context: Count of penalty shootout matches.
+
+  matches_with_extra_time:
+    sql: CASE WHEN ${coco_demo__wc_fixtures.et_home} IS NOT NULL OR
+      ${coco_demo__wc_fixtures.et_away} IS NOT NULL THEN 1 ELSE 0 END
+    label: Matches with Extra Time
+    group_label: Results
+    description: Number of matches that went to extra time
+    aggregate_type: sum
+    ai_context: Count of extra time matches.
+
+ai_context: This view contains match-level data for FIFA World Cup fixtures.
+  Each row is one match with home and away team details, scores across all
+  periods, venue, round, and match outcome. Use it for match-level analysis
+  including results, scoring patterns, and tournament progression. For
+  team-level aggregations, use wc_team_facts instead.

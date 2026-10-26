@@ -1,0 +1,71 @@
+# Reference this view as demo__subtrajects_medical_demo
+schema: DEMO
+table_name: SUBTRAJECTS_MEDICAL_DEMO
+
+dimensions:
+  medical_record_id:
+    sql: '"MEDICAL_RECORD_ID"'
+    format: ID
+
+  startdatum:
+    sql: '"STARTDATUM"'
+
+  zt_id:
+    sql: '"ZT_ID"'
+    format: ID
+
+  einddatum:
+    sql: '"EINDDATUM"'
+
+  verwijzendzorgtrajectnummer:
+    sql: '"VERWIJZENDZORGTRAJECTNUMMER"'
+
+  ziekenhuisagb:
+    sql: '"ZIEKENHUISAGB"'
+
+  begindatum_subtraject:
+    sql: '"BEGINDATUM_SUBTRAJECT"'
+
+  dbcdiagnosecode:
+    sql: '"DBCDIAGNOSECODE"'
+
+  zs_id:
+    sql: '"ZS_ID"'
+    format: ID
+
+  afsluitingscode:
+    sql: '"AFSLUITINGSCODE"'
+
+  zorgtype:
+    sql: '"ZORGTYPE"'
+
+  ontslagbestemming:
+    sql: '"ONTSLAGBESTEMMING"'
+
+  verwachtproduct:
+    sql: '"VERWACHTPRODUCT"'
+
+  icd10:
+    sql: '"ICD10"'
+
+  verpleegdagen:
+    sql: '"VERPLEEGDAGEN"'
+
+  verwijzend_specialisme_code:
+    sql: '"VERWIJZEND_SPECIALISME_CODE"'
+
+  einddatum_2:
+    sql: '"EINDDATUM_2"'
+
+  interne_verwijzer_agb:
+    sql: '"INTERNE_VERWIJZER_AGB"'
+
+  zorg_traject_number:
+    sql: '"ZORG_TRAJECT_NUMBER"'
+
+  subtraject_number:
+    sql: '"SUBTRAJECT_NUMBER"'
+
+measures:
+  count:
+    aggregate_type: count

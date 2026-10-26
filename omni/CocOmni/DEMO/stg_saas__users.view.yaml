@@ -1,0 +1,63 @@
+# Reference this view as demo__stg_saas__users
+schema: DEMO
+table_name: STG_SAAS__USERS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  first_name:
+    sql: '"FIRST_NAME"'
+
+  last_name:
+    sql: '"LAST_NAME"'
+
+  email:
+    sql: '"EMAIL"'
+
+  role:
+    sql: '"ROLE"'
+
+  region:
+    sql: '"REGION"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  manager_id:
+    sql: '"MANAGER_ID"'
+    format: ID
+
+  se_id:
+    sql: '"SE_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  quota_target:
+    sql: '"QUOTA_TARGET"'
+
+  quota_2024:
+    sql: '"QUOTA_2024"'
+
+  quota_2025:
+    sql: '"QUOTA_2025"'
+
+  quota_2026:
+    sql: '"QUOTA_2026"'
+
+  quota_attainment_pct:
+    sql: '"QUOTA_ATTAINMENT_PCT"'
+
+  performance_tier:
+    sql: '"PERFORMANCE_TIER"'
+
+  ramp_end_date:
+    sql: '"RAMP_END_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

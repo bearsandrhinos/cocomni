@@ -1,0 +1,71 @@
+# Reference this view as demo__airline_delay_cause
+schema: DEMO
+table_name: AIRLINE_DELAY_CAUSE
+
+dimensions:
+  year:
+    sql: '"YEAR"'
+
+  month:
+    sql: '"MONTH"'
+
+  carrier:
+    sql: '"CARRIER"'
+
+  carrier_name:
+    sql: '"CARRIER_NAME"'
+
+  airport:
+    sql: '"AIRPORT"'
+
+  airport_name:
+    sql: '"AIRPORT_NAME"'
+
+  arr_flights:
+    sql: '"ARR_FLIGHTS"'
+
+  arr_del15:
+    sql: '"ARR_DEL15"'
+
+  carrier_ct:
+    sql: '"CARRIER_CT"'
+
+  weather_ct:
+    sql: '"WEATHER_CT"'
+
+  nas_ct:
+    sql: '"NAS_CT"'
+
+  security_ct:
+    sql: '"SECURITY_CT"'
+
+  late_aircraft_ct:
+    sql: '"LATE_AIRCRAFT_CT"'
+
+  arr_cancelled:
+    sql: '"ARR_CANCELLED"'
+
+  arr_diverted:
+    sql: '"ARR_DIVERTED"'
+
+  arr_delay:
+    sql: '"ARR_DELAY"'
+
+  carrier_delay:
+    sql: '"CARRIER_DELAY"'
+
+  weather_delay:
+    sql: '"WEATHER_DELAY"'
+
+  nas_delay:
+    sql: '"NAS_DELAY"'
+
+  security_delay:
+    sql: '"SECURITY_DELAY"'
+
+  late_aircraft_delay:
+    sql: '"LATE_AIRCRAFT_DELAY"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,33 @@
+# Reference this view as saas__benchmark_stats
+schema: SAAS
+table_name: BENCHMARK_STATS
+
+dimensions:
+  snapshot_month:
+    sql: '"SNAPSHOT_MONTH"'
+
+  peer_group_segment:
+    sql: '"PEER_GROUP_SEGMENT"'
+
+  peer_group_region:
+    sql: '"PEER_GROUP_REGION"'
+
+  peer_group_product_tier:
+    sql: '"PEER_GROUP_PRODUCT_TIER"'
+
+  metric_id:
+    sql: '"METRIC_ID"'
+    format: ID
+
+  statistic:
+    sql: '"STATISTIC"'
+
+  value:
+    sql: '"VALUE"'
+
+  company_count:
+    sql: '"COMPANY_COUNT"'
+
+measures:
+  count:
+    aggregate_type: count

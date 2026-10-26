@@ -1,0 +1,202 @@
+# Reference this view as coco_demo__uss_assets
+label: USS Assets
+description: Fleet of United Site Services rental assets (portable restrooms,
+  ADA units, restroom trailers, temp fence, roll-offs) with purchase date,
+  current status, age, and estimated unit value.
+
+schema: COCO_DEMO
+table_name: USS_ASSETS
+
+dimensions:
+  asset_id:
+    sql: '"ASSET_ID"'
+    label: Asset ID
+    format: id
+    primary_key: true
+
+  product_type:
+    sql: '"PRODUCT_TYPE"'
+    label: Product Type
+    description: Type of portable sanitation or site service unit
+    group_label: Asset Attributes
+    sample_values: [ porta potty, ADA unit, restroom trailer, temp fence, roll-off ]
+    synonyms: [ unit type, equipment type, asset type, product ]
+
+  home_branch_id:
+    sql: '"HOME_BRANCH_ID"'
+    label: Home Branch
+    format: id
+    group_label: Asset Attributes
+    synonyms: [ branch, depot, yard, location ]
+
+  purchase_date:
+    sql: '"PURCHASE_DATE"'
+    label: Purchase Date
+    description: Date the asset was acquired; basis for fleet age
+    group_label: Lifecycle
+    synonyms: [ acquired date, in-service date ]
+
+  status:
+    sql: '"STATUS"'
+    label: Current Status
+    description: in_yard, on_rent, or in_repair
+    group_label: Asset Attributes
+    colors:
+      conditions:
+        - condition:
+            is: on_rent
+          color: green
+        - condition:
+            is: in_yard
+          color: orange
+        - condition:
+            is: in_repair
+          color: red
+    sample_values: [ in_yard, on_rent, in_repair ]
+    synonyms: [ asset status, availability, in yard, on rent, in repair ]
+    ai_context: Current disposition of the asset. in_yard means idle (not generating
+      revenue).
+
+  asset_age_days:
+    sql: DATEDIFF(day, ${purchase_date}, CURRENT_DATE())
+    label: Asset Age (Days)
+    format: number_0
+    description: Days since purchase date
+    group_label: Lifecycle
+    synonyms: [ age, asset age, days owned ]
+
+  asset_age_bucket:
+    sql: CASE WHEN DATEDIFF(day, ${purchase_date}, CURRENT_DATE()) < 365 THEN '< 1
+      Year' WHEN DATEDIFF(day, ${purchase_date}, CURRENT_DATE()) < 730 THEN '1-2
+      Years' WHEN DATEDIFF(day, ${purchase_date}, CURRENT_DATE()) < 1095 THEN
+      '2-3 Years' ELSE '3+ Years' END
+    label: Fleet Age Bucket
+    description: Age cohort for fleet age mix analysis
+    group_label: Lifecycle
+    order_by_field: asset_age_days
+    sample_values: [ < 1 Year, 1-2 Years, 2-3 Years, 3+ Years ]
+    synonyms: [ age cohort, age band, fleet age ]
+
+  is_idle:
+    sql: CASE WHEN ${status} = 'in_yard' THEN TRUE ELSE FALSE END
+    label: Is Idle
+    description: True when the asset is sitting in the yard rather than on rent
+    group_label: Asset Attributes
+    synonyms: [ idle flag, sitting in yard ]
+
+  est_unit_value:
+    sql: CASE WHEN ${product_type} = 'porta potty' THEN 1200 WHEN ${product_type} =
+      'ADA unit' THEN 3500 WHEN ${product_type} = 'restroom trailer' THEN 45000
+      WHEN ${product_type} = 'temp fence' THEN 800 WHEN ${product_type} =
+      'roll-off' THEN 5000 ELSE 0 END
+    label: Est. Unit Value ($)
+    hidden: true
+
+measures:
+  count:
+    label: Asset Count
+    description: Count of assets
+    drill_fields: [ asset_id, product_type, status, asset_age_bucket ]
+    aggregate_type: count
+    synonyms: [ assets, number of assets, fleet size ]
+
+  total_assets:
+    label: Total Assets
+    group_label: Fleet Counts
+    description: Total assets in the fleet
+    drill_fields: [ asset_id, product_type, status, home_branch_id, purchase_date ]
+    aggregate_type: count
+    synonyms: [ fleet size, fleet count ]
+
+  idle_asset_count:
+    label: Idle Asset Count
+    group_label: Fleet Counts
+    description: Assets with status = in_yard
+    drill_fields: [ asset_id, product_type, home_branch_id, asset_age_bucket ]
+    aggregate_type: count
+    filters:
+      status:
+        is: in_yard
+    synonyms: [ idle assets, assets in yard, unutilized assets ]
+    ai_context: Primary idle-fleet metric. Pair with idle_inventory_value to size
+      dead capital.
+
+  in_repair_count:
+    label: In Repair Count
+    group_label: Fleet Counts
+    drill_fields: [ asset_id, product_type, home_branch_id, purchase_date ]
+    aggregate_type: count
+    filters:
+      status:
+        is: in_repair
+    synonyms: [ assets in repair, down for maintenance ]
+
+  on_rent_count:
+    label: On Rent Count
+    group_label: Fleet Counts
+    drill_fields: [ asset_id, product_type, home_branch_id ]
+    aggregate_type: count
+    filters:
+      status:
+        is: on_rent
+    synonyms: [ deployed assets, assets on rent, utilized assets ]
+
+  idle_inventory_value:
+    sql: ${est_unit_value}
+    label: Idle Inventory Value ($)
+    group_label: Fleet Counts
+    format: currency_0
+    description: "Dead capital: idle assets x estimated unit value"
+    drill_fields: [ asset_id, product_type, home_branch_id, asset_age_bucket ]
+    aggregate_type: sum
+    filters:
+      status:
+        is: in_yard
+    synonyms: [ dead capital, idle capital, value sitting in yard ]
+    ai_context: Dollar value of idle fleet, using modeled replacement value by
+      product type.
+
+  avg_asset_age_days:
+    sql: ${asset_age_days}
+    label: Avg Asset Age (Days)
+    group_label: Lifecycle
+    format: number_0
+    description: Average fleet age in days
+    aggregate_type: average
+    synonyms: [ average age, mean fleet age ]
+
+  idle_rate:
+    sql: ${idle_asset_count} / NULLIF(${total_assets}, 0)
+    label: Idle Rate
+    group_label: Rates
+    format: percent_1
+    description: Share of the fleet sitting idle in the yard
+    synonyms: [ percent idle, idle percentage ]
+
+  on_rent_rate:
+    sql: ${on_rent_count} / NULLIF(${total_assets}, 0)
+    label: On-Rent Rate
+    group_label: Rates
+    format: percent_1
+    description: Share of the fleet currently deployed on rent
+    synonyms: [ deployment rate, fleet utilization proxy ]
+
+default_drill_fields:
+  [
+    asset_id,
+    product_type,
+    status,
+    home_branch_id,
+    purchase_date,
+    asset_age_bucket
+  ]
+
+ai_context: |-
+  One row per physical rental asset in the USS fleet.
+
+  Use this view for fleet composition, fleet age mix, and idle/dead-capital analysis.
+  - 'idle assets', 'sitting in the yard', 'dead capital' -> idle_asset_count / idle_inventory_value (status = in_yard)
+  - 'fleet age' -> asset_age_bucket, usually crossed with product_type
+  - 'utilization' needs placements: pair total_assets here with coco_demo__uss_placements.total_days_on_rent
+  Status values: in_yard (idle), on_rent (deployed), in_repair (down for maintenance).
+  est_unit_value is a modeled replacement-cost estimate by product type, not an accounting value.

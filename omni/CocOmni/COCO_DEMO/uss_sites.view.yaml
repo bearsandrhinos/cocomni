@@ -1,0 +1,103 @@
+# Reference this view as coco_demo__uss_sites
+label: USS Sites
+description: Customer job sites and event locations served by United Site
+  Services, with industry segment, owning branch, and city/state geography.
+
+schema: COCO_DEMO
+table_name: USS_SITES
+
+dimensions:
+  site_id:
+    sql: '"SITE_ID"'
+    label: Site ID
+    format: id
+    group_label: Keys
+    primary_key: true
+    synonyms: [ job site, location ]
+
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    label: Customer ID
+    format: id
+    group_label: Keys
+    synonyms: [ account, client ]
+
+  branch_id:
+    sql: '"BRANCH_ID"'
+    label: Branch
+    format: id
+    group_label: Geography
+    synonyms: [ depot, yard, servicing branch ]
+
+  industry_segment:
+    sql: '"INDUSTRY_SEGMENT"'
+    label: Industry Segment
+    description: construction, events, government, or emergency
+    group_label: Customer
+    sample_values: [ construction, events, government, emergency ]
+    synonyms: [ vertical, sector, segment, industry, customer type ]
+    ai_context: Primary customer segmentation dimension for USS. Construction is
+      typically long-duration rentals; events are short bursts.
+
+  city:
+    sql: '"CITY"'
+    label: City
+    group_label: Geography
+    synonyms: [ town, metro ]
+
+  state:
+    sql: '"STATE"'
+    label: State
+    group_label: Geography
+    synonyms: [ province, region, market ]
+
+measures:
+  count:
+    label: Site Count
+    description: Count of sites
+    drill_fields: [ site_id, customer_id, industry_segment, city, state ]
+    aggregate_type: count
+    synonyms: [ sites, locations, job sites ]
+
+  total_sites:
+    label: Total Sites
+    group_label: Counts
+    drill_fields: [ site_id, customer_id, industry_segment, city, state, branch_id ]
+    aggregate_type: count
+    synonyms: [ sites, number of locations ]
+
+  unique_customers:
+    sql: ${customer_id}
+    label: Unique Customers
+    group_label: Counts
+    drill_fields: [ customer_id, industry_segment, state ]
+    aggregate_type: count_distinct
+    synonyms: [ customers, accounts, distinct clients ]
+    ai_context: Use for customer counts; a customer can own multiple sites.
+
+  unique_states:
+    sql: ${state}
+    label: States Covered
+    group_label: Counts
+    description: Count of distinct states with sites
+    aggregate_type: count_distinct
+    synonyms: [ state coverage, markets covered ]
+
+  sites_per_customer:
+    sql: ${total_sites} / NULLIF(${unique_customers}, 0)
+    label: Sites per Customer
+    group_label: Rates
+    format: number_2
+    description: Average number of sites per customer
+    synonyms: [ locations per account ]
+
+default_drill_fields: [ site_id, customer_id, industry_segment, city, state, branch_id ]
+
+ai_context: |-
+  One row per customer site (job site, event location, government or emergency location).
+
+  Use this view to slice fleet and service metrics by customer, industry segment, and geography.
+  - 'segment', 'vertical' -> industry_segment (construction, events, government, emergency)
+  - 'geography', 'market' -> state, city
+  - 'branch' -> branch_id (the USS branch that owns the site)
+  Customer counts should use unique_customers, since a customer can have many sites.

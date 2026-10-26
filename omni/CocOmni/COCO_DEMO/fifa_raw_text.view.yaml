@@ -1,0 +1,14 @@
+# Reference this view as coco_demo__fifa_raw_text
+schema: COCO_DEMO
+table_name: FIFA_RAW_TEXT
+
+dimensions:
+  relative_path:
+    sql: '"RELATIVE_PATH"'
+
+  extracted_layout:
+    sql: '"EXTRACTED_LAYOUT"'
+
+measures:
+  count:
+    aggregate_type: count

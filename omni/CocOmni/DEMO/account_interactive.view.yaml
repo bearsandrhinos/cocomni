@@ -1,0 +1,56 @@
+# Reference this view as demo__account_interactive
+schema: DEMO
+table_name: ACCOUNT_INTERACTIVE
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  type:
+    sql: '"TYPE"'
+
+  billing_street:
+    sql: '"BILLING_STREET"'
+
+  billing_state:
+    sql: '"BILLING_STATE"'
+
+  billing_city:
+    sql: '"BILLING_CITY"'
+
+  billing_zip:
+    sql: '"BILLING_ZIP"'
+
+  billing_country:
+    sql: '"BILLING_COUNTRY"'
+
+  region:
+    sql: '"REGION"'
+
+  industry:
+    sql: '"INDUSTRY"'
+
+  annual_revenue:
+    sql: '"ANNUAL_REVENUE"'
+
+  number_of_employees:
+    sql: '"NUMBER_OF_EMPLOYEES"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

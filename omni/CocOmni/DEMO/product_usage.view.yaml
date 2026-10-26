@@ -1,0 +1,26 @@
+# Reference this view as demo__product_usage
+schema: DEMO
+table_name: PRODUCT_USAGE
+
+dimensions:
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  product_id:
+    sql: '"PRODUCT_ID"'
+    format: ID
+
+  date:
+    sql: '"DATE"'
+
+  usage_min:
+    sql: '"USAGE_MIN"'
+
+measures:
+  count:
+    aggregate_type: count

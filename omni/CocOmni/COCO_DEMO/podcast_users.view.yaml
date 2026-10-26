@@ -1,0 +1,130 @@
+# Reference this view as coco_demo__podcast_users
+label: Podcast Users
+description: User profiles for the podcast streaming platform including tier,
+  demographics, engagement metrics, and churn data
+
+schema: COCO_DEMO
+table_name: USERS
+
+dimensions:
+  user_id:
+    sql: '"USER_ID"'
+    label: User ID
+    format: ID
+    primary_key: true
+
+  username:
+    sql: '"USERNAME"'
+    label: Username
+
+  email:
+    sql: '"EMAIL"'
+    label: Email
+
+  tier:
+    sql: '"TIER"'
+    label: Tier
+
+  signup_date:
+    sql: '"SIGNUP_DATE"'
+    label: Signup Date
+
+  age:
+    sql: '"AGE"'
+    label: Age
+
+  age_group:
+    sql: |
+      CASE
+        WHEN "AGE" < 25 THEN '18-24'
+        WHEN "AGE" < 35 THEN '25-34'
+        WHEN "AGE" < 45 THEN '35-44'
+        WHEN "AGE" < 55 THEN '45-54'
+        ELSE '55+'
+      END
+    label: Age Group
+
+  gender:
+    sql: '"GENDER"'
+    label: Gender
+
+  country:
+    sql: '"COUNTRY"'
+    label: Country
+
+  city:
+    sql: '"CITY"'
+    label: City
+
+  device_type:
+    sql: '"DEVICE_TYPE"'
+    label: Device Type
+
+  referral_source:
+    sql: '"REFERRAL_SOURCE"'
+    label: Referral Source
+
+  is_active:
+    sql: '"IS_ACTIVE"'
+    label: Is Active
+
+  canceled_date:
+    sql: '"CANCELED_DATE"'
+    label: Canceled Date
+
+  cancel_reason:
+    sql: '"CANCEL_REASON"'
+    label: Cancel Reason
+
+  is_churned:
+    sql: '"CANCELED_DATE" IS NOT NULL'
+    label: Is Churned
+
+measures:
+  count:
+    label: User Count
+    aggregate_type: count
+
+  premium_users:
+    label: Premium Users
+    format: "#,##0"
+    aggregate_type: count
+    filters:
+      tier:
+        is: Premium
+
+  freemium_users:
+    label: Freemium Users
+    format: "#,##0"
+    aggregate_type: count
+    filters:
+      tier:
+        is: Freemium
+
+  churned_users:
+    label: Churned Users
+    format: "#,##0"
+    aggregate_type: count
+    filters:
+      is_churned:
+        is: true
+      canceled_date:
+        not: null
+
+  avg_monthly_listening_hours:
+    sql: '"MONTHLY_LISTENING_HOURS"'
+    label: Avg Monthly Listening Hours
+    format: "#,##0.0"
+    aggregate_type: average
+
+  total_lifetime_streams:
+    sql: '"LIFETIME_STREAMS"'
+    label: Total Lifetime Streams
+    format: "#,##0"
+    aggregate_type: sum
+
+  avg_age:
+    sql: '"AGE"'
+    label: Avg Age
+    format: "#,##0"
+    aggregate_type: average

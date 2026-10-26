@@ -1,0 +1,186 @@
+# Reference this view as ecomm__order_items
+description: Dimension table containing information about customer orders
+
+schema: ECOMM
+table_name: ORDER_ITEMS
+
+dimensions:
+  json:
+    sql: "PARSE_JSON(CONCAT('{\"status\":\"', ${status} :: STRING, '\",
+      \"email\":\"', ${ecomm__users.email}, '\", \"state\":\"',
+      ${ecomm__users.state}, '\"}'))"
+    label: JSON
+
+  status_ordering:
+    sql: CASE WHEN ${status} = 'Complete' THEN 1 WHEN ${status} = 'Shipped' THEN 2
+      WHEN ${status} = 'Processing' THEN 3 WHEN ${status} = 'Cancelled' THEN 4
+      WHEN ${status} = 'Returned' THEN 5 ELSE 6 END
+    label: Status Ordering
+    description: attempting to order fields
+
+  id:
+    sql: '"ID"'
+    format: ID
+    description: Unique identifier for each order line item
+    primary_key: true
+
+  order_id:
+    sql: '"ORDER_ID"'
+    format: ID
+    description: Identifier for the order
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+    description: Identifier of the user who placed the order
+
+  inventory_item_id:
+    sql: '"INVENTORY_ITEM_ID"'
+    format: ID
+    description: Identifier of the inventory item in the order
+
+  sale_price:
+    sql: '"SALE_PRICE"'
+    description: Price at which the item was sold
+
+  status:
+    sql: '"STATUS"'
+    description: Current status of the order
+    all_values: [ Complete, Shipped, Processing, Cancelled, Returned ]
+
+  created_at:
+    sql: '"CREATED_AT"'
+    description: Timestamp when the order was created
+
+  returned_at:
+    sql: '"RETURNED_AT"'
+    description: Timestamp when the order was returned (if applicable)
+
+  shipped_at:
+    sql: '"SHIPPED_AT"'
+    description: Timestamp when the order was shipped
+
+  delivered_at:
+    sql: '"DELIVERED_AT"'
+    description: Timestamp when the order was delivered
+
+  is_returned:
+    sql: '"IS_RETURNED"'
+    description: Boolean indicating if the order was returned
+
+  is_delivered:
+    sql: '"IS_DELIVERED"'
+    description: Boolean indicating if the order was delivered
+
+  is_shipped:
+    sql: '"IS_SHIPPED"'
+    description: Boolean indicating if the order was shipped
+
+  margin:
+    sql: '"MARGIN"'
+    description: Profit margin for the order
+
+  months_since_signup:
+    sql: '"MONTHS_SINCE_SIGNUP"'
+    description: Number of months since the user signed up
+
+  time_to_ship:
+    sql: '"TIME_TO_SHIP"'
+    description: Time taken to ship the order
+
+  # dynamic:
+  #   sql: case when {{ ecomm__order_items.swapper.is_filtered }} then "{{
+  #     filters.ecomm__order_items.swapper.value }}" else 'Add the swapper filter'
+  #     end
+
+  date_duration:
+    label: Date Duration
+    description: Timestamp when the order was created
+    duration:
+      sql_start: ${ecomm__order_items.created_at[date]}
+      sql_end: ${ecomm__order_items.delivered_at[date]}
+      intervals: [ days, weeks ]
+
+  completed_orders:
+    sql: ${ecomm__order_items.status} = 'Complete'
+    label: Completed Orders
+    description: Is an order completed or not
+
+measures:
+  count:
+    aggregate_type: count
+
+  created_at_min:
+    sql: ${created_at}
+    hidden: true
+    aggregate_type: min
+
+  total_sale_price:
+    sql: ${sale_price}
+    label: Total Sale Price
+    format: CURRENCY_2
+    description: Total revenue of orders
+    aggregate_type: sum
+    synonyms: [ Total Revenue, Total Receipts ]
+
+  time_to_ship_average:
+    sql: ${time_to_ship}
+    label: Time To Ship Average
+    aggregate_type: average
+
+  sale_price_sum:
+    sql: ${sale_price}
+    aggregate_type: sum
+
+  margin_average:
+    sql: ${margin}
+    label: Margin Average
+    format: currency
+    aggregate_type: average
+
+  margin_sum:
+    sql: ${margin}
+    label: Margin Sum
+    format: currency
+    aggregate_type: sum
+
+  sale_price_last_30_days:
+    sql: ${sale_price}
+    label: Sale Price Last 30 Days
+    format: USDCURRENCY_0
+    aggregate_type: sum
+    filters:
+      created_at:
+        time_for_duration: [ 30 days ago, 30 days ]
+
+  sale_price_previous_30_days:
+    sql: ${sale_price}
+    label: Sale Price Last Previous 30 Days
+    format: USDCURRENCY
+    aggregate_type: sum
+    filters:
+      created_at:
+        time_for_duration: [ 60 days ago, 30 days ]
+
+  created_at_min_1:
+    sql: ${created_at}
+    aggregate_type: min
+
+  california_revenue:
+    sql: ${sale_price}
+    label: california revenue
+    aggregate_type: sum
+    filters:
+      ecomm__users.state:
+        is: California
+
+filters:
+  swapper:
+    type: column
+    suggestion_list:
+      - value: MARGIN
+        label: Total Margin
+      - value: SALE_PRICE
+        label: Total Sales
+    default_filter:
+      is: SALE_PRICE

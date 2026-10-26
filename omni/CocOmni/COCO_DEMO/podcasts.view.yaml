@@ -1,0 +1,127 @@
+# Reference this view as coco_demo__podcasts
+label: Podcasts
+description: Podcast catalog with genres, hosts, ratings, and subscriber metrics
+  for the streaming platform
+
+schema: COCO_DEMO
+table_name: PODCASTS
+
+dimensions:
+  podcast_id:
+    sql: '"PODCAST_ID"'
+    label: Podcast ID
+    format: ID
+    description: Unique identifier for each podcast in the catalog
+    primary_key: true
+    synonyms: [ show id, podcast identifier, program id ]
+
+  title:
+    sql: '"TITLE"'
+    label: Title
+    description: Name or title of the podcast
+    synonyms: [ podcast name, show title, show name, program title ]
+
+  host_name:
+    sql: '"HOST_NAME"'
+    label: Host
+    description: Name of the primary host or presenter of the podcast
+    synonyms: [ host, presenter, podcaster, show host ]
+
+  genre:
+    sql: '"GENRE"'
+    label: Genre
+    description: Primary category or genre classification of the podcast content
+    synonyms: [ category, type, podcast category, content type ]
+
+  sub_genre:
+    sql: '"SUB_GENRE"'
+    label: Sub-Genre
+    description: Secondary or more specific genre classification within the primary genre
+    synonyms: [ subcategory, sub-category, secondary genre ]
+
+  language:
+    sql: '"LANGUAGE"'
+    label: Language
+    description: Primary language in which the podcast content is produced
+    synonyms: [ podcast language, content language, spoken language ]
+
+  episode_count:
+    sql: '"EPISODE_COUNT"'
+    description: Total number of episodes published for this podcast
+    synonyms: [ number of episodes, total episodes, episode total ]
+
+  avg_episode_length_min:
+    sql: '"AVG_EPISODE_LENGTH_MIN"'
+    description: Average duration of episodes for this podcast in minutes
+    synonyms: [ average episode duration, mean episode length, typical episode length ]
+
+  rating:
+    sql: '"RATING"'
+    label: Rating
+    description: User rating or review score for the podcast
+    synonyms: [ podcast rating, user rating, review score, star rating ]
+
+  subscriber_count:
+    sql: '"SUBSCRIBER_COUNT"'
+    description: Total number of subscribers or followers for this podcast
+    synonyms: [ subscribers, follower count, audience size, subscription count ]
+
+  is_explicit:
+    sql: '"IS_EXPLICIT"'
+    label: Is Explicit
+    description: Boolean indicator of whether the podcast contains explicit content
+    synonyms: [ explicit content, explicit flag, contains explicit content ]
+
+  launch_date:
+    sql: '"LAUNCH_DATE"'
+    label: Launch Date
+    description: Date when the podcast was first launched or published
+    synonyms: [ start date, publication date, first published, release date ]
+
+  status:
+    sql: '"STATUS"'
+    label: Status
+    description: Current status of the podcast (e.g., Active, Discontinued, On Hiatus)
+    synonyms: [ podcast status, show status, publication status ]
+
+  network:
+    sql: '"NETWORK"'
+    label: Network
+    description: Media network or production company that produces or distributes
+      the podcast
+    synonyms: [ production network, publisher, media company, distributor ]
+
+measures:
+  count:
+    label: Podcast Count
+    aggregate_type: count
+
+  total_subscribers:
+    sql: '"SUBSCRIBER_COUNT"'
+    label: Total Subscribers
+    format: "#,##0"
+    aggregate_type: sum
+
+  avg_rating:
+    sql: '"RATING"'
+    label: Avg Rating
+    format: "#,##0.0"
+    aggregate_type: average
+
+  total_episodes:
+    sql: '"EPISODE_COUNT"'
+    label: Total Episodes
+    format: "#,##0"
+    aggregate_type: sum
+
+  avg_episode_length:
+    sql: '"AVG_EPISODE_LENGTH_MIN"'
+    label: Avg Episode Length (min)
+    format: "#,##0"
+    aggregate_type: average
+
+  avg_subscriber_count:
+    sql: '"SUBSCRIBER_COUNT"'
+    label: Avg Subscribers
+    format: "#,##0"
+    aggregate_type: average

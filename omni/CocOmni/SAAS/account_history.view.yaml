@@ -1,0 +1,55 @@
+# Reference this view as saas__account_history
+schema: SAAS
+table_name: ACCOUNT_HISTORY
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  type:
+    sql: '"TYPE"'
+
+  status:
+    sql: '"STATUS"'
+
+  industry:
+    sql: '"INDUSTRY"'
+
+  annual_revenue:
+    sql: '"ANNUAL_REVENUE"'
+
+  number_of_employees:
+    sql: '"NUMBER_OF_EMPLOYEES"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  last_modified_date:
+    sql: '"LAST_MODIFIED_DATE"'
+
+  churn_date:
+    sql: '"CHURN_DATE"'
+
+  churn_reason:
+    sql: '"CHURN_REASON"'
+
+  csm_id:
+    sql: '"CSM_ID"'
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count

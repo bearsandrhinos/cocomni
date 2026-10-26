@@ -1,0 +1,534 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.COCO_DEMO.WORLD_CUP_SV
+semantic_view: ANALYTICS_PROD.COCO_DEMO.WORLD_CUP_SV
+label: World Cup Sv
+description: Comprehensive World Cup soccer data including match fixtures,
+  player statistics, team performance metrics, and tournament information across
+  multiple seasons
+
+views:
+  coco_demo__world_cup_sv__wc_fixtures:
+    label: Wc Fixtures
+    description: World Cup match fixtures including teams, scores, venues, and match
+      outcomes across all tournament rounds
+
+    schema: COCO_DEMO
+    table_name: WC_FIXTURES
+
+    dimensions:
+      away_team:
+        sql: '"AWAY_TEAM"'
+        description: Name of the away team
+
+      fixture_id:
+        sql: '"FIXTURE_ID"'
+        description: Unique identifier for the match
+
+      goals_away:
+        sql: '"GOALS_AWAY"'
+        description: Total goals scored by the away team
+
+      goals_home:
+        sql: '"GOALS_HOME"'
+        description: Total goals scored by the home team
+
+      goal_difference:
+        sql: ${coco_demo__world_cup_sv__wc_fixtures.goals_home} -
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away}
+        description: Goal difference (home goals minus away goals)
+
+      home_team:
+        sql: '"HOME_TEAM"'
+        description: Name of the home team
+
+      match_date:
+        sql: '"DATE"'
+        description: Date the match was played
+        synonyms: [ date, game date ]
+
+      match_result:
+        sql: CASE WHEN ${coco_demo__world_cup_sv__wc_fixtures.goals_home} >
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away} THEN 'Home Win'
+          WHEN ${coco_demo__world_cup_sv__wc_fixtures.goals_home} <
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away} THEN 'Away Win'
+          ELSE 'Draw' END
+        description: Match outcome - Home Win, Away Win, or Draw
+        synonyms: [ outcome, result ]
+
+      pen_away:
+        sql: '"PEN_AWAY"'
+        description: Away team penalty shootout score
+
+      pen_home:
+        sql: '"PEN_HOME"'
+        description: Home team penalty shootout score
+
+      referee:
+        sql: '"REFEREE"'
+        description: Name of the match referee
+
+      round:
+        sql: '"ROUND"'
+        description: Tournament round (e.g., Group A - 1, Round of 16, Final)
+        synonyms: [ phase, stage ]
+
+      season:
+        sql: '"SEASON"'
+        description: World Cup tournament year
+
+      total_goals:
+        sql: ${coco_demo__world_cup_sv__wc_fixtures.goals_home} +
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away}
+        description: Combined goals scored by both teams
+
+      venue_city:
+        sql: '"VENUE_CITY"'
+        description: City where the match was played
+
+      venue_name:
+        sql: '"VENUE_NAME"'
+        description: Name of the stadium
+        synonyms: [ ground, stadium ]
+
+      went_to_extra_time:
+        sql: '"ET_HOME" IS NOT NULL OR "ET_AWAY" IS NOT NULL'
+        description: Whether the match went to extra time
+        hidden: true
+
+      went_to_penalties:
+        sql: ${coco_demo__world_cup_sv__wc_fixtures.pen_home} IS NOT NULL OR
+          ${coco_demo__world_cup_sv__wc_fixtures.pen_away} IS NOT NULL
+        description: Whether the match was decided by a penalty shootout
+        hidden: true
+
+    measures:
+      average_goals_per_match:
+        sql: AVG(${coco_demo__world_cup_sv__wc_fixtures.goals_home} +
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away})
+        description: Average combined goals per match
+
+      away_wins:
+        sql: COALESCE(SUM(CASE WHEN ${coco_demo__world_cup_sv__wc_fixtures.goals_away} >
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_home} THEN 1 ELSE 0 END),
+          0)
+        description: Number of matches won by the away team
+
+      draws:
+        sql: COALESCE(SUM(CASE WHEN ${coco_demo__world_cup_sv__wc_fixtures.goals_home} =
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away} THEN 1 ELSE 0 END),
+          0)
+        description: Number of drawn matches
+
+      home_wins:
+        sql: COALESCE(SUM(CASE WHEN ${coco_demo__world_cup_sv__wc_fixtures.goals_home} >
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away} THEN 1 ELSE 0 END),
+          0)
+        description: Number of matches won by the home team
+
+      match_count:
+        sql: COUNT(*)
+        description: Total number of World Cup matches
+        synonyms: [ games played, number of matches ]
+
+      total_goals_scored:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_fixtures.goals_home} +
+          ${coco_demo__world_cup_sv__wc_fixtures.goals_away}), 0)
+        description: Sum of total goals across all matches
+
+    filters:
+      went_to_extra_time__filter:
+        type: boolean
+        label: Went To Extra Time
+        group_label: Filters
+        description: Whether the match went to extra time
+        bind_to: [ went_to_extra_time ]
+
+      went_to_penalties__filter:
+        type: boolean
+        label: Went To Penalties
+        group_label: Filters
+        description: Whether the match was decided by a penalty shootout
+        bind_to: [ went_to_penalties ]
+
+  coco_demo__world_cup_sv__wc_fixture_details:
+    label: Wc Fixture Details
+    description: Team-level match statistics including possession, shots, passes,
+      fouls, cards
+
+    schema: COCO_DEMO
+    table_name: WC_FIXTURE_DETAILS
+
+    dimensions:
+      away_ball_possession:
+        sql: CAST("AWAY_BALL_POSSESSION" AS FLOAT)
+        description: Away team ball possession percentage
+
+      away_coach:
+        sql: '"AWAY_COACH"'
+        description: Name of the away team head coach
+
+      away_corner_kicks:
+        sql: CAST("AWAY_CORNER_KICKS" AS INTEGER)
+        description: Corner kicks awarded to the away team
+
+      away_formation:
+        sql: '"AWAY_FORMATION"'
+        description: Tactical formation used by the away team
+
+      away_fouls:
+        sql: CAST("AWAY_FOULS" AS INTEGER)
+        description: Fouls committed by the away team
+
+      away_goalkeeper_saves:
+        sql: CAST("AWAY_GOALKEEPER_SAVES" AS INTEGER)
+        description: Saves made by the away goalkeeper
+
+      away_passes_accurate:
+        sql: CAST("AWAY_PASSES_ACCURATE" AS INTEGER)
+        description: Accurate passes by the away team
+
+      away_red_cards:
+        sql: CAST("AWAY_RED_CARDS" AS INTEGER)
+        description: Red cards received by the away team
+
+      away_shots_on_goal:
+        sql: CAST("AWAY_SHOTS_ON_GOAL" AS INTEGER)
+        description: Away team shots on target
+
+      away_total_passes:
+        sql: CAST("AWAY_TOTAL_PASSES" AS INTEGER)
+        description: Total passes attempted by the away team
+
+      away_total_shots:
+        sql: CAST("AWAY_TOTAL_SHOTS" AS INTEGER)
+        description: Away team total shots attempted
+
+      away_yellow_cards:
+        sql: CAST("AWAY_YELLOW_CARDS" AS INTEGER)
+        description: Yellow cards received by the away team
+
+      fixture_id:
+        sql: '"FIXTURE_ID"'
+        description: Unique identifier for the match
+
+      home_ball_possession:
+        sql: CAST("HOME_BALL_POSSESSION" AS FLOAT)
+        description: Home team ball possession percentage
+
+      home_coach:
+        sql: '"HOME_COACH"'
+        description: Name of the home team head coach
+
+      home_corner_kicks:
+        sql: CAST("HOME_CORNER_KICKS" AS INTEGER)
+        description: Corner kicks awarded to the home team
+
+      home_formation:
+        sql: '"HOME_FORMATION"'
+        description: Tactical formation used by the home team
+
+      home_fouls:
+        sql: CAST("HOME_FOULS" AS INTEGER)
+        description: Fouls committed by the home team
+
+      home_goalkeeper_saves:
+        sql: CAST("HOME_GOALKEEPER_SAVES" AS INTEGER)
+        description: Saves made by the home goalkeeper
+
+      home_passes_accurate:
+        sql: CAST("HOME_PASSES_ACCURATE" AS INTEGER)
+        description: Accurate passes by the home team
+
+      home_red_cards:
+        sql: CAST("HOME_RED_CARDS" AS INTEGER)
+        description: Red cards received by the home team
+
+      home_shots_on_goal:
+        sql: CAST("HOME_SHOTS_ON_GOAL" AS INTEGER)
+        description: Home team shots on target
+
+      home_total_passes:
+        sql: CAST("HOME_TOTAL_PASSES" AS INTEGER)
+        description: Total passes attempted by the home team
+
+      home_total_shots:
+        sql: CAST("HOME_TOTAL_SHOTS" AS INTEGER)
+        description: Home team total shots attempted
+
+      home_yellow_cards:
+        sql: CAST("HOME_YELLOW_CARDS" AS INTEGER)
+        description: Yellow cards received by the home team
+
+      possession_difference:
+        sql: CAST(${coco_demo__world_cup_sv__wc_fixture_details.home_ball_possession} AS
+          FLOAT) -
+          CAST(${coco_demo__world_cup_sv__wc_fixture_details.away_ball_possession}
+          AS FLOAT)
+        description: Difference in possession between home and away
+
+    measures:
+      average_away_possession:
+        sql: AVG(CAST(${coco_demo__world_cup_sv__wc_fixture_details.away_ball_possession}
+          AS FLOAT))
+        description: Average away team possession across matches
+
+      average_home_possession:
+        sql: AVG(CAST(${coco_demo__world_cup_sv__wc_fixture_details.home_ball_possession}
+          AS FLOAT))
+        description: Average home team possession across matches
+
+      detail_match_count:
+        sql: COUNT(*)
+        description: Total number of match detail records
+
+      total_away_shots_on_goal:
+        sql: COALESCE(SUM(CAST(${coco_demo__world_cup_sv__wc_fixture_details.away_shots_on_goal}
+          AS INTEGER)), 0)
+        description: Sum of away shots on target across matches
+
+      total_home_shots_on_goal:
+        sql: COALESCE(SUM(CAST(${coco_demo__world_cup_sv__wc_fixture_details.home_shots_on_goal}
+          AS INTEGER)), 0)
+        description: Sum of home shots on target across matches
+
+  coco_demo__world_cup_sv__wc_player_stats:
+    label: Wc Player Stats
+    description: Player performance statistics for each World Cup match
+
+    schema: COCO_DEMO
+    table_name: WC_PLAYER_STATS
+
+    dimensions:
+      cards_red:
+        sql: '"CARDS_RED"'
+        description: Red cards received
+
+      cards_yellow:
+        sql: '"CARDS_YELLOW"'
+        description: Yellow cards received
+
+      dribbles_attempts:
+        sql: '"DRIBBLES_ATTEMPTS"'
+        description: Dribble attempts
+
+      dribbles_success:
+        sql: '"DRIBBLES_SUCCESS"'
+        description: Successful dribbles completed
+
+      duels_total:
+        sql: '"DUELS_TOTAL"'
+        description: Total duels contested
+
+      duels_won:
+        sql: '"DUELS_WON"'
+        description: Duels won by the player
+
+      fixture_id:
+        sql: '"FIXTURE_ID"'
+        description: Unique identifier for the match
+
+      fouls_committed:
+        sql: '"FOULS_COMMITTED"'
+        description: Fouls committed by the player
+
+      games_minutes:
+        sql: '"GAMES_MINUTES"'
+        description: Minutes played in the match
+
+      games_position:
+        sql: '"GAMES_POSITION"'
+        description: Playing position (G=Goalkeeper, D=Defender, M=Midfielder, F=Forward)
+        synonyms: [ position ]
+
+      games_rating:
+        sql: CAST("GAMES_RATING" AS FLOAT)
+        description: Player match rating (1-10 scale)
+
+      goals_assists:
+        sql: '"GOALS_ASSISTS"'
+        description: Assists provided by the player
+        synonyms: [ assists ]
+
+      goals_saves:
+        sql: '"GOALS_SAVES"'
+        description: Saves made (primarily for goalkeepers)
+
+      goals_total:
+        sql: '"GOALS_TOTAL"'
+        description: Goals scored by the player in the match
+
+      passes_key:
+        sql: '"PASSES_KEY"'
+        description: Key passes (passes leading to a shot)
+
+      passes_total:
+        sql: '"PASSES_TOTAL"'
+        description: Total passes attempted
+
+      player_id:
+        sql: '"PLAYER_ID"'
+        description: Unique identifier for the player
+
+      player_name:
+        sql: '"PLAYER_NAME"'
+        description: Full name of the player
+
+      season:
+        sql: '"SEASON"'
+        description: World Cup tournament year
+
+      shots_on:
+        sql: '"SHOTS_ON"'
+        description: Shots on target by the player
+
+      shots_on_target_rate:
+        sql: "CASE WHEN ${coco_demo__world_cup_sv__wc_player_stats.shots_total} > 0 THEN
+          ${coco_demo__world_cup_sv__wc_player_stats.shots_on} :: FLOAT /
+          ${coco_demo__world_cup_sv__wc_player_stats.shots_total} ELSE NULL END"
+        description: Percentage of shots on target
+        synonyms: [ shot accuracy ]
+
+      shots_total:
+        sql: '"SHOTS_TOTAL"'
+        description: Total shots attempted by the player
+
+      tackles_total:
+        sql: '"TACKLES_TOTAL"'
+        description: Total tackles made
+
+      team_name:
+        sql: '"TEAM_NAME"'
+        description: Name of the player national team
+
+      is_captain:
+        sql: '"GAMES_CAPTAIN" = TRUE'
+        description: Whether the player was team captain
+        hidden: true
+
+      is_substitute:
+        sql: '"GAMES_SUBSTITUTE" = TRUE'
+        description: Whether the player came on as a substitute
+        hidden: true
+
+    measures:
+      assists_total:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.goals_assists}), 0)
+        description: Sum of assists across all matches
+
+      average_rating:
+        sql: AVG(CAST(${coco_demo__world_cup_sv__wc_player_stats.games_rating} AS
+          FLOAT))
+        description: Average player match rating
+
+      key_passes_total:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.passes_key}), 0)
+        description: Sum of key passes across all matches
+
+      player_appearances:
+        sql: COUNT(*)
+        description: Total player-match appearances
+
+      red_cards_total:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.cards_red}), 0)
+        description: Sum of red cards across all matches
+
+      saves_total:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.goals_saves}), 0)
+        description: Sum of saves across all matches
+
+      shots_on_target_total:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.shots_on}), 0)
+        description: Sum of shots on target across all matches
+
+      total_goals:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.goals_total}), 0)
+        description: Sum of all goals scored by players
+        synonyms: [ goals scored ]
+
+      unique_players:
+        sql: COUNT(DISTINCT ${coco_demo__world_cup_sv__wc_player_stats.player_id})
+        description: Count of distinct players
+
+      yellow_cards_total:
+        sql: COALESCE(SUM(${coco_demo__world_cup_sv__wc_player_stats.cards_yellow}), 0)
+        description: Sum of yellow cards across all matches
+
+    filters:
+      is_captain__filter:
+        type: boolean
+        label: Is Captain
+        group_label: Filters
+        description: Whether the player was team captain
+        bind_to: [ is_captain ]
+
+      is_substitute__filter:
+        type: boolean
+        label: Is Substitute
+        group_label: Filters
+        description: Whether the player came on as a substitute
+        bind_to: [ is_substitute ]
+
+  coco_demo__world_cup_sv__wc_seasons:
+    label: Wc Seasons
+    description: FIFA World Cup tournament metadata by year
+
+    schema: COCO_DEMO
+    table_name: WC_SEASONS
+
+    dimensions:
+      end_date:
+        sql: '"END"'
+        description: End date of the tournament
+
+      start_date:
+        sql: '"START"'
+        description: Start date of the tournament
+
+      tournament_duration_days:
+        sql: DATEDIFF(DAY, "START", "END")
+        description: Number of days the tournament lasted
+
+      year:
+        sql: '"YEAR"'
+        description: World Cup tournament year
+
+    measures:
+      average_tournament_duration:
+        sql: AVG(DATEDIFF(DAY, "START", "END"))
+        description: Average tournament duration in days
+
+      season_count:
+        sql: COUNT(*)
+        description: Number of World Cup tournaments
+
+relationships:
+  - join_from_view: coco_demo__world_cup_sv__wc_fixtures
+    join_to_view: coco_demo__world_cup_sv__wc_fixture_details
+    join_type: always_left
+    on_sql: ${coco_demo__world_cup_sv__wc_fixtures.fixture_id} =
+      ${coco_demo__world_cup_sv__wc_fixture_details.fixture_id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__world_cup_sv__wc_fixtures
+    join_to_view: coco_demo__world_cup_sv__wc_seasons
+    join_type: always_left
+    on_sql: ${coco_demo__world_cup_sv__wc_fixtures.season} =
+      ${coco_demo__world_cup_sv__wc_seasons.year}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__world_cup_sv__wc_player_stats
+    join_to_view: coco_demo__world_cup_sv__wc_fixtures
+    join_type: always_left
+    on_sql: ${coco_demo__world_cup_sv__wc_player_stats.fixture_id} =
+      ${coco_demo__world_cup_sv__wc_fixtures.fixture_id}
+    relationship_type: many_to_one
+
+ai_context: "Use these instructions for question categorization: This topic
+  provides comprehensive World Cup soccer analytics across matches, players,
+  teams, and tournaments. Key views - wc_fixtures: Match-level data (teams,
+  scores, venue, round, date). wc_fixture_details: Team statistics per match
+  (possession, shots, passes, fouls, cards). wc_player_stats: Individual player
+  performance per match (goals, assists, passes, tackles, ratings). wc_seasons:
+  Tournament metadata (year, dates, coverage). Use match_result to filter by
+  Home Win, Away Win, or Draw. Use games_position to segment by position
+  (F=Forward, M=Midfielder, D=Defender, G=Goalkeeper). Player stats are
+  per-match so use unique_players for player counts."

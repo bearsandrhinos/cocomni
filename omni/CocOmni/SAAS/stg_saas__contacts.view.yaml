@@ -1,0 +1,35 @@
+# Reference this view as saas__stg_saas__contacts
+schema: SAAS
+table_name: STG_SAAS__CONTACTS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  first_name:
+    sql: '"FIRST_NAME"'
+
+  last_name:
+    sql: '"LAST_NAME"'
+
+  email:
+    sql: '"EMAIL"'
+
+  phone:
+    sql: '"PHONE"'
+
+  title:
+    sql: '"TITLE"'
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

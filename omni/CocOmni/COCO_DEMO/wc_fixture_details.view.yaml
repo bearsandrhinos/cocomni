@@ -1,0 +1,515 @@
+# Reference this view as coco_demo__wc_fixture_details
+label: World Cup Fixture Details
+description: Team-level match statistics including possession, shots, passes,
+  fouls, cards, and other detailed match metrics for both home and away teams
+
+schema: COCO_DEMO
+table_name: WC_FIXTURE_DETAILS
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    label: Fixture ID
+    format: ID
+    description: Unique identifier for the match
+    primary_key: true
+    ai_context: Primary key for the match.
+
+  events_count:
+    sql: '"EVENTS_COUNT"'
+    label: Event Count
+    description: Number of match events recorded
+    ai_context: Count of events in the match.
+
+  goals_list:
+    sql: '"GOALS_LIST"'
+    label: Goals List
+    description: JSON list of goals scored in the match
+    ai_context: Raw goals data. Use wc_goals view for parsed analysis.
+
+  home_shots_on_goal:
+    sql: CAST("HOME_SHOTS_ON_GOAL" AS INTEGER)
+    label: Home Shots on Goal
+    description: Home team shots on target
+    group_label: Home Shots
+    ai_context: Home shots that were on target.
+
+  home_shots_off_goal:
+    sql: CAST("HOME_SHOTS_OFF_GOAL" AS INTEGER)
+    label: Home Shots Off Goal
+    description: Home team shots off target
+    group_label: Home Shots
+    ai_context: Home shots that missed.
+
+  home_total_shots:
+    sql: CAST("HOME_TOTAL_SHOTS" AS INTEGER)
+    label: Home Total Shots
+    description: Home team total shots attempted
+    group_label: Home Shots
+    ai_context: All home shot attempts.
+
+  home_blocked_shots:
+    sql: CAST("HOME_BLOCKED_SHOTS" AS INTEGER)
+    label: Home Blocked Shots
+    description: Home team shots blocked by defenders
+    group_label: Home Shots
+    ai_context: Home shots blocked.
+
+  home_shots_insidebox:
+    sql: CAST("HOME_SHOTS_INSIDEBOX" AS INTEGER)
+    label: Home Shots Inside Box
+    description: Home team shots from inside the box
+    group_label: Home Shots
+    ai_context: Home shots from inside the 18-yard box.
+
+  home_shots_outsidebox:
+    sql: CAST("HOME_SHOTS_OUTSIDEBOX" AS INTEGER)
+    label: Home Shots Outside Box
+    description: Home team shots from outside the box
+    group_label: Home Shots
+    ai_context: Home long-range shots.
+
+  home_fouls:
+    sql: CAST("HOME_FOULS" AS INTEGER)
+    label: Home Fouls
+    description: Fouls committed by the home team
+    group_label: Home Discipline
+    ai_context: Home team fouls.
+
+  home_corner_kicks:
+    sql: CAST("HOME_CORNER_KICKS" AS INTEGER)
+    label: Home Corner Kicks
+    description: Corner kicks awarded to the home team
+    group_label: Home Other
+    ai_context: Home corners won.
+
+  home_offsides:
+    sql: '"HOME_OFFSIDES"'
+    label: Home Offsides
+    description: Offside calls against the home team
+    group_label: Home Other
+    ai_context: Home offside infractions.
+
+  home_ball_possession:
+    sql: CAST("HOME_BALL_POSSESSION" AS FLOAT)
+    label: Home Possession %
+    format: percent_0
+    description: Home team ball possession percentage
+    group_label: Home Passing
+    ai_context: Home possession percentage.
+
+  home_yellow_cards:
+    sql: CAST("HOME_YELLOW_CARDS" AS INTEGER)
+    label: Home Yellow Cards
+    description: Yellow cards received by the home team
+    group_label: Home Discipline
+    ai_context: Home cautions.
+
+  home_red_cards:
+    sql: CAST("HOME_RED_CARDS" AS INTEGER)
+    label: Home Red Cards
+    description: Red cards received by the home team
+    group_label: Home Discipline
+    ai_context: Home dismissals.
+
+  home_goalkeeper_saves:
+    sql: CAST("HOME_GOALKEEPER_SAVES" AS INTEGER)
+    label: Home Goalkeeper Saves
+    description: Saves made by the home goalkeeper
+    group_label: Home Other
+    ai_context: Home goalkeeper saves.
+
+  home_total_passes:
+    sql: CAST("HOME_TOTAL_PASSES" AS INTEGER)
+    label: Home Total Passes
+    description: Total passes attempted by the home team
+    group_label: Home Passing
+    ai_context: Home pass attempts.
+
+  home_passes_accurate:
+    sql: CAST("HOME_PASSES_ACCURATE" AS INTEGER)
+    label: Home Accurate Passes
+    description: Accurate passes by the home team
+    group_label: Home Passing
+    ai_context: Home completed passes.
+
+  away_shots_on_goal:
+    sql: CAST("AWAY_SHOTS_ON_GOAL" AS INTEGER)
+    label: Away Shots on Goal
+    description: Away team shots on target
+    group_label: Away Shots
+    ai_context: Away shots on target.
+
+  away_shots_off_goal:
+    sql: CAST("AWAY_SHOTS_OFF_GOAL" AS INTEGER)
+    label: Away Shots Off Goal
+    description: Away team shots off target
+    group_label: Away Shots
+    ai_context: Away shots that missed.
+
+  away_total_shots:
+    sql: CAST("AWAY_TOTAL_SHOTS" AS INTEGER)
+    label: Away Total Shots
+    description: Away team total shots attempted
+    group_label: Away Shots
+    ai_context: All away shot attempts.
+
+  away_blocked_shots:
+    sql: CAST("AWAY_BLOCKED_SHOTS" AS INTEGER)
+    label: Away Blocked Shots
+    description: Away team shots blocked by defenders
+    group_label: Away Shots
+    ai_context: Away shots blocked.
+
+  away_shots_insidebox:
+    sql: CAST("AWAY_SHOTS_INSIDEBOX" AS INTEGER)
+    label: Away Shots Inside Box
+    description: Away team shots from inside the box
+    group_label: Away Shots
+    ai_context: Away shots from inside the 18-yard box.
+
+  away_shots_outsidebox:
+    sql: CAST("AWAY_SHOTS_OUTSIDEBOX" AS INTEGER)
+    label: Away Shots Outside Box
+    description: Away team shots from outside the box
+    group_label: Away Shots
+    ai_context: Away long-range shots.
+
+  away_fouls:
+    sql: CAST("AWAY_FOULS" AS INTEGER)
+    label: Away Fouls
+    description: Fouls committed by the away team
+    group_label: Away Discipline
+    ai_context: Away team fouls.
+
+  away_corner_kicks:
+    sql: CAST("AWAY_CORNER_KICKS" AS INTEGER)
+    label: Away Corner Kicks
+    description: Corner kicks awarded to the away team
+    group_label: Away Other
+    ai_context: Away corners won.
+
+  away_offsides:
+    sql: '"AWAY_OFFSIDES"'
+    label: Away Offsides
+    description: Offside calls against the away team
+    group_label: Away Other
+    ai_context: Away offside infractions.
+
+  away_ball_possession:
+    sql: CAST("AWAY_BALL_POSSESSION" AS FLOAT)
+    label: Away Possession %
+    format: percent_0
+    description: Away team ball possession percentage
+    group_label: Away Passing
+    ai_context: Away possession percentage.
+
+  away_yellow_cards:
+    sql: CAST("AWAY_YELLOW_CARDS" AS INTEGER)
+    label: Away Yellow Cards
+    description: Yellow cards received by the away team
+    group_label: Away Discipline
+    ai_context: Away cautions.
+
+  away_red_cards:
+    sql: CAST("AWAY_RED_CARDS" AS INTEGER)
+    label: Away Red Cards
+    description: Red cards received by the away team
+    group_label: Away Discipline
+    ai_context: Away dismissals.
+
+  away_goalkeeper_saves:
+    sql: CAST("AWAY_GOALKEEPER_SAVES" AS INTEGER)
+    label: Away Goalkeeper Saves
+    description: Saves made by the away goalkeeper
+    group_label: Away Other
+    ai_context: Away goalkeeper saves.
+
+  away_total_passes:
+    sql: CAST("AWAY_TOTAL_PASSES" AS INTEGER)
+    label: Away Total Passes
+    description: Total passes attempted by the away team
+    group_label: Away Passing
+    ai_context: Away pass attempts.
+
+  away_passes_accurate:
+    sql: CAST("AWAY_PASSES_ACCURATE" AS INTEGER)
+    label: Away Accurate Passes
+    description: Accurate passes by the away team
+    group_label: Away Passing
+    ai_context: Away completed passes.
+
+  possession_difference:
+    sql: ${coco_demo__wc_fixture_details.home_ball_possession} -
+      ${coco_demo__wc_fixture_details.away_ball_possession}
+    label: Possession Difference (Home - Away)
+    format: number_1
+    description: Difference in possession between home and away (positive = home dominated)
+    ai_context: Possession gap. Positive means home team had more possession.
+
+  total_cards:
+    sql: ${coco_demo__wc_fixture_details.home_yellow_cards} +
+      ${coco_demo__wc_fixture_details.home_red_cards} +
+      ${coco_demo__wc_fixture_details.away_yellow_cards} +
+      ${coco_demo__wc_fixture_details.away_red_cards}
+    label: Total Cards (Both Teams)
+    description: Total cards (yellow + red) for both teams combined
+    group_label: Match Totals
+    ai_context: Combined cards for both teams.
+
+  total_corner_kicks:
+    sql: ${coco_demo__wc_fixture_details.home_corner_kicks} +
+      ${coco_demo__wc_fixture_details.away_corner_kicks}
+    label: Total Corner Kicks
+    description: Total corner kicks for both teams combined
+    group_label: Match Totals
+    ai_context: Combined corners.
+
+  total_fouls:
+    sql: ${coco_demo__wc_fixture_details.home_fouls} +
+      ${coco_demo__wc_fixture_details.away_fouls}
+    label: Total Fouls (Both Teams)
+    description: Total fouls for both teams combined
+    group_label: Match Totals
+    ai_context: Combined fouls.
+
+  total_shots:
+    sql: ${coco_demo__wc_fixture_details.home_total_shots} +
+      ${coco_demo__wc_fixture_details.away_total_shots}
+    label: Total Shots (Both Teams)
+    description: Total shots for both teams combined
+    group_label: Match Totals
+    ai_context: Combined shot attempts.
+
+  total_shots_on_goal:
+    sql: ${coco_demo__wc_fixture_details.home_shots_on_goal} +
+      ${coco_demo__wc_fixture_details.away_shots_on_goal}
+    label: Total Shots on Goal
+    description: Total shots on target for both teams combined
+    group_label: Match Totals
+    ai_context: Combined shots on target.
+
+  home_formation:
+    sql: '"HOME_FORMATION"'
+    description: Tactical formation used by the home team (e.g., 4-3-3)
+    group_label: Lineup
+    ai_context: Home team formation.
+
+  home_coach:
+    sql: '"HOME_COACH"'
+    description: Name of the home team's head coach
+    group_label: Lineup
+    ai_context: Home team manager.
+
+  home_coach_photo:
+    sql: '"HOME_COACH_PHOTO"'
+    description: URL to the home coach's photo
+    group_label: Lineup
+    ai_context: Home coach photo.
+
+  home_startxi:
+    sql: '"HOME_STARTXI"'
+    description: JSON list of home team starting eleven players
+    group_label: Lineup
+    ai_context: Home starting lineup.
+
+  home_substitutes:
+    sql: '"HOME_SUBSTITUTES"'
+    description: JSON list of home team substitute players
+    group_label: Lineup
+    ai_context: Home bench players.
+
+  away_formation:
+    sql: '"AWAY_FORMATION"'
+    description: Tactical formation used by the away team
+    group_label: Lineup
+    ai_context: Away team formation.
+
+  away_coach:
+    sql: '"AWAY_COACH"'
+    description: Name of the away team's head coach
+    group_label: Lineup
+    ai_context: Away team manager.
+
+  away_coach_photo:
+    sql: '"AWAY_COACH_PHOTO"'
+    description: URL to the away coach's photo
+    group_label: Lineup
+    ai_context: Away coach photo.
+
+  away_startxi:
+    sql: '"AWAY_STARTXI"'
+    description: JSON list of away team starting eleven players
+    group_label: Lineup
+    ai_context: Away starting lineup.
+
+  away_substitutes:
+    sql: '"AWAY_SUBSTITUTES"'
+    description: JSON list of away team substitute players
+    group_label: Lineup
+    ai_context: Away bench players.
+
+  cards_list:
+    sql: '"CARDS_LIST"'
+    description: JSON list of cards issued in the match
+    ai_context: Raw cards data.
+
+  subs_list:
+    sql: '"SUBS_LIST"'
+    description: JSON list of substitutions made in the match
+    ai_context: Raw substitution data.
+
+  home_passes_pct:
+    sql: '"HOME_PASSES_PCT"'
+    description: Home team pass completion percentage
+    group_label: Home Passing
+    ai_context: Home pass accuracy rate.
+
+  away_passes_pct:
+    sql: '"AWAY_PASSES_PCT"'
+    description: Away team pass completion percentage
+    group_label: Away Passing
+    ai_context: Away pass accuracy rate.
+
+measures:
+  count:
+    label: Match Count
+    description: Total number of match detail records
+    aggregate_type: count
+    ai_context: Count of matches with detail stats.
+
+  average_away_possession:
+    sql: ${away_ball_possession}
+    label: Average Away Possession
+    group_label: Away Passing
+    format: percent_1
+    description: Average away team possession across matches
+    aggregate_type: average
+    ai_context: Mean away possession.
+
+  average_home_possession:
+    sql: ${home_ball_possession}
+    label: Average Home Possession
+    group_label: Home Passing
+    format: percent_1
+    description: Average home team possession across matches
+    aggregate_type: average
+    ai_context: Mean home possession.
+
+  total_away_corner_kicks:
+    sql: ${away_corner_kicks}
+    label: Total Away Corner Kicks
+    group_label: Away Other
+    description: Sum of away corner kicks across matches
+    aggregate_type: sum
+    ai_context: Aggregate away corners.
+
+  total_away_fouls:
+    sql: ${away_fouls}
+    label: Total Away Fouls
+    group_label: Away Discipline
+    description: Sum of away fouls across matches
+    aggregate_type: sum
+    ai_context: Aggregate away fouls.
+
+  total_away_red_cards:
+    sql: ${away_red_cards}
+    label: Total Away Red Cards
+    group_label: Away Discipline
+    description: Sum of away red cards across matches
+    aggregate_type: sum
+    ai_context: Aggregate away dismissals.
+
+  total_away_saves:
+    sql: ${away_goalkeeper_saves}
+    label: Total Away Saves
+    group_label: Away Other
+    description: Sum of away goalkeeper saves across matches
+    aggregate_type: sum
+    ai_context: Aggregate away saves.
+
+  total_away_shots:
+    sql: ${away_total_shots}
+    label: Total Away Shots
+    group_label: Away Shots
+    description: Sum of away shots across matches
+    aggregate_type: sum
+    ai_context: Aggregate away shots.
+
+  total_away_shots_on_goal:
+    sql: ${away_shots_on_goal}
+    label: Total Away Shots on Goal
+    group_label: Away Shots
+    description: Sum of away shots on target across matches
+    aggregate_type: sum
+    ai_context: Aggregate away shots on target.
+
+  total_away_yellow_cards:
+    sql: ${away_yellow_cards}
+    label: Total Away Yellow Cards
+    group_label: Away Discipline
+    description: Sum of away yellow cards across matches
+    aggregate_type: sum
+    ai_context: Aggregate away cautions.
+
+  total_home_corner_kicks:
+    sql: ${home_corner_kicks}
+    label: Total Home Corner Kicks
+    group_label: Home Other
+    description: Sum of home corner kicks across matches
+    aggregate_type: sum
+    ai_context: Aggregate home corners.
+
+  total_home_fouls:
+    sql: ${home_fouls}
+    label: Total Home Fouls
+    group_label: Home Discipline
+    description: Sum of home fouls across matches
+    aggregate_type: sum
+    ai_context: Aggregate home fouls.
+
+  total_home_red_cards:
+    sql: ${home_red_cards}
+    label: Total Home Red Cards
+    group_label: Home Discipline
+    description: Sum of home red cards across matches
+    aggregate_type: sum
+    ai_context: Aggregate home dismissals.
+
+  total_home_saves:
+    sql: ${home_goalkeeper_saves}
+    label: Total Home Saves
+    group_label: Home Other
+    description: Sum of home goalkeeper saves across matches
+    aggregate_type: sum
+    ai_context: Aggregate home saves.
+
+  total_home_shots:
+    sql: ${home_total_shots}
+    label: Total Home Shots
+    group_label: Home Shots
+    description: Sum of home shots across matches
+    aggregate_type: sum
+    ai_context: Aggregate home shots.
+
+  total_home_shots_on_goal:
+    sql: ${home_shots_on_goal}
+    label: Total Home Shots on Goal
+    group_label: Home Shots
+    description: Sum of home shots on target across matches
+    aggregate_type: sum
+    ai_context: Aggregate home shots on target.
+
+  total_home_yellow_cards:
+    sql: ${home_yellow_cards}
+    label: Total Home Yellow Cards
+    group_label: Home Discipline
+    description: Sum of home yellow cards across matches
+    aggregate_type: sum
+    ai_context: Aggregate home cautions.
+
+ai_context: This view contains match-level detail statistics for FIFA World Cup
+  fixtures, split by home and away teams. Each row is one match with statistics
+  for both sides including shots, passes, possession, fouls, cards, and expected
+  goals. Use it for comparing home vs away performance within matches. For
+  team-level aggregations, use wc_team_facts instead.

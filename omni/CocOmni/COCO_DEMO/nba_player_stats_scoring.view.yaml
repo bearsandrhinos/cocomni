@@ -1,0 +1,185 @@
+# Reference this view as coco_demo__nba_player_stats_scoring
+label: NBA Player Scoring Stats
+
+schema: COCO_DEMO
+table_name: NBA_PLAYER_STATS_SCORING
+
+dimensions:
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  nickname:
+    sql: '"NICKNAME"'
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_abbreviation:
+    sql: '"TEAM_ABBREVIATION"'
+
+  age:
+    sql: '"AGE"'
+
+  gp:
+    sql: '"GP"'
+
+  w:
+    sql: '"W"'
+
+  l:
+    sql: '"L"'
+
+  w_pct:
+    sql: '"W_PCT"'
+
+  min:
+    sql: '"MIN"'
+
+  pct_fga_2_pt:
+    sql: '"PCT_FGA_2_PT"'
+
+  pct_fga_3_pt:
+    sql: '"PCT_FGA_3_PT"'
+
+  pct_pts_2_pt:
+    sql: '"PCT_PTS_2_PT"'
+
+  pct_pts_2_pt_mr:
+    sql: '"PCT_PTS_2_PT_MR"'
+
+  pct_pts_3_pt:
+    sql: '"PCT_PTS_3_PT"'
+
+  pct_pts_fb:
+    sql: '"PCT_PTS_FB"'
+
+  pct_pts_ft:
+    sql: '"PCT_PTS_FT"'
+
+  pct_pts_off_tov:
+    sql: '"PCT_PTS_OFF_TOV"'
+
+  pct_pts_paint:
+    sql: '"PCT_PTS_PAINT"'
+
+  pct_ast_2_pm:
+    sql: '"PCT_AST_2_PM"'
+
+  pct_uast_2_pm:
+    sql: '"PCT_UAST_2_PM"'
+
+  pct_ast_3_pm:
+    sql: '"PCT_AST_3_PM"'
+
+  pct_uast_3_pm:
+    sql: '"PCT_UAST_3_PM"'
+
+  pct_ast_fgm:
+    sql: '"PCT_AST_FGM"'
+
+  pct_uast_fgm:
+    sql: '"PCT_UAST_FGM"'
+
+  fgm:
+    sql: '"FGM"'
+
+  fga:
+    sql: '"FGA"'
+
+  fg_pct:
+    sql: '"FG_PCT"'
+
+  gp_rank:
+    sql: '"GP_RANK"'
+
+  w_rank:
+    sql: '"W_RANK"'
+
+  l_rank:
+    sql: '"L_RANK"'
+
+  w_pct_rank:
+    sql: '"W_PCT_RANK"'
+
+  min_rank:
+    sql: '"MIN_RANK"'
+
+  pct_fga_2_pt_rank:
+    sql: '"PCT_FGA_2_PT_RANK"'
+
+  pct_fga_3_pt_rank:
+    sql: '"PCT_FGA_3_PT_RANK"'
+
+  pct_pts_2_pt_rank:
+    sql: '"PCT_PTS_2_PT_RANK"'
+
+  pct_pts_2_pt_mr_rank:
+    sql: '"PCT_PTS_2_PT_MR_RANK"'
+
+  pct_pts_3_pt_rank:
+    sql: '"PCT_PTS_3_PT_RANK"'
+
+  pct_pts_fb_rank:
+    sql: '"PCT_PTS_FB_RANK"'
+
+  pct_pts_ft_rank:
+    sql: '"PCT_PTS_FT_RANK"'
+
+  pct_pts_off_tov_rank:
+    sql: '"PCT_PTS_OFF_TOV_RANK"'
+
+  pct_pts_paint_rank:
+    sql: '"PCT_PTS_PAINT_RANK"'
+
+  pct_ast_2_pm_rank:
+    sql: '"PCT_AST_2_PM_RANK"'
+
+  pct_uast_2_pm_rank:
+    sql: '"PCT_UAST_2_PM_RANK"'
+
+  pct_ast_3_pm_rank:
+    sql: '"PCT_AST_3_PM_RANK"'
+
+  pct_uast_3_pm_rank:
+    sql: '"PCT_UAST_3_PM_RANK"'
+
+  pct_ast_fgm_rank:
+    sql: '"PCT_AST_FGM_RANK"'
+
+  pct_uast_fgm_rank:
+    sql: '"PCT_UAST_FGM_RANK"'
+
+  fgm_rank:
+    sql: '"FGM_RANK"'
+
+  fga_rank:
+    sql: '"FGA_RANK"'
+
+  fg_pct_rank:
+    sql: '"FG_PCT_RANK"'
+
+  team_count:
+    sql: '"TEAM_COUNT"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${player_id}, '|', ${season}, '|', ${season_type})
+    hidden: true
+    primary_key: true
+
+measures:
+  count:
+    aggregate_type: count

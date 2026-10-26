@@ -1,0 +1,108 @@
+# Reference this view as coco_demo__uss_routes
+label: USS Routes
+description: Daily service routes run by USS drivers out of a branch, with route
+  date, assigned driver, and the number of stops planned for the day.
+
+schema: COCO_DEMO
+table_name: USS_ROUTES
+
+dimensions:
+  route_id:
+    sql: '"ROUTE_ID"'
+    label: Route ID
+    format: id
+    group_label: Keys
+    primary_key: true
+    synonyms: [ route, run ]
+
+  driver_id:
+    sql: '"DRIVER_ID"'
+    label: Driver ID
+    format: id
+    group_label: Keys
+    synonyms: [ driver, technician, operator ]
+
+  branch_id:
+    sql: '"BRANCH_ID"'
+    label: Branch
+    format: id
+    group_label: Route Attributes
+    synonyms: [ depot, yard, location ]
+
+  route_date:
+    sql: '"ROUTE_DATE"'
+    label: Route Date
+    description: Day the route was run
+    group_label: Route Attributes
+    synonyms: [ service day, run date, date ]
+
+  planned_stops:
+    sql: '"PLANNED_STOPS"'
+    label: Planned Stops
+    format: number_0
+    description: Number of stops scheduled on this route
+    group_label: Route Attributes
+    synonyms: [ scheduled stops, planned capacity, stops ]
+    ai_context: Planned capacity denominator. Compare against actual completed
+      service orders for route completion.
+
+measures:
+  count:
+    label: Route Count
+    description: Count of routes
+    drill_fields: [ route_id, route_date, driver_id, branch_id, planned_stops ]
+    aggregate_type: count
+    synonyms: [ routes, runs ]
+
+  total_routes:
+    label: Total Routes
+    group_label: Volume
+    drill_fields: [ route_id, route_date, driver_id, branch_id, planned_stops ]
+    aggregate_type: count
+    synonyms: [ routes, number of routes, runs ]
+
+  total_planned_stops:
+    sql: ${planned_stops}
+    label: Total Planned Stops
+    group_label: Volume
+    format: number_0
+    description: Sum of planned stops across routes
+    drill_fields: [ route_id, route_date, driver_id, planned_stops ]
+    aggregate_type: sum
+    synonyms: [ planned capacity, scheduled stops ]
+
+  avg_planned_stops:
+    sql: ${planned_stops}
+    label: Avg Planned Stops per Route
+    group_label: Productivity
+    format: number_1
+    description: Average planned stops per route
+    aggregate_type: average
+    synonyms: [ stops per route planned, route density ]
+
+  unique_drivers:
+    sql: ${driver_id}
+    label: Unique Drivers
+    group_label: Volume
+    drill_fields: [ driver_id, branch_id, route_date ]
+    aggregate_type: count_distinct
+    synonyms: [ drivers, headcount, distinct drivers ]
+
+  routes_per_driver:
+    sql: ${total_routes} / NULLIF(${unique_drivers}, 0)
+    label: Routes per Driver
+    group_label: Productivity
+    format: number_2
+    description: Average number of routes run per driver
+    synonyms: [ driver productivity, runs per driver ]
+
+default_drill_fields: [ route_id, route_date, driver_id, branch_id, planned_stops ]
+
+ai_context: |-
+  One row per route (a single driver's planned day of service stops out of a branch).
+
+  Use this view for route productivity and driver/branch capacity analysis.
+  - 'stops per route' -> coco_demo__uss_service_orders.total_service_orders / total_routes
+  - 'route completion' -> completed service orders / total_planned_stops
+  - 'planned capacity' -> total_planned_stops
+  Join to coco_demo__uss_service_orders on route_id to compare planned stops against actual serviced stops.

@@ -1,0 +1,54 @@
+# Reference this view as demo__fernway_fact_warranty_claims_raw
+schema: DEMO
+table_name: FERNWAY_FACT_WARRANTY_CLAIMS_RAW
+
+dimensions:
+  claim_id:
+    sql: '"CLAIM_ID"'
+    format: ID
+
+  bike_serial:
+    sql: '"BIKE_SERIAL"'
+
+  servicing_dealer_id:
+    sql: '"SERVICING_DEALER_ID"'
+    format: ID
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  root_cause_part_unit_id:
+    sql: '"ROOT_CAUSE_PART_UNIT_ID"'
+    format: ID
+
+  claim_fake_year:
+    sql: '"CLAIM_FAKE_YEAR"'
+
+  claim_day_ordinal:
+    sql: '"CLAIM_DAY_ORDINAL"'
+
+  claim_type:
+    sql: '"CLAIM_TYPE"'
+
+  status:
+    sql: '"STATUS"'
+
+  resolution_fake_year:
+    sql: '"RESOLUTION_FAKE_YEAR"'
+
+  resolution_day_ordinal:
+    sql: '"RESOLUTION_DAY_ORDINAL"'
+
+  cost_amount:
+    sql: '"COST_AMOUNT"'
+
+  labor_cost_amount:
+    sql: '"LABOR_COST_AMOUNT"'
+
+  parts_cost_amount:
+    sql: '"PARTS_COST_AMOUNT"'
+
+measures:
+  count:
+    aggregate_type: count

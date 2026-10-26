@@ -1,0 +1,25 @@
+# Reference this view as demo__admission_days_medical_demo
+schema: DEMO
+table_name: ADMISSION_DAYS_MEDICAL_DEMO
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  status:
+    sql: '"STATUS"'
+
+  start_date:
+    sql: '"START_DATE"'
+
+  end_date:
+    sql: '"END_DATE"'
+
+  clientnummer:
+    sql: '"CLIENTNUMMER"'
+
+measures:
+  count:
+    aggregate_type: count

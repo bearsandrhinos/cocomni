@@ -1,0 +1,193 @@
+# Reference this view as coco_demo__tournament_fixtures
+label: Tournament Fixtures
+description: Match fixtures for various soccer tournaments including league
+  matches, scores, teams, venues, and match status
+
+schema: COCO_DEMO
+table_name: TOURNAMENT_FIXTURES
+
+dimensions:
+  ht_home: {}
+  ht_away: {}
+  ft_home: {}
+  ft_away: {}
+  et_home: {}
+  et_away: {}
+  pen_home: {}
+  pen_away: {}
+
+  league_name:
+    sql: league_name
+    label: League Name
+    description: Name of the league or tournament
+
+  season:
+    sql: season
+    label: Season
+    description: Season year for the tournament
+
+  date:
+    sql: date
+    label: Match Date
+    description: Date and time when the match was played
+    timeframes: [ raw, date, week, month, quarter, year ]
+
+  round:
+    sql: round
+    label: Round
+    description: Round or stage of the tournament (e.g., Group Stage, Round of 16,
+      Quarter-finals)
+
+  venue_name:
+    sql: venue_name
+    label: Venue Name
+    description: Name of the stadium or venue where the match was played
+
+  venue_city:
+    sql: venue_city
+    label: Venue City
+    description: City where the match venue is located
+
+  status:
+    sql: status
+    label: Match Status
+    description: Status of the match (e.g., Match Finished, Not Started)
+
+  home_team:
+    sql: home_team
+    label: Home Team
+    description: Name of the home team
+
+  away_team:
+    sql: away_team
+    label: Away Team
+    description: Name of the away team
+
+  goals_home:
+    sql: goals_home
+    hidden: true
+
+  goals_away:
+    sql: goals_away
+    hidden: true
+
+  fixture_id:
+    sql: fixture_id
+    label: Fixture ID
+    format: ID
+    description: Unique identifier for each match fixture
+    primary_key: true
+
+  league_id:
+    sql: league_id
+    label: League ID
+    format: ID
+    description: Identifier for the league or tournament
+
+  home_team_id:
+    sql: home_team_id
+    label: Home Team ID
+    format: ID
+    description: Identifier for the home team
+
+  away_team_id:
+    sql: away_team_id
+    label: Away Team ID
+    format: ID
+    description: Identifier for the away team
+
+  match_result:
+    sql: CASE WHEN ${coco_demo__tournament_fixtures.goals_home} >
+      ${coco_demo__tournament_fixtures.goals_away} THEN 'Home Win' WHEN
+      ${coco_demo__tournament_fixtures.goals_away} >
+      ${coco_demo__tournament_fixtures.goals_home} THEN 'Away Win' ELSE 'Draw'
+      END
+    label: Match Result
+    description: Outcome of the match from home team perspective
+
+  went_to_extra_time:
+    sql: et_home IS NOT NULL OR et_away IS NOT NULL
+    label: Went to Extra Time
+    description: Whether the match went to extra time
+
+  went_to_penalties:
+    sql: pen_home IS NOT NULL OR pen_away IS NOT NULL
+    label: Went to Penalties
+    description: Whether the match was decided by penalties
+
+measures:
+  count:
+    label: Match Count
+    description: Total number of matches
+    aggregate_type: count
+
+  average_goals_per_match:
+    sql: ${coco_demo__tournament_fixtures.goals_home} +
+      ${coco_demo__tournament_fixtures.goals_away}
+    label: Average Goals per Match
+    description: Average number of goals scored per match
+    aggregate_type: average
+
+  away_goals_total:
+    sql: ${coco_demo__tournament_fixtures.goals_away}
+    label: Away Goals Total
+    description: Total goals scored by away teams
+    aggregate_type: sum
+
+  away_halftime_goals:
+    sql: ht_away
+    label: Away Halftime Goals
+    description: Total goals scored by away teams at halftime
+    aggregate_type: sum
+
+  away_wins:
+    sql: CASE WHEN ${coco_demo__tournament_fixtures.goals_away} >
+      ${coco_demo__tournament_fixtures.goals_home} THEN 1 ELSE 0 END
+    label: Away Wins
+    description: Number of matches won by the away team
+    aggregate_type: sum
+
+  draws:
+    sql: CASE WHEN ${coco_demo__tournament_fixtures.goals_home} =
+      ${coco_demo__tournament_fixtures.goals_away} THEN 1 ELSE 0 END
+    label: Draws
+    description: Number of matches that ended in a draw
+    aggregate_type: sum
+
+  extra_time_matches:
+    sql: CASE WHEN et_home IS NOT NULL OR et_away IS NOT NULL THEN 1 ELSE 0 END
+    label: Extra Time Matches
+    description: Number of matches that went to extra time
+    aggregate_type: sum
+
+  home_goals_total:
+    sql: ${coco_demo__tournament_fixtures.goals_home}
+    label: Home Goals Total
+    description: Total goals scored by home teams
+    aggregate_type: sum
+
+  home_halftime_goals:
+    sql: ht_home
+    label: Home Halftime Goals
+    description: Total goals scored by home teams at halftime
+    aggregate_type: sum
+
+  home_wins:
+    sql: CASE WHEN ${coco_demo__tournament_fixtures.goals_home} >
+      ${coco_demo__tournament_fixtures.goals_away} THEN 1 ELSE 0 END
+    label: Home Wins
+    description: Number of matches won by the home team
+    aggregate_type: sum
+
+  penalty_shootout_matches:
+    sql: CASE WHEN pen_home IS NOT NULL OR pen_away IS NOT NULL THEN 1 ELSE 0 END
+    label: Penalty Shootout Matches
+    description: Number of matches decided by penalties
+    aggregate_type: sum
+
+  total_goals_scored:
+    sql: ${coco_demo__tournament_fixtures.goals_home} +
+      ${coco_demo__tournament_fixtures.goals_away}
+    label: Total Goals Scored
+    description: Total goals scored by both teams across all matches
+    aggregate_type: sum

@@ -1,0 +1,32 @@
+# Reference this view as demo__user_js
+schema: DEMO
+table_name: USER_JS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  first_name:
+    sql: '"FIRST_NAME"'
+
+  last_name:
+    sql: '"LAST_NAME"'
+
+  email:
+    sql: '"EMAIL"'
+
+  role_id:
+    sql: '"ROLE_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  region:
+    sql: '"REGION"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,54 @@
+# Reference this view as demo__gaming_events
+schema: DEMO
+table_name: GAMING_EVENTS
+
+dimensions:
+  event:
+    sql: '"EVENT"'
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  event_name:
+    sql: '"EVENT_NAME"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  device_platform:
+    sql: '"DEVICE_PLATFORM"'
+
+  game_version:
+    sql: '"GAME_VERSION"'
+
+  game_name:
+    sql: '"GAME_NAME"'
+
+  install_cost:
+    sql: '"INSTALL_COST"'
+
+  iap_revenue:
+    sql: '"IAP_REVENUE"'
+
+  ad_revenue:
+    sql: '"AD_REVENUE"'
+
+  install_source:
+    sql: '"INSTALL_SOURCE"'
+
+  campaign_name:
+    sql: '"CAMPAIGN_NAME"'
+
+  cohort:
+    sql: '"COHORT"'
+
+  acquisition_pattern:
+    sql: '"ACQUISITION_PATTERN"'
+
+  cohort_description:
+    sql: '"COHORT_DESCRIPTION"'
+
+measures:
+  count:
+    aggregate_type: count

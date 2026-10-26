@@ -1,0 +1,24 @@
+# Reference this view as coco_demo__order_facts
+schema: COCO_DEMO
+table_name: ORDER_FACTS
+
+dimensions:
+  order_id:
+    sql: '"ORDER_ID"'
+    format: ID
+
+  order_revenue:
+    sql: '"ORDER_REVENUE"'
+
+  item_count:
+    sql: '"ITEM_COUNT"'
+
+  order_margin:
+    sql: '"ORDER_MARGIN"'
+
+  order_created_at:
+    sql: '"ORDER_CREATED_AT"'
+
+measures:
+  count:
+    aggregate_type: count

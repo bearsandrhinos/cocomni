@@ -1,0 +1,208 @@
+# Reference this view as coco_demo__nba_player_game_log
+label: NBA Player Game Log
+description: One row per player per game with box score stats.
+
+schema: COCO_DEMO
+table_name: NBA_PLAYER_GAME_LOG
+
+dimensions:
+  season_id:
+    sql: '"SEASON_ID"'
+    format: ID
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+    label: Player
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_abbreviation:
+    sql: '"TEAM_ABBREVIATION"'
+
+  team_name:
+    sql: '"TEAM_NAME"'
+    label: Team
+
+  game_id:
+    sql: '"GAME_ID"'
+    format: ID
+
+  game_date:
+    sql: '"GAME_DATE"'
+
+  matchup:
+    sql: '"MATCHUP"'
+
+  wl:
+    sql: '"WL"'
+    label: Win/Loss
+
+  min:
+    sql: '"MIN"'
+
+  fgm:
+    sql: '"FGM"'
+
+  fga:
+    sql: '"FGA"'
+
+  fg_pct:
+    sql: '"FG_PCT"'
+
+  fg3_m:
+    sql: '"FG3_M"'
+
+  fg3_a:
+    sql: '"FG3_A"'
+
+  fg3_pct:
+    sql: '"FG3_PCT"'
+
+  ftm:
+    sql: '"FTM"'
+
+  fta:
+    sql: '"FTA"'
+
+  ft_pct:
+    sql: '"FT_PCT"'
+
+  oreb:
+    sql: '"OREB"'
+
+  dreb:
+    sql: '"DREB"'
+
+  reb:
+    sql: '"REB"'
+    label: Rebounds
+
+  ast:
+    sql: '"AST"'
+    label: Assists
+
+  stl:
+    sql: '"STL"'
+
+  blk:
+    sql: '"BLK"'
+
+  tov:
+    sql: '"TOV"'
+
+  pf:
+    sql: '"PF"'
+
+  pts:
+    sql: '"PTS"'
+    label: Points
+
+  plus_minus:
+    sql: '"PLUS_MINUS"'
+
+  fantasy_pts:
+    sql: '"FANTASY_PTS"'
+
+  video_available:
+    sql: '"VIDEO_AVAILABLE"'
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+  pk:
+    sql: CONCAT(${game_id}, '|', ${player_id})
+    hidden: true
+    primary_key: true
+
+  pic:
+    sql: CONCAT('https://cdn.nba.com/headshots/nba/latest/1040x760/',
+      CAST(${coco_demo__nba_player_game_log.player_id} AS VARCHAR), '.png')
+    label: Pic
+
+  team_image:
+    sql: CONCAT('https://cdn.nba.com/logos/nba/',
+      CAST(${coco_demo__nba_player_game_log.team_id} AS VARCHAR),
+      '/primary/L/logo.svg')
+    label: Team Image
+
+measures:
+  count:
+    aggregate_type: count
+
+  games_played:
+    label: Games Played
+    aggregate_type: count
+
+  total_points:
+    sql: ${pts}
+    label: Total Points
+    aggregate_type: sum
+
+  avg_points:
+    sql: ${pts}
+    label: Avg Points
+    format: number_1
+    aggregate_type: average
+
+  total_rebounds:
+    sql: ${reb}
+    label: Total Rebounds
+    aggregate_type: sum
+
+  avg_rebounds:
+    sql: ${reb}
+    label: Avg Rebounds
+    format: number_1
+    aggregate_type: average
+
+  total_assists:
+    sql: ${ast}
+    label: Total Assists
+    aggregate_type: sum
+
+  avg_assists:
+    sql: ${ast}
+    label: Avg Assists
+    format: number_1
+    aggregate_type: average
+
+  avg_minutes:
+    sql: ${min}
+    label: Avg Minutes
+    format: number_1
+    aggregate_type: average
+
+  avg_plus_minus:
+    sql: ${plus_minus}
+    label: Avg Plus/Minus
+    format: number_1
+    aggregate_type: average
+
+  wins:
+    label: Wins
+    aggregate_type: count
+    filters:
+      wl:
+        is: W
+
+  fg_pct_calc:
+    sql: SUM(${fgm}) / NULLIF(SUM(${fga}), 0)
+    label: FG %
+    format: percent_1
+
+  fg3_pct_calc:
+    sql: SUM(${fg3_m}) / NULLIF(SUM(${fg3_a}), 0)
+    label: 3P %
+    format: percent_1

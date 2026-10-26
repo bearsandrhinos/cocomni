@@ -1,0 +1,26 @@
+# Reference this view as demo__activities_medical_demo
+schema: DEMO
+table_name: ACTIVITIES_MEDICAL_DEMO
+
+dimensions:
+  bsn:
+    sql: '"BSN"'
+
+  datum_begin:
+    sql: '"DATUM_BEGIN"'
+
+  duur:
+    sql: '"DUUR"'
+
+  eenheid:
+    sql: '"EENHEID"'
+
+  uursoort:
+    sql: '"UURSOORT"'
+
+  omschrijving:
+    sql: '"OMSCHRIJVING"'
+
+measures:
+  count:
+    aggregate_type: count

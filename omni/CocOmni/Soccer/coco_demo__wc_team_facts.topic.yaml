@@ -1,0 +1,12 @@
+base_view: coco_demo__wc_team_facts
+label: World Cup Team Facts
+group_label: Soccer
+
+joins:
+  coco_demo__wc_team_stats: {}
+  coco_demo__wc_fixtures: {}
+
+ai_context: Use this for world cup questions.  If a team comes back as null, use
+  the world cup topic to find out the teams that were null and use those teams
+  in the match facts topic to get historical data across friendlies, tournaments
+  and world cups.

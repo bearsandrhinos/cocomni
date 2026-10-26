@@ -1,0 +1,15 @@
+base_view: coco_demo__nba_player_game_log
+label: NBA Game Logs
+group_label: NBA
+description: Player box scores per game joined to the team's game result and team box score.
+
+joins:
+  coco_demo__nba_team_game_log: {}
+
+ai_context: "One row per player per game. Joined to the team game log on game
+  and team, so team fields describe the player's own team in that game. Use
+  games_played for game counts, avg_points / avg_rebounds / avg_assists for
+  per-game averages, and total_* measures for sums. Use season_type to separate
+  Regular Season and Playoffs. Use game_date for trends. Do not sum team game
+  log measures across players: use the team game log measures only when grouping
+  by team or game."

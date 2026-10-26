@@ -1,0 +1,22 @@
+base_view: coco_demo__nba_player_stats_base
+label: NBA Player Season Stats
+group_label: NBA
+description: "Season-level NBA player stats: base box score averages, advanced
+  ratings, scoring mix and usage, by season and season type."
+
+default_filters:
+  coco_demo__nba_player_stats_base.season_type:
+    is: Regular Season
+
+joins:
+  coco_demo__nba_player_stats_advanced: {}
+  coco_demo__nba_player_stats_scoring: {}
+  coco_demo__nba_player_stats_usage: {}
+
+ai_context: One row per player per season and season type (Regular Season or
+  Playoffs). Always filter or group by season_type to avoid mixing regular
+  season and playoffs. Seasons are formatted like 2025-26. Use player_name for
+  players and team_abbreviation for teams. Base stats (pts, reb, ast) are
+  per-game averages; do not sum them across players. Use advanced for ratings
+  (off_rating, def_rating, net_rating, ts_pct, pace, pie), scoring for shot-mix
+  percentages, and usage for share-of-team stats.

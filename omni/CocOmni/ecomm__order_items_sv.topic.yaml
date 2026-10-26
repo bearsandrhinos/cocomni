@@ -1,0 +1,425 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.ECOMM.ORDER_ITEMS_SV
+semantic_view: ANALYTICS_PROD.ECOMM.ORDER_ITEMS_SV
+label: Order Items Sv
+description: Detail on historical customer purchases at the line item level,
+  with joins to users, inventory, products, and distribution centers.
+
+views:
+  ecomm__order_items_sv__distribution_centers:
+    label: Distribution Centers
+    description: Dimension table containing information about distribution centers
+
+    schema: ECOMM
+    table_name: DISTRIBUTION_CENTERS
+
+    dimensions:
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each distribution center
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: Geographical latitude of the distribution center location
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Geographical longitude of the distribution center location
+
+      name:
+        sql: '"NAME"'
+        description: Name of the distribution center
+
+    measures:
+      count:
+        sql: COUNT(*)
+        description: Count of distribution centers
+
+  ecomm__order_items_sv__inventory_items:
+    label: Inventory Items
+    description: Dimension table containing information about inventory items
+
+    schema: ECOMM
+    table_name: INVENTORY_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the inventory item was created
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each inventory item
+
+      product_brand:
+        sql: '"PRODUCT_BRAND"'
+        description: Brand of the product
+
+      product_category:
+        sql: '"PRODUCT_CATEGORY"'
+        description: Category of the product
+
+      product_department:
+        sql: '"PRODUCT_DEPARTMENT"'
+        description: Department the product belongs to
+
+      product_distribution_center_id:
+        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
+        description: Identifier of the distribution center for the product
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+        description: Identifier of the associated product
+
+      product_name:
+        sql: '"PRODUCT_NAME"'
+        description: Name of the product
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+        description: Retail price of the product
+
+      product_sku:
+        sql: '"PRODUCT_SKU"'
+        description: Stock Keeping Unit of the product
+
+      sold_at:
+        sql: '"SOLD_AT"'
+        description: Timestamp when the item was sold
+
+      cost:
+        sql: '"COST"'
+        description: Cost of the inventory item
+
+    measures:
+      cost_sum:
+        sql: COALESCE(SUM(${ecomm__order_items_sv__inventory_items.cost}), 0)
+        description: Total cost of inventory items
+
+      inventory_volume:
+        sql: COUNT(*)
+        description: Count of inventory items
+
+  ecomm__order_items_sv__order_items:
+    label: Order Items
+    description: Dimension table containing information about customer orders
+
+    schema: ECOMM
+    table_name: ORDER_ITEMS
+
+    dimensions:
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the order was created
+
+      delivered_at:
+        sql: '"DELIVERED_AT"'
+        description: Timestamp when the order was delivered
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each order line item
+
+      inventory_item_id:
+        sql: '"INVENTORY_ITEM_ID"'
+        description: Identifier of the inventory item in the order
+
+      order_id:
+        sql: '"ORDER_ID"'
+        description: Identifier for the order
+
+      returned_at:
+        sql: '"RETURNED_AT"'
+        description: Timestamp when the order was returned (if applicable)
+
+      shipped_at:
+        sql: '"SHIPPED_AT"'
+        description: Timestamp when the order was shipped
+
+      status:
+        sql: '"STATUS"'
+        description: Current status of the order
+
+      status_ordering:
+        sql: CASE WHEN ${ecomm__order_items_sv__order_items.status} = 'Complete' THEN 1
+          WHEN ${ecomm__order_items_sv__order_items.status} = 'Shipped' THEN 2
+          WHEN ${ecomm__order_items_sv__order_items.status} = 'Processing' THEN
+          3 WHEN ${ecomm__order_items_sv__order_items.status} = 'Cancelled' THEN
+          4 WHEN ${ecomm__order_items_sv__order_items.status} = 'Returned' THEN
+          5 ELSE 6 END
+        description: Numeric ordering of status field for sorting
+
+      user_id:
+        sql: '"USER_ID"'
+        description: Identifier of the user who placed the order
+
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+        description: Boolean indicating if the order was delivered
+        hidden: true
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+        description: Boolean indicating if the order was returned
+        hidden: true
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+        description: Boolean indicating if the order was shipped
+        hidden: true
+
+      margin:
+        sql: '"MARGIN"'
+        description: Profit margin for the order
+
+      months_since_signup:
+        sql: '"MONTHS_SINCE_SIGNUP"'
+        description: Number of months since the user signed up
+
+      sale_price:
+        sql: '"SALE_PRICE"'
+        description: Price at which the item was sold
+
+      time_to_ship:
+        sql: '"TIME_TO_SHIP"'
+        description: Time taken to ship the order
+
+    measures:
+      count:
+        sql: COUNT(*)
+        description: Count of order line items
+
+      margin_sum:
+        sql: COALESCE(SUM(${ecomm__order_items_sv__order_items.margin}), 0)
+        description: Total margin across orders
+
+      sale_price_average:
+        sql: AVG(${ecomm__order_items_sv__order_items.sale_price} * 0.95)
+        description: "Average Sale Price: Price at which the item was sold.  This is
+          this average"
+        synonyms: [ Average item price, Avg item cost, Mean selling price ]
+
+      sale_price_last_30_days:
+        sql: COALESCE(SUM(CASE WHEN ${ecomm__order_items_sv__order_items.created_at} >=
+          DATEADD(DAY, -30, CURRENT_DATE) THEN
+          ${ecomm__order_items_sv__order_items.sale_price} ELSE NULL END), 0)
+        description: Total sale price for orders created in the last 30 days
+
+      sale_price_previous_30_days:
+        sql: COALESCE(SUM(CASE WHEN ${ecomm__order_items_sv__order_items.created_at} >=
+          DATEADD(DAY, -60, CURRENT_DATE) AND
+          ${ecomm__order_items_sv__order_items.created_at} < DATEADD(DAY, -30,
+          CURRENT_DATE) THEN ${ecomm__order_items_sv__order_items.sale_price}
+          ELSE NULL END), 0)
+        description: Total sale price for orders created 31-60 days ago
+
+      sale_price_sum:
+        sql: COALESCE(SUM(${ecomm__order_items_sv__order_items.sale_price}), 0)
+        description: Sum of sale prices
+
+      time_to_ship_average:
+        sql: AVG(${ecomm__order_items_sv__order_items.time_to_ship})
+        description: Average time to ship orders
+
+      total_sale_price:
+        sql: COALESCE(SUM(${ecomm__order_items_sv__order_items.sale_price}), 0)
+        description: Total revenue of orders
+        synonyms: [ Total Receipts, Total Revenue ]
+
+    filters:
+      is_delivered__filter:
+        type: boolean
+        label: Is Delivered
+        group_label: Filters
+        description: Boolean indicating if the order was delivered
+        bind_to: [ is_delivered ]
+
+      is_returned__filter:
+        type: boolean
+        label: Is Returned
+        group_label: Filters
+        description: Boolean indicating if the order was returned
+        bind_to: [ is_returned ]
+
+      is_shipped__filter:
+        type: boolean
+        label: Is Shipped
+        group_label: Filters
+        description: Boolean indicating if the order was shipped
+        bind_to: [ is_shipped ]
+
+  ecomm__order_items_sv__products:
+    label: Products
+    description: Dimension table containing information about products
+
+    schema: ECOMM
+    table_name: PRODUCTS
+
+    dimensions:
+      brand:
+        sql: '"BRAND"'
+        description: Brand of the product
+
+      category:
+        sql: '"CATEGORY"'
+        description: Category of the product
+
+      department:
+        sql: '"DEPARTMENT"'
+        description: Department the product belongs to
+
+      distribution_center_id:
+        sql: '"DISTRIBUTION_CENTER_ID"'
+        description: Identifier of the distribution center for the product
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each product
+
+      name:
+        sql: '"NAME"'
+        description: Name of the product
+
+      retail_price:
+        sql: '"RETAIL_PRICE"'
+        description: Retail price of the product
+
+      sku:
+        sql: '"SKU"'
+        description: Stock Keeping Unit of the product
+
+      cost:
+        sql: '"COST"'
+        description: Cost of the product
+
+    measures:
+      count:
+        sql: COUNT(*)
+        description: Count of products
+
+  ecomm__order_items_sv__users:
+    label: Users
+    description: Dimension table containing information about users
+
+    schema: ECOMM
+    table_name: USERS
+
+    dimensions:
+      age:
+        sql: '"AGE"'
+        description: Age of the user
+
+      city:
+        sql: '"CITY"'
+        description: City where the user is located
+
+      country:
+        sql: '"COUNTRY"'
+        description: Country where the user is located
+
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the user account was created
+
+      email:
+        sql: '"EMAIL"'
+        description: Email address of the user
+
+      first_name:
+        sql: '"FIRST_NAME"'
+        description: First name of the user
+
+      full_name:
+        sql: INITCAP(CONCAT(${ecomm__order_items_sv__users.first_name}, ' ',
+          ${ecomm__order_items_sv__users.last_name}))
+        description: Full name of the user
+
+      gender:
+        sql: '"GENDER"'
+        description: Gender of the user
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each user
+        primary_key: true
+
+      last_name:
+        sql: '"LAST_NAME"'
+        description: Last name of the user
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: Geographical latitude of the user's location
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Geographical longitude of the user's location
+
+      state:
+        sql: '"STATE"'
+        description: State where the user is located
+
+      traffic_source:
+        sql: '"TRAFFIC_SOURCE"'
+        description: Source of traffic that led to user signup
+
+      zip:
+        sql: '"ZIP"'
+        description: ZIP code of the user's location
+
+    measures:
+      count:
+        sql: COUNT(*)
+        description: Count of users
+
+      new_users_30_days:
+        sql: COUNT(DISTINCT CASE WHEN ${ecomm__order_items_sv__users.created_at} >=
+          DATEADD(DAY, -30, CURRENT_DATE) THEN
+          ${ecomm__order_items_sv__users.id} ELSE NULL END)
+        description: Users created in the last 30 days
+
+relationships:
+  - join_from_view: ecomm__order_items_sv__inventory_items
+    join_to_view: ecomm__order_items_sv__products
+    join_type: always_left
+    on_sql: ${ecomm__order_items_sv__inventory_items.product_id} =
+      ${ecomm__order_items_sv__products.id}
+    relationship_type: many_to_one
+
+  - join_from_view: ecomm__order_items_sv__order_items
+    join_to_view: ecomm__order_items_sv__inventory_items
+    join_type: always_left
+    on_sql: ${ecomm__order_items_sv__order_items.inventory_item_id} =
+      ${ecomm__order_items_sv__inventory_items.id}
+    relationship_type: many_to_one
+
+  - join_from_view: ecomm__order_items_sv__order_items
+    join_to_view: ecomm__order_items_sv__users
+    join_type: always_left
+    on_sql: ${ecomm__order_items_sv__order_items.user_id} =
+      ${ecomm__order_items_sv__users.id}
+    relationship_type: many_to_one
+
+  - join_from_view: ecomm__order_items_sv__products
+    join_to_view: ecomm__order_items_sv__distribution_centers
+    join_type: always_left
+    on_sql: ${ecomm__order_items_sv__products.distribution_center_id} =
+      ${ecomm__order_items_sv__distribution_centers.id}
+    relationship_type: many_to_one
+
+ai_context: |-
+  Use these instructions for question categorization: You are an expert data analyst, who has a vast amount of experience analyzing ecommerce data to find useful insights and trends.
+  Our data has information about orders at the line item level in the order items table, users in our user table, inventory in our inventory items table, and products in the products table.
+  Only respond with accurate answers based on the data that you're aware of. Don't pivot unless there is more than one dimension included in the query.
+  Any queries regarding sales should always use the total_sale_price field on the order items table and no other field.
+  - If asked about drivers of why a metric changed, start with checking these fields: users.country, users.traffic_source, products.category, products.brand
+  - If asked about sub-drivers of those drivers, use these fields: products.name, users.state
+  Typical questions will be focused on order performance over time, breakdowns across users, and more.
+    - if asked about sales or performance, always use this field: order_items.total_sale_price
+    - if asked about which users or who, use the name users.full_name and users.email. Never return an ID unless explicitly asked.
+    - if asked about total orders, number of orders, or order count, use order_items.count
+    - if asked about top n without a specific metric or dimension, assume it involves the fields: order_items.total_sale_price and products.name
+    - if asked about products, always use products.name unless explicitly told otherwise.
+    - if asked about filtering for orders that have been shipped or delivered across all time, use the is_shipped, or is_delivered = true to filter
+    - if asked about pace of products movement, use inventory_items.days_in_inventory_average. For slowest, this should be the highest values.
+    - if asked about returns, make sure they are not filtered out by status
+    - if asked about sales or orders or other revenue metrics, make sure to filter only on correct statuses (Complete, Shipped, Processing)

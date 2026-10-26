@@ -1,0 +1,31 @@
+# Reference this view as demo__usage_js
+schema: DEMO
+table_name: USAGE_JS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  product_id:
+    sql: '"PRODUCT_ID"'
+    format: ID
+
+  usage_date:
+    sql: '"USAGE_DATE"'
+
+  usage_min:
+    sql: '"USAGE_MIN"'
+
+measures:
+  count:
+    aggregate_type: count

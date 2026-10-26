@@ -1,0 +1,38 @@
+base_view: ecomm__sales__order_items
+label: Ecomm Sales
+group_label: Ecommerce
+description: Ecommerce order line items joined to customers, inventory units,
+  and products. Analyze revenue, margin, return behavior, and fulfillment speed
+  by product, brand, category, and customer geography.
+
+joins:
+  ecomm__sales__users: {}
+  ecomm__sales__inventory_items:
+    ecomm__sales__products: {}
+
+ai_context: |-
+  Order-line-level ecommerce sales transactions.
+
+  VIEWS:
+  - ecomm__sales__order_items (base): one row per order line item — sale price, margin, status, ship/deliver/return timestamps
+  - ecomm__sales__users: one row per customer — demographics, traffic source, geography
+  - ecomm__sales__inventory_items: one row per inventory unit — cost, product attributes
+  - ecomm__sales__products: one row per product — name, brand, category, department, retail price
+
+  METRIC MAPPING:
+  - 'revenue' / 'sales' -> ecomm__sales__order_items.total_revenue
+  - 'margin' / 'profit' -> ecomm__sales__order_items.total_margin (avg_margin for per-item)
+  - 'average order value' / 'average sale' -> ecomm__sales__order_items.average_sale_price
+  - 'order line count' -> ecomm__sales__order_items.count
+  - 'orders' -> ecomm__sales__order_items.total_orders
+  - 'items sold' -> ecomm__sales__order_items.total_items_sold
+  - 'customers' -> ecomm__sales__order_items.total_customers
+  - 'return rate' -> ecomm__sales__order_items.return_rate
+  - 'revenue per customer' / 'orders per customer' / 'items per order' -> revenue_per_customer, orders_per_customer, items_per_order
+  - 'time to ship' -> ecomm__sales__order_items.avg_time_to_ship
+
+  QUERY TIPS:
+  - Slice by product brand, category, or department from ecomm__sales__products, or user state/country/traffic source
+  - Use is_returned, is_shipped, is_delivered booleans for fulfillment analysis; status has Processing/Shipped/Complete/Cancelled/Returned
+  - Use months_since_signup for customer tenure and cohort analysis
+  - Trends: group by ecomm__sales__order_items.created_at[month]

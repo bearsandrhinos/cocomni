@@ -1,0 +1,162 @@
+# Reference this view as coco_demo__wc_fixture_details_2026
+schema: COCO_DEMO
+table_name: WC_FIXTURE_DETAILS_2026
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    format: ID
+
+  home_shots_on_goal:
+    sql: '"HOME_SHOTS_ON_GOAL"'
+
+  home_shots_off_goal:
+    sql: '"HOME_SHOTS_OFF_GOAL"'
+
+  home_total_shots:
+    sql: '"HOME_TOTAL_SHOTS"'
+
+  home_blocked_shots:
+    sql: '"HOME_BLOCKED_SHOTS"'
+
+  home_shots_insidebox:
+    sql: '"HOME_SHOTS_INSIDEBOX"'
+
+  home_shots_outsidebox:
+    sql: '"HOME_SHOTS_OUTSIDEBOX"'
+
+  home_fouls:
+    sql: '"HOME_FOULS"'
+
+  home_corner_kicks:
+    sql: '"HOME_CORNER_KICKS"'
+
+  home_offsides:
+    sql: '"HOME_OFFSIDES"'
+
+  home_ball_possession:
+    sql: '"HOME_BALL_POSSESSION"'
+
+  home_yellow_cards:
+    sql: '"HOME_YELLOW_CARDS"'
+
+  home_red_cards:
+    sql: '"HOME_RED_CARDS"'
+
+  home_goalkeeper_saves:
+    sql: '"HOME_GOALKEEPER_SAVES"'
+
+  home_total_passes:
+    sql: '"HOME_TOTAL_PASSES"'
+
+  home_passes_accurate:
+    sql: '"HOME_PASSES_ACCURATE"'
+
+  home_passes__:
+    sql: '"HOME_PASSES_%"'
+
+  home_expected_goals:
+    sql: '"HOME_EXPECTED_GOALS"'
+
+  home_goals_prevented:
+    sql: '"HOME_GOALS_PREVENTED"'
+
+  away_shots_on_goal:
+    sql: '"AWAY_SHOTS_ON_GOAL"'
+
+  away_shots_off_goal:
+    sql: '"AWAY_SHOTS_OFF_GOAL"'
+
+  away_total_shots:
+    sql: '"AWAY_TOTAL_SHOTS"'
+
+  away_blocked_shots:
+    sql: '"AWAY_BLOCKED_SHOTS"'
+
+  away_shots_insidebox:
+    sql: '"AWAY_SHOTS_INSIDEBOX"'
+
+  away_shots_outsidebox:
+    sql: '"AWAY_SHOTS_OUTSIDEBOX"'
+
+  away_fouls:
+    sql: '"AWAY_FOULS"'
+
+  away_corner_kicks:
+    sql: '"AWAY_CORNER_KICKS"'
+
+  away_offsides:
+    sql: '"AWAY_OFFSIDES"'
+
+  away_ball_possession:
+    sql: '"AWAY_BALL_POSSESSION"'
+
+  away_yellow_cards:
+    sql: '"AWAY_YELLOW_CARDS"'
+
+  away_red_cards:
+    sql: '"AWAY_RED_CARDS"'
+
+  away_goalkeeper_saves:
+    sql: '"AWAY_GOALKEEPER_SAVES"'
+
+  away_total_passes:
+    sql: '"AWAY_TOTAL_PASSES"'
+
+  away_passes_accurate:
+    sql: '"AWAY_PASSES_ACCURATE"'
+
+  away_passes__:
+    sql: '"AWAY_PASSES_%"'
+
+  away_expected_goals:
+    sql: '"AWAY_EXPECTED_GOALS"'
+
+  away_goals_prevented:
+    sql: '"AWAY_GOALS_PREVENTED"'
+
+  home_formation:
+    sql: '"HOME_FORMATION"'
+
+  home_coach:
+    sql: '"HOME_COACH"'
+
+  home_coach_photo:
+    sql: '"HOME_COACH_PHOTO"'
+
+  home_startxi:
+    sql: '"HOME_STARTXI"'
+
+  home_substitutes:
+    sql: '"HOME_SUBSTITUTES"'
+
+  away_formation:
+    sql: '"AWAY_FORMATION"'
+
+  away_coach:
+    sql: '"AWAY_COACH"'
+
+  away_coach_photo:
+    sql: '"AWAY_COACH_PHOTO"'
+
+  away_startxi:
+    sql: '"AWAY_STARTXI"'
+
+  away_substitutes:
+    sql: '"AWAY_SUBSTITUTES"'
+
+  events_count:
+    sql: '"EVENTS_COUNT"'
+
+  goals_list:
+    sql: '"GOALS_LIST"'
+
+  cards_list:
+    sql: '"CARDS_LIST"'
+
+  subs_list:
+    sql: '"SUBS_LIST"'
+
+measures:
+  count:
+    aggregate_type: count

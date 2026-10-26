@@ -1,0 +1,43 @@
+# Reference this view as demo__opportunity
+schema: DEMO
+table_name: OPPORTUNITY
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  contact_id:
+    sql: '"CONTACT_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  close_date:
+    sql: '"CLOSE_DATE"'
+
+  type:
+    sql: '"TYPE"'
+
+  name:
+    sql: '"NAME"'
+
+  forecast_category:
+    sql: '"FORECAST_CATEGORY"'
+
+  stage_name:
+    sql: '"STAGE_NAME"'
+
+measures:
+  count:
+    aggregate_type: count

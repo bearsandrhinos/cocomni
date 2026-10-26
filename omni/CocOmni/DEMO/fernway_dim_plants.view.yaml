@@ -1,0 +1,27 @@
+# Reference this view as demo__fernway_dim_plants
+schema: DEMO
+table_name: FERNWAY_DIM_PLANTS
+
+dimensions:
+  plant_id:
+    sql: '"PLANT_ID"'
+    format: ID
+
+  plant_name:
+    sql: '"PLANT_NAME"'
+
+  city:
+    sql: '"CITY"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  role:
+    sql: '"ROLE"'
+
+  opened_date:
+    sql: '"OPENED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

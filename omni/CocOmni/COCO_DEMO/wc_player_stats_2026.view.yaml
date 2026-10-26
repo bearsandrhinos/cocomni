@@ -1,0 +1,131 @@
+# Reference this view as coco_demo__wc_player_stats_2026
+schema: COCO_DEMO
+table_name: WC_PLAYER_STATS_2026
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    format: ID
+
+  season:
+    sql: '"SEASON"'
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_name:
+    sql: '"TEAM_NAME"'
+
+  player_id:
+    sql: '"PLAYER_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  player_photo:
+    sql: '"PLAYER_PHOTO"'
+
+  games_minutes:
+    sql: '"GAMES_MINUTES"'
+
+  games_number:
+    sql: '"GAMES_NUMBER"'
+
+  games_position:
+    sql: '"GAMES_POSITION"'
+
+  games_rating:
+    sql: '"GAMES_RATING"'
+
+  games_captain:
+    sql: '"GAMES_CAPTAIN"'
+
+  games_substitute:
+    sql: '"GAMES_SUBSTITUTE"'
+
+  offsides:
+    sql: '"OFFSIDES"'
+
+  shots_total:
+    sql: '"SHOTS_TOTAL"'
+
+  shots_on:
+    sql: '"SHOTS_ON"'
+
+  goals_total:
+    sql: '"GOALS_TOTAL"'
+
+  goals_conceded:
+    sql: '"GOALS_CONCEDED"'
+
+  goals_assists:
+    sql: '"GOALS_ASSISTS"'
+
+  goals_saves:
+    sql: '"GOALS_SAVES"'
+
+  passes_total:
+    sql: '"PASSES_TOTAL"'
+
+  passes_key:
+    sql: '"PASSES_KEY"'
+
+  passes_accuracy:
+    sql: '"PASSES_ACCURACY"'
+
+  tackles_total:
+    sql: '"TACKLES_TOTAL"'
+
+  tackles_blocks:
+    sql: '"TACKLES_BLOCKS"'
+
+  tackles_interceptions:
+    sql: '"TACKLES_INTERCEPTIONS"'
+
+  duels_total:
+    sql: '"DUELS_TOTAL"'
+
+  duels_won:
+    sql: '"DUELS_WON"'
+
+  dribbles_attempts:
+    sql: '"DRIBBLES_ATTEMPTS"'
+
+  dribbles_success:
+    sql: '"DRIBBLES_SUCCESS"'
+
+  dribbles_past:
+    sql: '"DRIBBLES_PAST"'
+
+  fouls_drawn:
+    sql: '"FOULS_DRAWN"'
+
+  fouls_committed:
+    sql: '"FOULS_COMMITTED"'
+
+  cards_yellow:
+    sql: '"CARDS_YELLOW"'
+
+  cards_red:
+    sql: '"CARDS_RED"'
+
+  penalty_won:
+    sql: '"PENALTY_WON"'
+
+  penalty_commited:
+    sql: '"PENALTY_COMMITED"'
+
+  penalty_scored:
+    sql: '"PENALTY_SCORED"'
+
+  penalty_missed:
+    sql: '"PENALTY_MISSED"'
+
+  penalty_saved:
+    sql: '"PENALTY_SAVED"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,115 @@
+# Reference this view as demo__stg_saas__sessions
+schema: DEMO
+table_name: STG_SAAS__SESSIONS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  session_start_time:
+    sql: '"SESSION_START_TIME"'
+
+  session_end_time:
+    sql: '"SESSION_END_TIME"'
+
+  session_date:
+    sql: '"SESSION_DATE"'
+
+  session_duration_seconds:
+    sql: '"SESSION_DURATION_SECONDS"'
+
+  session_duration_minutes:
+    sql: '"SESSION_DURATION_MINUTES"'
+
+  product_id:
+    sql: '"PRODUCT_ID"'
+    format: ID
+
+  pages_visited:
+    sql: '"PAGES_VISITED"'
+
+  events_count:
+    sql: '"EVENTS_COUNT"'
+
+  unique_pages:
+    sql: '"UNIQUE_PAGES"'
+
+  bounce_rate:
+    sql: '"BOUNCE_RATE"'
+
+  exit_page:
+    sql: '"EXIT_PAGE"'
+
+  entry_page:
+    sql: '"ENTRY_PAGE"'
+
+  device_type:
+    sql: '"DEVICE_TYPE"'
+
+  browser:
+    sql: '"BROWSER"'
+
+  os:
+    sql: '"OS"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  region:
+    sql: '"REGION"'
+
+  city:
+    sql: '"CITY"'
+
+  ip_address:
+    sql: '"IP_ADDRESS"'
+
+  user_agent:
+    sql: '"USER_AGENT"'
+
+  referrer:
+    sql: '"REFERRER"'
+
+  utm_source:
+    sql: '"UTM_SOURCE"'
+
+  utm_medium:
+    sql: '"UTM_MEDIUM"'
+
+  utm_campaign:
+    sql: '"UTM_CAMPAIGN"'
+
+  account_segment:
+    sql: '"ACCOUNT_SEGMENT"'
+
+  product_tier:
+    sql: '"PRODUCT_TIER"'
+
+  user_count:
+    sql: '"USER_COUNT"'
+
+  user_role:
+    sql: '"USER_ROLE"'
+
+  session_quality_score:
+    sql: '"SESSION_QUALITY_SCORE"'
+
+  errors_encountered:
+    sql: '"ERRORS_ENCOUNTERED"'
+
+  conversion_events:
+    sql: '"CONVERSION_EVENTS"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,154 @@
+base_view: coco_demo__wc_fixtures
+label: World Cup
+group_label: Soccer
+description: Comprehensive World Cup soccer data including match fixtures,
+  player statistics, team performance metrics, and tournament information across
+  multiple seasons
+
+joins:
+  coco_demo__wc_fixture_details: {}
+  coco_demo__wc_player_stats: {}
+  coco_demo__wc_seasons: {}
+  coco_demo__wc_goals: {}
+
+ai_context: |-
+  This topic provides comprehensive World Cup soccer analytics across matches, players, teams, goals, and tournaments.
+
+  VIEWS:
+  - coco_demo__wc_fixtures: Match-level data (teams, scores, venue, round, date)
+  - coco_demo__wc_fixture_details: Team statistics per match (possession, shots, passes, fouls, cards)
+  - coco_demo__wc_player_stats: Individual player performance per match (goals, assists, passes, tackles, ratings)
+  - coco_demo__wc_goals: Individual goals with minute, scoring team, and player name parsed from goals list
+  - coco_demo__wc_seasons: Tournament metadata (year, dates, coverage)
+
+  KEY METRICS AND WHERE TO FIND THEM:
+  - Match Count → coco_demo__wc_fixtures.count
+  - Total Goals → coco_demo__wc_fixtures.total_goals_scored OR coco_demo__wc_goals.count
+  - Average Goals per Match → coco_demo__wc_fixtures.average_goals_per_match
+  - Home Wins / Away Wins / Draws → coco_demo__wc_fixtures.home_wins, away_wins, draws
+  - Player Goals → coco_demo__wc_player_stats.goals_total
+  - Player Assists → coco_demo__wc_player_stats.assists_total
+  - Player Rating → coco_demo__wc_player_stats.average_rating
+  - Possession % → coco_demo__wc_fixture_details.average_home_possession, average_away_possession
+  - Shots on Goal → coco_demo__wc_fixture_details.total_home_shots_on_goal, total_away_shots_on_goal
+  - Cards (Yellow/Red) → coco_demo__wc_player_stats.yellow_cards_total, red_cards_total
+  - Goals by Minute → coco_demo__wc_goals.goal_minute
+
+  COMMON ANALYSIS PATTERNS:
+  - Top scorers: goals_total grouped by player_name, sort desc
+  - Team performance: group by home_team or away_team, aggregate goals/wins
+  - Match trends over time: group by date[year] or season
+  - Player efficiency: shot_accuracy, pass_accuracy, dribble_success_rate by player
+  - Tournament statistics: aggregate by season/year
+  - Round analysis: group by round (Group Stage, Round of 16, Quarter-finals, etc.)
+  - Venue analysis: group by venue_name or venue_city
+  - Possession vs results: compare possession_difference with match_result
+  - Goal timing analysis: group by goal_minute to see when goals are scored
+  - Team scoring patterns: group by scoring_team from goals view
+
+  QUERY TIPS:
+  - Use match_result dimension to filter/group by Home Win, Away Win, or Draw
+  - Use round dimension to analyze knockout stages vs group stages
+  - Filter went_to_penalties or went_to_extra_time for dramatic matches
+  - Use games_position to segment player stats by position (Forward, Midfielder, Defender, Goalkeeper)
+  - Use season to compare across different World Cup tournaments
+  - Player stats are per-match, so use unique_players measure for player counts
+  - Use wc_goals view for detailed goal-level analysis (minute scored, scoring team, player)
+  - Join goals to fixtures to analyze goal timing relative to match context
+
+  COMMON QUESTIONS THIS TOPIC ANSWERS:
+  1. Who are the top goal scorers in World Cup history?
+  2. Which teams have the most wins?
+  3. What's the average number of goals per match by tournament year?
+  4. Which players have the highest match ratings?
+  5. How does possession correlate with match outcomes?
+  6. Which venues host the most matches?
+  7. How many matches went to penalties or extra time?
+  8. What's the home team advantage (home wins vs away wins)?
+  9. Which players have the most assists?
+  10. How do player statistics vary by position?
+  11. At what minute are most goals scored?
+   12. Which teams score the most goals?
+
+sample_queries:
+  Top Goal Scorers:
+    query:
+      fields:
+        [
+          coco_demo__wc_player_stats.player_name,
+          coco_demo__wc_player_stats.goals_total,
+          coco_demo__wc_player_stats.count,
+          coco_demo__wc_player_stats.assists_total
+        ]
+      base_view: coco_demo__wc_fixtures
+      limit: 20
+      sorts:
+        - field: coco_demo__wc_player_stats.goals_total
+          desc: true
+      topic: world_cup
+    description: Top 20 goal scorers in World Cup history with appearances and assists
+    prompt: Who are the top goal scorers in World Cup history?
+  Average Goals per Match by Tournament:
+    query:
+      fields:
+        [
+          coco_demo__wc_fixtures.season,
+          coco_demo__wc_fixtures.count,
+          coco_demo__wc_fixtures.total_goals_scored,
+          coco_demo__wc_fixtures.average_goals_per_match
+        ]
+      base_view: coco_demo__wc_fixtures
+      limit: 500
+      sorts:
+        - field: coco_demo__wc_fixtures.season
+      topic: world_cup
+    description: Average goals per match broken down by World Cup tournament year
+    prompt: What is the average number of goals per match by tournament year?
+  Home Advantage Analysis:
+    query:
+      fields: [ coco_demo__wc_fixtures.match_result, coco_demo__wc_fixtures.count ]
+      base_view: coco_demo__wc_fixtures
+      limit: 10
+      sorts:
+        - field: coco_demo__wc_fixtures.count
+          desc: true
+      topic: world_cup
+    description: Distribution of home wins, away wins, and draws across all World
+      Cup matches
+    prompt: What is the home team advantage in the World Cup?
+    ai_context: Use match_result to group by Home Win, Away Win, and Draw
+  Top Rated Players by Position:
+    query:
+      fields:
+        [
+          coco_demo__wc_player_stats.games_position,
+          coco_demo__wc_player_stats.player_name,
+          coco_demo__wc_player_stats.average_rating,
+          coco_demo__wc_player_stats.count
+        ]
+      base_view: coco_demo__wc_fixtures
+      limit: 25
+      sorts:
+        - field: coco_demo__wc_player_stats.average_rating
+          desc: true
+      topic: world_cup
+    description: Highest rated players by position with minimum 5 appearances
+    prompt: Which players have the highest match ratings?
+    ai_context: Filter to players with at least 5 appearances for meaningful ratings
+  Teams with Most Wins:
+    query:
+      fields:
+        [
+          coco_demo__wc_fixtures.home_team,
+          coco_demo__wc_fixtures.home_wins,
+          coco_demo__wc_fixtures.count,
+          coco_demo__wc_fixtures.total_goals_scored
+        ]
+      base_view: coco_demo__wc_fixtures
+      limit: 20
+      sorts:
+        - field: coco_demo__wc_fixtures.home_wins
+          desc: true
+      topic: world_cup
+    description: Teams ranked by number of home wins with match count and total goals
+    prompt: Which teams have the most wins?

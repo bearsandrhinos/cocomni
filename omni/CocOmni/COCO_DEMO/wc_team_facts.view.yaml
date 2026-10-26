@@ -1,0 +1,648 @@
+# Reference this view as coco_demo__wc_team_facts
+description: Team-level statistics for FIFA World Cup matches. Each row
+  represents one team's performance in a single World Cup match, including goals
+  scored and conceded across all match periods, along with detailed match
+  statistics like shots, passes, and discipline.
+
+schema: COCO_DEMO
+table_name: WC_TEAM_FACTS
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    format: ID
+    description: Unique identifier for the match fixture
+    ai_context: Primary key for the match. Each fixture has two rows — one per team.
+
+  season:
+    sql: '"SEASON"'
+    format: ID
+    description: World Cup tournament year
+    ai_context: Use to filter or group matches by World Cup edition.
+
+  date:
+    sql: '"DATE"'
+    description: Date the World Cup match was played
+    ai_context: Match date. Use date parts for time-based analysis.
+
+  venue_name:
+    sql: '"VENUE_NAME"'
+    description: Name of the stadium where the match was played
+    ai_context: Use to analyze performance at specific World Cup venues.
+
+  venue_city:
+    sql: '"VENUE_CITY"'
+    description: City where the match venue is located
+    ai_context: Use to analyze team performance by host city.
+
+  status_short:
+    sql: '"STATUS_SHORT"'
+    description: Short match status code (e.g., FT, AET, PEN)
+    ai_context: Abbreviated match status.
+
+  status_long:
+    sql: '"STATUS_LONG"'
+    description: Full match status description
+    ai_context: Detailed match conclusion status.
+
+  round:
+    sql: '"ROUND"'
+    description: Tournament round or stage (e.g., Group A - 1, Round of 16,
+      Quarter-finals, Final)
+    ai_context: Use to analyze performance by tournament stage.
+
+  events_count:
+    sql: '"EVENTS_COUNT"'
+    description: Number of match events recorded
+    ai_context: Count of events in the match.
+
+  goals_list:
+    sql: '"GOALS_LIST"'
+    description: JSON list of goals scored in the match
+    ai_context: Raw goals data. Use the wc_goals view for parsed goal-level analysis.
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+    description: Unique identifier for the team
+    ai_context: Internal team ID. Prefer 'team' for display.
+
+  team:
+    sql: '"TEAM"'
+    description: Name of the national team
+    ai_context: Primary team dimension for grouping and filtering.
+
+  opponent_id:
+    sql: '"OPPONENT_ID"'
+    format: ID
+    description: Unique identifier for the opposing team
+    ai_context: Internal opponent ID. Prefer 'opponent' for display.
+
+  opponent:
+    sql: '"OPPONENT"'
+    description: Name of the opposing national team
+    ai_context: Use for head-to-head analysis.
+
+  is_home:
+    sql: '"IS_HOME"'
+    description: Whether the team was the home team
+    ai_context: Boolean flag for home (true) or away (false).
+
+  goals_scored:
+    sql: '"GOALS_SCORED"'
+    description: Total goals scored by the team (all periods)
+    group_label: Goals
+    ai_context: Overall goals scored including all match periods.
+
+  goals_conceded:
+    sql: '"GOALS_CONCEDED"'
+    description: Total goals conceded by the team (all periods)
+    group_label: Goals
+    ai_context: Overall goals conceded.
+
+  ht_goals_scored:
+    sql: '"HT_GOALS_SCORED"'
+    description: Goals scored in the first half
+    group_label: Goals
+    ai_context: First-half goals scored.
+
+  ht_goals_conceded:
+    sql: '"HT_GOALS_CONCEDED"'
+    description: Goals conceded in the first half
+    group_label: Goals
+    ai_context: First-half goals conceded.
+
+  ft_goals_scored:
+    sql: '"FT_GOALS_SCORED"'
+    description: Goals scored in regular time (90 minutes)
+    group_label: Goals
+    ai_context: Full-time goals scored, excluding extra time and penalties.
+
+  ft_goals_conceded:
+    sql: '"FT_GOALS_CONCEDED"'
+    description: Goals conceded in regular time (90 minutes)
+    group_label: Goals
+    ai_context: Full-time goals conceded.
+
+  et_goals_scored:
+    sql: '"ET_GOALS_SCORED"'
+    description: Goals scored in extra time
+    group_label: Goals
+    ai_context: Extra time goals. Only for matches that went to extra time.
+
+  et_goals_conceded:
+    sql: '"ET_GOALS_CONCEDED"'
+    description: Goals conceded in extra time
+    group_label: Goals
+    ai_context: Extra time goals conceded.
+
+  pen_goals_scored:
+    sql: '"PEN_GOALS_SCORED"'
+    description: Goals scored in a penalty shootout
+    group_label: Goals
+    ai_context: Penalty shootout goals scored.
+
+  pen_goals_conceded:
+    sql: '"PEN_GOALS_CONCEDED"'
+    description: Goals conceded in a penalty shootout
+    group_label: Goals
+    ai_context: Penalty shootout goals conceded.
+
+  shots_on_goal:
+    sql: '"SHOTS_ON_GOAL"'
+    description: Shots on target in the match
+    group_label: Shots
+    ai_context: Shots on target. Key attacking quality indicator.
+
+  shots_off_goal:
+    sql: '"SHOTS_OFF_GOAL"'
+    description: Shots off target in the match
+    group_label: Shots
+    ai_context: Shots that missed the goal.
+
+  total_shots:
+    sql: '"TOTAL_SHOTS"'
+    description: Total shots attempted
+    group_label: Shots
+    ai_context: All shot attempts.
+
+  blocked_shots:
+    sql: '"BLOCKED_SHOTS"'
+    description: Shots blocked by defenders
+    group_label: Shots
+    ai_context: Shots blocked before reaching the keeper.
+
+  shots_insidebox:
+    sql: '"SHOTS_INSIDEBOX"'
+    description: Shots from inside the penalty box
+    group_label: Shots
+    ai_context: Higher-quality chances from inside the 18-yard box.
+
+  shots_outsidebox:
+    sql: '"SHOTS_OUTSIDEBOX"'
+    description: Shots from outside the penalty box
+    group_label: Shots
+    ai_context: Long-range shots.
+
+  fouls:
+    sql: '"FOULS"'
+    description: Fouls committed by the team
+    group_label: Discipline
+    ai_context: Total fouls committed.
+
+  corner_kicks:
+    sql: '"CORNER_KICKS"'
+    description: Corner kicks awarded
+    group_label: Other Stats
+    ai_context: Corners won.
+
+  offsides:
+    sql: '"OFFSIDES"'
+    description: Offside calls against the team
+    group_label: Other Stats
+    ai_context: Offside infractions.
+
+  ball_possession:
+    sql: '"BALL_POSSESSION"'
+    description: Ball possession percentage
+    group_label: Passing
+    ai_context: Percentage of time the team had the ball.
+
+  yellow_cards:
+    sql: '"YELLOW_CARDS"'
+    description: Yellow cards received
+    group_label: Discipline
+    ai_context: Cautions issued.
+
+  red_cards:
+    sql: '"RED_CARDS"'
+    description: Red cards received
+    group_label: Discipline
+    ai_context: Dismissals.
+
+  goalkeeper_saves:
+    sql: '"GOALKEEPER_SAVES"'
+    description: Goalkeeper saves made
+    group_label: Other Stats
+    ai_context: Shots stopped by the goalkeeper.
+
+  total_passes:
+    sql: '"TOTAL_PASSES"'
+    description: Total passes attempted
+    group_label: Passing
+    ai_context: All pass attempts.
+
+  passes_accurate:
+    sql: '"PASSES_ACCURATE"'
+    description: Accurate passes completed
+    group_label: Passing
+    ai_context: Successfully completed passes.
+
+  passes_pct:
+    sql: '"PASSES_PCT"'
+    description: Pass completion percentage
+    group_label: Passing
+    ai_context: Percentage of passes completed.
+
+  is_won:
+    sql: CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" THEN true ELSE false END
+    description: Whether the team won the match
+    ai_context: Boolean win indicator. Draws are not wins.
+
+  round_rank:
+    sql: |-
+      CASE
+        WHEN "ROUND" ILIKE 'Qualifying%' THEN 1
+        WHEN "ROUND" ILIKE '1st Round%' THEN 2
+        WHEN "ROUND" ILIKE '2nd Round%' THEN 3
+        WHEN "ROUND" ILIKE '3rd Round%' THEN 4
+        WHEN "ROUND" ILIKE 'Group%' THEN 5
+        WHEN "ROUND" ILIKE 'Round of 16%' THEN 8
+        WHEN "ROUND" ILIKE 'Quarter%' THEN 9
+        WHEN "ROUND" ILIKE 'Semi%' THEN 10
+        WHEN "ROUND" ILIKE '3rd Place%' OR "ROUND" ILIKE '3rd place%' THEN 11
+        WHEN "ROUND" ILIKE 'Final' THEN 12
+        ELSE 0
+      END
+    description: Numeric ranking of tournament rounds
+    hidden: true
+    ai_context: Internal ranking for farthest_round_reached and tournament_result.
+
+  farthest_round_reached:
+    sql: |-
+      CASE
+        MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season})
+        WHEN 12 THEN 'Final'
+        WHEN 11 THEN '3rd Place Final'
+        WHEN 10 THEN 'Semi-finals'
+        WHEN 9 THEN 'Quarter-finals'
+        WHEN 8 THEN 'Round of 16'
+        WHEN 5 THEN 'Group Stage'
+        ELSE 'Unknown'
+      END
+    description: The latest World Cup stage the team reached
+    group_label: Other Stats
+    ai_context: Deepest round a team advanced to in a specific World Cup.
+
+  tournament_result:
+    sql: |-
+      CASE
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 12
+          AND MAX(CASE WHEN ${coco_demo__wc_team_facts.round_rank} = 12 THEN CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" OR ("GOALS_SCORED" = "GOALS_CONCEDED" AND "PEN_GOALS_SCORED" > "PEN_GOALS_CONCEDED") THEN 1 ELSE 0 END END) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 1
+          THEN 'Winner'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 12
+          THEN 'Runner-up'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 11
+          AND MAX(CASE WHEN ${coco_demo__wc_team_facts.round_rank} = 11 THEN CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" OR ("GOALS_SCORED" = "GOALS_CONCEDED" AND "PEN_GOALS_SCORED" > "PEN_GOALS_CONCEDED") THEN 1 ELSE 0 END END) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 1
+          THEN 'Third Place'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 11
+          THEN 'Fourth Place'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 10
+          THEN 'Semi-finalist'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 9
+          THEN 'Quarter-finalist'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 8
+          THEN 'Round of 16'
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) >= 5
+          THEN 'Group Stage'
+        ELSE 'Early Round'
+      END
+    description: The team's final World Cup placement
+    group_label: Other Stats
+    order_by_field: tournament_result_sort
+    ai_context: Winner/Runner-up from Final result (including penalty shootout
+      wins). Third/Fourth from 3rd Place Final. Others reflect elimination
+      stage.
+
+  pk_team_facts:
+    sql: CONCAT(${coco_demo__wc_team_facts.fixture_id},${coco_demo__wc_team_facts.team_id})
+    label: PK Team Facts
+    description: Primary Key for Team Facts
+    hidden: true
+    primary_key: true
+
+  tournament_result_sort:
+    sql: |-
+      CASE
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 12
+          AND MAX(CASE WHEN ${coco_demo__wc_team_facts.round_rank} = 12 THEN CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" OR ("GOALS_SCORED" = "GOALS_CONCEDED" AND "PEN_GOALS_SCORED" > "PEN_GOALS_CONCEDED") THEN 1 ELSE 0 END END) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 1
+          THEN 1
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 12
+          THEN 2
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 11
+          AND MAX(CASE WHEN ${coco_demo__wc_team_facts.round_rank} = 11 THEN CASE WHEN "GOALS_SCORED" > "GOALS_CONCEDED" OR ("GOALS_SCORED" = "GOALS_CONCEDED" AND "PEN_GOALS_SCORED" > "PEN_GOALS_CONCEDED") THEN 1 ELSE 0 END END) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 1
+          THEN 3
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 11
+          THEN 4
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 10
+          THEN 5
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 9
+          THEN 6
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) = 8
+          THEN 7
+        WHEN MAX(${coco_demo__wc_team_facts.round_rank}) OVER (PARTITION BY ${coco_demo__wc_team_facts.team_id}, ${coco_demo__wc_team_facts.season}) >= 5
+          THEN 8
+        ELSE 9
+      END
+    hidden: true
+
+  group_2026:
+    sql: CASE WHEN ${coco_demo__wc_team_facts.team} IN ('Mexico', 'South Africa',
+      'South Korea', 'Czech Republic') THEN 'Group A' WHEN
+      ${coco_demo__wc_team_facts.team} IN ('Canada', 'Bosnia & Herzegovina',
+      'Qatar', 'Switzerland') THEN 'Group B' WHEN
+      ${coco_demo__wc_team_facts.team} IN ('Brazil', 'Morocco', 'Haiti',
+      'Scotland') THEN 'Group C' WHEN ${coco_demo__wc_team_facts.team} IN
+      ('USA', 'Paraguay', 'Australia', 'Türkiye') THEN 'Group D' WHEN
+      ${coco_demo__wc_team_facts.team} IN ('Germany', 'Curaçao', 'Ivory Coast',
+      'Ecuador') THEN 'Group E' WHEN ${coco_demo__wc_team_facts.team} IN
+      ('Netherlands', 'Japan', 'Sweden', 'Tunisia') THEN 'Group F' WHEN
+      ${coco_demo__wc_team_facts.team} IN ('Belgium', 'Egypt', 'Iran', 'New
+      Zealand') THEN 'Group G' WHEN ${coco_demo__wc_team_facts.team} IN
+      ('Spain', 'Cape Verde Islands', 'Saudi Arabia', 'Uruguay') THEN 'Group H'
+      WHEN ${coco_demo__wc_team_facts.team} IN ('France', 'Senegal', 'Iraq',
+      'Norway') THEN 'Group I' WHEN ${coco_demo__wc_team_facts.team} IN
+      ('Argentina', 'Algeria', 'Austria', 'Jordan') THEN 'Group J' WHEN
+      ${coco_demo__wc_team_facts.team} IN ('Portugal', 'DR Congo', 'Uzbekistan',
+      'Colombia') THEN 'Group K' WHEN ${coco_demo__wc_team_facts.team} IN
+      ('England', 'Croatia', 'Ghana', 'Panama') THEN 'Group L' ELSE NULL END
+    label: 2026 Group
+    description: Team's group assignment for the 2026 World Cup (Groups A-L).
+      Available on all rows regardless of season, so filtering does not drop
+      historical data.
+    group_label: 2026 World Cup
+    ai_context: Use this field instead of wc_fixtures.group_2026 to filter by 2026
+      group without losing historical season data. Based on team identity, not
+      fixture.
+
+  seed_2026:
+    sql: CASE WHEN ${coco_demo__wc_team_facts.team} IN ('Mexico', 'Canada',
+      'Brazil', 'United States', 'Germany', 'Netherlands', 'Belgium', 'Spain',
+      'France', 'Argentina', 'Portugal', 'England') THEN 1 WHEN
+      ${coco_demo__wc_team_facts.team} IN ('South Africa', 'Bosnia and
+      Herzegovina', 'Morocco', 'Paraguay', 'Curaçao', 'Japan', 'Egypt', 'Cape
+      Verde', 'Senegal', 'Algeria', 'DR Congo', 'Croatia') THEN 2 WHEN
+      ${coco_demo__wc_team_facts.team} IN ('South Korea', 'Qatar', 'Haiti',
+      'Australia', 'Ivory Coast', 'Sweden', 'Iran', 'Saudi Arabia', 'Iraq',
+      'Austria', 'Uzbekistan', 'Ghana') THEN 3 WHEN
+      ${coco_demo__wc_team_facts.team} IN ('Czech Republic', 'Switzerland',
+      'Scotland', 'Turkey', 'Ecuador', 'Tunisia', 'New Zealand', 'Uruguay',
+      'Norway', 'Jordan', 'Colombia', 'Panama') THEN 4 ELSE NULL END
+    label: 2026 Seed
+    format: id
+    description: Seed position (1-4) for each team within their 2026 World Cup
+      group. Available on all rows regardless of season.
+    group_label: 2026 World Cup
+    ai_context: Use this field instead of wc_fixtures.seed_2026 to filter by 2026
+      seed without losing historical season data. Based on team identity, not
+      fixture.
+
+measures:
+  count:
+    description: Total number of team-match records
+    aggregate_type: count
+    ai_context: Counts team-match appearances. Each fixture has two rows.
+
+  ft_goals_scored_sum:
+    sql: ${coco_demo__wc_team_facts.ft_goals_scored}
+    label: Total Goals Scored FT
+    group_label: Goals
+    description: Sum of goals scored in regular time across all matches
+    aggregate_type: sum
+    ai_context: Aggregate full-time goals scored.
+
+  goals_scored_sum:
+    sql: ${coco_demo__wc_team_facts.goals_scored}
+    label: Total Goals
+    group_label: Goals
+    description: Sum of all goals scored across matches
+    aggregate_type: sum
+    ai_context: Aggregate goals scored. Use to rank teams by offensive output.
+
+  goals_conceded_sum:
+    sql: ${coco_demo__wc_team_facts.goals_conceded}
+    label: Total Goals Conceded
+    group_label: Goals
+    description: Sum of all goals conceded across matches
+    aggregate_type: sum
+    ai_context: Aggregate goals conceded. Use to rank teams by defensive record.
+
+  ft_goals_conceded_sum:
+    sql: ${coco_demo__wc_team_facts.ft_goals_conceded}
+    label: Total Goals Conceded FT
+    group_label: Goals
+    description: Sum of goals conceded in regular time across all matches
+    aggregate_type: sum
+    ai_context: Aggregate full-time goals conceded.
+
+  ht_goals_conceded_sum:
+    sql: ${coco_demo__wc_team_facts.ht_goals_conceded}
+    label: Total Goals Conceded H1
+    group_label: Goals
+    description: Sum of goals conceded in the first half across all matches
+    aggregate_type: sum
+    ai_context: Aggregate first-half goals conceded.
+
+  et_goals_scored_sum:
+    sql: ${coco_demo__wc_team_facts.et_goals_scored}
+    label: Total Goals Scored ET
+    group_label: Goals
+    description: Sum of goals scored in extra time across all matches
+    aggregate_type: sum
+    ai_context: Aggregate extra-time goals scored.
+
+  et_goals_conceded_sum:
+    sql: ${coco_demo__wc_team_facts.et_goals_conceded}
+    label: Total Goals Conceded ET
+    group_label: Goals
+    description: Sum of goals conceded in extra time across all matches
+    aggregate_type: sum
+    ai_context: Aggregate extra-time goals conceded.
+
+  ht_goals_scored_sum:
+    sql: ${coco_demo__wc_team_facts.ht_goals_scored}
+    label: Total Goals Scored in H1
+    group_label: Goals
+    description: Sum of goals scored in the first half across all matches
+    aggregate_type: sum
+    ai_context: Aggregate first-half goals scored.
+
+  total_shots_sum:
+    sql: ${coco_demo__wc_team_facts.total_shots}
+    label: Total Shots
+    group_label: Shots
+    description: Sum of all shot attempts across all matches
+    aggregate_type: sum
+    ai_context: Aggregate total shots.
+
+  total_passes_sum:
+    sql: ${coco_demo__wc_team_facts.total_passes}
+    label: Total Passes
+    group_label: Passing
+    description: Sum of all pass attempts across all matches
+    aggregate_type: sum
+    ai_context: Aggregate pass attempts.
+
+  shots_on_goal_sum:
+    sql: ${coco_demo__wc_team_facts.shots_on_goal}
+    label: Total Shots On Goal
+    group_label: Shots
+    description: Sum of shots on target across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots on target.
+
+  shots_off_goal_sum:
+    sql: ${coco_demo__wc_team_facts.shots_off_goal}
+    label: Total Shots Off target
+    group_label: Shots
+    description: Sum of shots off target across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots off target.
+
+  blocked_shots_sum:
+    sql: ${coco_demo__wc_team_facts.blocked_shots}
+    label: Total Blocked Shots
+    group_label: Shots
+    description: Sum of blocked shots across all matches
+    aggregate_type: sum
+    ai_context: Aggregate blocked shots.
+
+  shots_outsidebox_sum:
+    sql: ${coco_demo__wc_team_facts.shots_outsidebox}
+    label: Total Shots Outside the box
+    group_label: Shots
+    description: Sum of shots from outside the box across all matches
+    aggregate_type: sum
+    ai_context: Aggregate long-range shots.
+
+  shots_insidebox_sum:
+    sql: ${coco_demo__wc_team_facts.shots_insidebox}
+    label: "Total Shots Inside box "
+    group_label: Shots
+    description: Sum of shots from inside the box across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots from inside the 18-yard box.
+
+  passes_accurate_sum:
+    sql: ${coco_demo__wc_team_facts.passes_accurate}
+    label: Total Accurate Passes
+    group_label: Passing
+    description: Sum of completed passes across all matches
+    aggregate_type: sum
+    ai_context: Aggregate successful passes.
+
+  fouls_sum:
+    sql: ${coco_demo__wc_team_facts.fouls}
+    label: Total Fouls
+    group_label: Discipline
+    description: Sum of fouls committed across all matches
+    aggregate_type: sum
+    ai_context: Aggregate fouls committed.
+
+  yellow_cards_sum:
+    sql: ${coco_demo__wc_team_facts.yellow_cards}
+    label: Total Yellowcards
+    group_label: Discipline
+    description: Sum of yellow cards received across all matches
+    aggregate_type: sum
+    ai_context: Aggregate cautions.
+
+  red_cards_sum:
+    sql: ${coco_demo__wc_team_facts.red_cards}
+    label: Total Red cards
+    group_label: Discipline
+    description: Sum of red cards received across all matches
+    aggregate_type: sum
+    ai_context: Aggregate dismissals.
+
+  season_count_distinct:
+    sql: ${coco_demo__wc_team_facts.season}
+    label: World Cup Appearances (Since 2010)
+    format: NUMBER_0
+    description: Number of distinct World Cup tournaments the team has appeared in
+      (since 2010)
+    aggregate_type: count_distinct
+    filters:
+      season:
+        not: 2026
+    ai_context: Count of unique World Cup editions. Filtered to exclude 2026.
+
+  total_wins:
+    sql: ${coco_demo__wc_team_facts.is_won}
+    label: Total Wins
+    group_label: Other Stats
+    description: Total number of matches won
+    aggregate_type: count
+    filters:
+      is_won:
+        is: true
+    ai_context: Count of matches where the team won.
+
+  win_rate:
+    sql: ${coco_demo__wc_team_facts.total_wins} * 1.0 /
+      NULLIF(${coco_demo__wc_team_facts.count}, 0)
+    label: Win Rate
+    group_label: Other Stats
+    format: percent_1
+    description: Percentage of matches won
+    ai_context: Win percentage across World Cup matches.
+
+  total_matches_home:
+    sql: ${coco_demo__wc_team_facts.is_home}
+    label: Total Home Matches
+    group_label: Other Stats
+    description: Matches played as the home team
+    aggregate_type: count
+    filters:
+      is_home:
+        is: "true"
+    ai_context: Count of home matches.
+
+  total_matches_away:
+    sql: ${coco_demo__wc_team_facts.is_home}
+    label: Total Away Matches
+    group_label: Other Stats
+    description: Matches played as the away team
+    aggregate_type: count
+    filters:
+      is_home:
+        is: "false"
+    ai_context: Count of away matches.
+
+  goal_difference:
+    sql: ${coco_demo__wc_team_facts.goals_scored_sum} -
+      ${coco_demo__wc_team_facts.goals_conceded_sum}
+    label: Goal Difference
+    group_label: Other Stats
+    description: Net goal difference across all matches
+    ai_context: Goals scored minus goals conceded.
+
+  total_pen_goals_scored:
+    sql: ${coco_demo__wc_team_facts.pen_goals_scored}
+    label: Total Penalty Goals Scored
+    group_label: Goals
+    description: Sum of penalty shootout goals scored
+    aggregate_type: sum
+    ai_context: Aggregate penalty goals scored.
+
+  total_pen_goals_conceded:
+    sql: ${coco_demo__wc_team_facts.pen_goals_conceded}
+    label: Total Penalty Goals Conceded
+    group_label: Goals
+    description: Sum of penalty shootout goals conceded
+    aggregate_type: sum
+    ai_context: Aggregate penalty goals conceded.
+
+  season_count_distinct_1:
+    sql: ${coco_demo__wc_team_facts.season}
+    description: "(Count Distinct) Season: World Cup tournament year"
+    aggregate_type: count_distinct
+
+ai_context: "This view contains per-team, per-match statistics for FIFA World
+  Cup matches. Use it to analyze team performance including win/loss records,
+  goal-scoring patterns across match periods, shooting, passing, discipline, and
+  head-to-head matchups. The 'is_won' dimension indicates whether the team won
+  the match (goals_scored > goals_conceded). Goals are broken down by period: HT
+  (half-time/first half), FT (full-time/second half), ET (extra time), and PEN
+  (penalties). Each fixture appears twice — once for each team. Use round to
+  analyze knockout vs group stage performance."

@@ -1,0 +1,46 @@
+# Reference this view as demo__fernway_dim_recall_events_raw
+schema: DEMO
+table_name: FERNWAY_DIM_RECALL_EVENTS_RAW
+
+dimensions:
+  recall_event_id:
+    sql: '"RECALL_EVENT_ID"'
+    format: ID
+
+  title:
+    sql: '"TITLE"'
+
+  part_id:
+    sql: '"PART_ID"'
+    format: ID
+
+  description:
+    sql: '"DESCRIPTION"'
+
+  root_cause:
+    sql: '"ROOT_CAUSE"'
+
+  status:
+    sql: '"STATUS"'
+
+  identified_fake_year:
+    sql: '"IDENTIFIED_FAKE_YEAR"'
+
+  identified_day_ordinal:
+    sql: '"IDENTIFIED_DAY_ORDINAL"'
+
+  contact_list_ready_fake_year:
+    sql: '"CONTACT_LIST_READY_FAKE_YEAR"'
+
+  contact_list_ready_day_ordinal:
+    sql: '"CONTACT_LIST_READY_DAY_ORDINAL"'
+
+  all_dealers_notified_fake_year:
+    sql: '"ALL_DEALERS_NOTIFIED_FAKE_YEAR"'
+
+  all_dealers_notified_day_ordinal:
+    sql: '"ALL_DEALERS_NOTIFIED_DAY_ORDINAL"'
+
+measures:
+  count:
+    aggregate_type: count

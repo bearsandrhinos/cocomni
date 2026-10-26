@@ -1,0 +1,126 @@
+# Reference this view as demo__networking_example_data
+schema: DEMO
+table_name: NETWORKING_EXAMPLE_DATA
+
+dimensions:
+  net_ops_doa_flag:
+    sql: '"NET_OPS_DOA_FLAG"'
+
+  ticket_id:
+    sql: '"TICKET_ID"'
+    format: ID
+
+  report:
+    sql: '"REPORT"'
+
+  initial_resolve_:
+    sql: '"INITIAL_RESOLVE_"'
+
+  doa_vertical:
+    sql: '"DOA_VERTICAL"'
+
+  doa_group:
+    sql: '"DOA_GROUP"'
+
+  ticket_source_group:
+    sql: '"TICKET_SOURCE_GROUP"'
+
+  template_name:
+    sql: '"TEMPLATE_NAME"'
+
+  region_processed:
+    sql: '"REGION_PROCESSED"'
+
+  headend:
+    sql: '"HEADEND"'
+
+  market_area:
+    sql: '"MARKET_AREA"'
+
+  equipment_product_name:
+    sql: '"EQUIPMENT_PRODUCT_NAME"'
+
+  equipment_manufacturer:
+    sql: '"EQUIPMENT_MANUFACTURER"'
+
+  severity:
+    sql: '"SEVERITY"'
+
+  alarm_pid:
+    sql: '"ALARM_PID"'
+
+  all_dispatched_groups:
+    sql: '"ALL_DISPATCHED_GROUPS"'
+
+  all_impact_conditions:
+    sql: '"ALL_IMPACT_CONDITIONS"'
+
+  noc_touched_flag:
+    sql: '"NOC_TOUCHED_FLAG"'
+
+  director:
+    sql: '"DIRECTOR"'
+
+  assigned_group:
+    sql: '"ASSIGNED_GROUP"'
+
+  max_impact_condition:
+    sql: '"MAX_IMPACT_CONDITION"'
+
+  category_tier_1:
+    sql: '"CATEGORY_TIER_1"'
+
+  type_tier_2:
+    sql: '"TYPE_TIER_2"'
+
+  item_tier_3:
+    sql: '"ITEM_TIER_3"'
+
+  op_cat_prob_code:
+    sql: '"OP_CAT_PROB_CODE"'
+
+  op_cat_res_code:
+    sql: '"OP_CAT_RES_CODE"'
+
+  prod_cat_1:
+    sql: '"PROD_CAT_1"'
+
+  prod_cat_2:
+    sql: '"PROD_CAT_2"'
+
+  prod_cat_3:
+    sql: '"PROD_CAT_3"'
+
+  prod_cat_problem_code:
+    sql: '"PROD_CAT_PROBLEM_CODE"'
+
+  prod_cat_resolution_code:
+    sql: '"PROD_CAT_RESOLUTION_CODE"'
+
+  quick_description:
+    sql: '"QUICK_DESCRIPTION"'
+
+  string_business_service:
+    sql: '"STRING_BUSINESS_SERVICE"'
+
+  string_service:
+    sql: '"STRING_SERVICE"'
+
+  string_symptom:
+    sql: '"STRING_SYMPTOM"'
+
+  expected_usage_4_weeks:
+    sql: '"EXPECTED_USAGE_4_WEEKS"'
+
+  impacted_usage_modems:
+    sql: '"IMPACTED_USAGE_MODEMS"'
+
+  offline_modem_impacts:
+    sql: '"OFFLINE_MODEM_IMPACTS"'
+
+  impacted_usage_minutes:
+    sql: '"IMPACTED_USAGE_MINUTES"'
+
+measures:
+  count:
+    aggregate_type: count

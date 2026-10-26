@@ -1,0 +1,16 @@
+# Reference this view as demo__product_images_staging
+schema: DEMO
+table_name: PRODUCT_IMAGES_STAGING
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  image:
+    sql: '"IMAGE"'
+
+measures:
+  count:
+    aggregate_type: count

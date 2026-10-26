@@ -1,0 +1,217 @@
+# Reference this view as coco_demo__tournament_fixture_details
+label: Tournament Fixture Details
+description: Detailed match statistics for both home and away teams including
+  possession, shots, passes, fouls, cards, and expected goals
+
+schema: COCO_DEMO
+table_name: TOURNAMENT_FIXTURE_DETAILS
+
+dimensions:
+  home_shots_on_goal: {}
+  home_shots_off_goal: {}
+  home_total_shots: {}
+  home_blocked_shots: {}
+  home_shots_insidebox: {}
+  home_shots_outsidebox: {}
+  home_fouls: {}
+  home_corner_kicks: {}
+  home_offsides: {}
+  home_yellow_cards: {}
+  home_red_cards: {}
+  home_goalkeeper_saves: {}
+  away_shots_on_goal: {}
+  away_shots_off_goal: {}
+  away_total_shots: {}
+  away_blocked_shots: {}
+  away_shots_insidebox: {}
+  away_shots_outsidebox: {}
+  away_fouls: {}
+  away_corner_kicks: {}
+  away_offsides: {}
+  away_yellow_cards: {}
+  away_red_cards: {}
+  away_goalkeeper_saves: {}
+  home_expected_goals: {}
+  home_goals_prevented: {}
+  away_expected_goals: {}
+  away_goals_prevented: {}
+
+  league_name:
+    sql: league_name
+    label: League Name
+    description: Name of the league or tournament
+
+  season:
+    sql: season
+    label: Season
+    description: Season year for the tournament
+
+  home_ball_possession:
+    sql: CAST(home_ball_possession AS FLOAT)
+    hidden: true
+
+  home_total_passes:
+    sql: home_total_passes
+    hidden: true
+
+  home_passes_accurate:
+    sql: home_passes_accurate
+    hidden: true
+
+  away_ball_possession:
+    sql: CAST(away_ball_possession AS FLOAT)
+    hidden: true
+
+  away_total_passes:
+    sql: away_total_passes
+    hidden: true
+
+  away_passes_accurate:
+    sql: away_passes_accurate
+    hidden: true
+
+  fixture_id:
+    sql: fixture_id
+    label: Fixture ID
+    format: ID
+    description: Unique identifier for the match fixture
+    primary_key: true
+
+  league_id:
+    sql: league_id
+    label: League ID
+    format: ID
+    description: Identifier for the league or tournament
+
+  home_passes__:
+    sql: '"home_passes_%"'
+
+  away_passes__:
+    sql: '"away_passes_%"'
+
+  possession_difference:
+    sql: ${coco_demo__tournament_fixture_details.home_ball_possession} -
+      ${coco_demo__tournament_fixture_details.away_ball_possession}
+    label: Possession Difference
+    description: Difference in ball possession between home and away teams (positive
+      means home team had more)
+
+measures:
+  count:
+    label: Match Details Count
+    description: Total number of match detail records
+    aggregate_type: count
+
+  average_away_expected_goals:
+    sql: away_expected_goals
+    label: Average Away xG
+    description: Average expected goals for away teams
+    aggregate_type: average
+
+  average_away_pass_accuracy:
+    sql: ${coco_demo__tournament_fixture_details.away_passes_accurate} /
+      NULLIF(${coco_demo__tournament_fixture_details.away_total_passes}, 0)
+    label: Average Away Pass Accuracy
+    format: percent_2
+    description: Average pass accuracy percentage for away teams
+    aggregate_type: average
+
+  average_away_possession:
+    sql: ${coco_demo__tournament_fixture_details.away_ball_possession}
+    label: Average Away Possession
+    format: percent_2
+    description: Average ball possession percentage for away teams
+    aggregate_type: average
+
+  average_home_expected_goals:
+    sql: home_expected_goals
+    label: Average Home xG
+    description: Average expected goals for home teams
+    aggregate_type: average
+
+  average_home_pass_accuracy:
+    sql: ${coco_demo__tournament_fixture_details.home_passes_accurate} /
+      NULLIF(${coco_demo__tournament_fixture_details.home_total_passes}, 0)
+    label: Average Home Pass Accuracy
+    format: percent_2
+    description: Average pass accuracy percentage for home teams
+    aggregate_type: average
+
+  average_home_possession:
+    sql: ${coco_demo__tournament_fixture_details.home_ball_possession}
+    label: Average Home Possession
+    format: percent_2
+    description: Average ball possession percentage for home teams
+    aggregate_type: average
+
+  total_away_corner_kicks:
+    sql: away_corner_kicks
+    label: Away Corner Kicks Total
+    description: Total corner kicks for away teams
+    aggregate_type: sum
+
+  total_away_fouls:
+    sql: away_fouls
+    label: Away Fouls Total
+    description: Total fouls committed by away teams
+    aggregate_type: sum
+
+  total_away_red_cards:
+    sql: away_red_cards
+    label: Away Red Cards Total
+    description: Total red cards received by away teams
+    aggregate_type: sum
+
+  total_away_shots:
+    sql: away_total_shots
+    label: Away Shots Total
+    description: Total shots taken by away teams
+    aggregate_type: sum
+
+  total_away_shots_on_goal:
+    sql: away_shots_on_goal
+    label: Away Shots on Goal Total
+    description: Total shots on goal by away teams
+    aggregate_type: sum
+
+  total_away_yellow_cards:
+    sql: away_yellow_cards
+    label: Away Yellow Cards Total
+    description: Total yellow cards received by away teams
+    aggregate_type: sum
+
+  total_home_corner_kicks:
+    sql: home_corner_kicks
+    label: Home Corner Kicks Total
+    description: Total corner kicks for home teams
+    aggregate_type: sum
+
+  total_home_fouls:
+    sql: home_fouls
+    label: Home Fouls Total
+    description: Total fouls committed by home teams
+    aggregate_type: sum
+
+  total_home_red_cards:
+    sql: home_red_cards
+    label: Home Red Cards Total
+    description: Total red cards received by home teams
+    aggregate_type: sum
+
+  total_home_shots:
+    sql: home_total_shots
+    label: Home Shots Total
+    description: Total shots taken by home teams
+    aggregate_type: sum
+
+  total_home_shots_on_goal:
+    sql: home_shots_on_goal
+    label: Home Shots on Goal Total
+    description: Total shots on goal by home teams
+    aggregate_type: sum
+
+  total_home_yellow_cards:
+    sql: home_yellow_cards
+    label: Home Yellow Cards Total
+    description: Total yellow cards received by home teams
+    aggregate_type: sum

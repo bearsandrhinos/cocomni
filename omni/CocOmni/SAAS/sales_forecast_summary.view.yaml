@@ -1,0 +1,35 @@
+# Reference this view as saas__sales_forecast_summary
+schema: SAAS
+table_name: SALES_FORECAST_SUMMARY
+
+dimensions:
+  fiscal_quarter:
+    sql: '"FISCAL_QUARTER"'
+
+  forecast_category:
+    sql: '"FORECAST_CATEGORY"'
+
+  opp_count:
+    sql: '"OPP_COUNT"'
+
+  total_pipeline:
+    sql: '"TOTAL_PIPELINE"'
+
+  ml_forecast_amount:
+    sql: '"ML_FORECAST_AMOUNT"'
+
+  ml_forecast_arr:
+    sql: '"ML_FORECAST_ARR"'
+
+  simple_weighted_amount:
+    sql: '"SIMPLE_WEIGHTED_AMOUNT"'
+
+  avg_ml_win_prob:
+    sql: '"AVG_ML_WIN_PROB"'
+
+  avg_orig_prob:
+    sql: '"AVG_ORIG_PROB"'
+
+measures:
+  count:
+    aggregate_type: count

@@ -1,0 +1,166 @@
+base_view: coco_demo__uss_service_orders
+label: USS Fleet &amp; Field Service
+group_label: USS
+description: United Site Services fleet and field service analytics. Analyze
+  fleet utilization, idle assets and dead capital, rental duration and asset
+  turns, service on-time performance, service mix, and route productivity —
+  sliced by product type, industry segment, branch, and geography.
+tags: [ uss, fleet, field_service, operations ]
+
+joins:
+  coco_demo__uss_assets:
+    coco_demo__uss_placements: {}
+  coco_demo__uss_sites: {}
+  coco_demo__uss_routes: {}
+
+views:
+  coco_demo__uss_service_orders:
+    display_order: 1
+
+  coco_demo__uss_placements:
+    display_order: 2
+
+  coco_demo__uss_assets:
+    display_order: 3
+
+  coco_demo__uss_sites:
+    display_order: 4
+
+  coco_demo__uss_routes:
+    display_order: 5
+
+ai_context: |-
+  United Site Services fleet utilization and field service performance.
+
+  VIEWS:
+  - coco_demo__uss_service_orders (base): one row per service visit — pump-outs, cleanings, restocks, deliveries, pickups
+  - coco_demo__uss_assets: one row per physical rental asset (fleet composition, age, status, value)
+  - coco_demo__uss_placements: one row per rental placement (asset deployed to a site for a period)
+  - coco_demo__uss_sites: one row per customer job site (segment, branch, city/state)
+  - coco_demo__uss_routes: one row per driver route day (planned stops)
+
+  METRIC MAPPING:
+  - 'utilization' / 'fleet utilization' -> coco_demo__uss_placements.total_days_on_rent / (coco_demo__uss_assets.total_assets x days in period)
+  - 'on-time rate' -> coco_demo__uss_service_orders.on_time_rate (on_time_orders / total_service_orders)
+  - 'idle assets' / 'dead capital' -> coco_demo__uss_assets.idle_asset_count, idle_inventory_value
+  - 'stops per route' -> coco_demo__uss_service_orders.total_service_orders / coco_demo__uss_routes.total_routes
+  - 'route completion' -> coco_demo__uss_service_orders.completed_orders / coco_demo__uss_routes.total_planned_stops
+  - 'service mix' -> breakdown by coco_demo__uss_service_orders.service_type
+  - 'asset turns' -> coco_demo__uss_placements.asset_turns
+  - 'fleet age' -> coco_demo__uss_assets.asset_age_bucket, usually by product_type
+  - 'rental duration' -> coco_demo__uss_placements.avg_rental_duration
+  - 'service cycle time' -> coco_demo__uss_service_orders.avg_service_cycle_time
+
+  QUERY TIPS:
+  - Slice almost anything by coco_demo__uss_sites.industry_segment (construction, events, government, emergency) or state
+  - Asset status values: in_yard (idle), on_rent, in_repair
+  - Service order status values: completed, late, missed
+  - Open placements have a null pickup_date
+  - Customer counts must use coco_demo__uss_sites.unique_customers, not site counts
+
+  COMMON QUESTIONS:
+  1. What is our on-time service rate, and how is it trending?
+  2. Which branches or segments have the most missed service orders?
+  3. How much capital is sitting idle in the yard, by product type?
+  4. What is average rental duration by industry segment?
+  5. How many stops per route are our drivers running?
+  6. What does our service mix look like by service type?
+  7. Which product types have the oldest fleet?
+  8. Which customers or states drive the most placements?
+
+sample_queries:
+  On-Time Rate by Month:
+    query:
+      fields:
+        [
+          "coco_demo__uss_service_orders.scheduled_date[month]",
+          coco_demo__uss_service_orders.total_service_orders,
+          coco_demo__uss_service_orders.on_time_rate
+        ]
+      base_view: coco_demo__uss_service_orders
+      sorts:
+        - field: coco_demo__uss_service_orders.scheduled_date[month]
+      topic: uss_fleet_service
+    description: Field service SLA trend over time
+    prompt: Show on-time service rate and total service orders by month
+  Service Mix by Type:
+    query:
+      fields:
+        [
+          coco_demo__uss_service_orders.service_type,
+          coco_demo__uss_service_orders.total_service_orders,
+          coco_demo__uss_service_orders.on_time_rate
+        ]
+      base_view: coco_demo__uss_service_orders
+      sorts:
+        - field: coco_demo__uss_service_orders.total_service_orders
+          desc: true
+      topic: uss_fleet_service
+    description: Breakdown of service orders and on-time rate by service type
+    prompt: What is our service mix by service type?
+  Idle Capital by Product Type:
+    query:
+      fields:
+        [
+          coco_demo__uss_assets.product_type,
+          coco_demo__uss_assets.idle_asset_count,
+          coco_demo__uss_assets.idle_inventory_value
+        ]
+      base_view: coco_demo__uss_service_orders
+      sorts:
+        - field: coco_demo__uss_assets.idle_inventory_value
+          desc: true
+      topic: uss_fleet_service
+    description: Dead capital sitting in the yard by product type
+    prompt: How much idle inventory value do we have by product type?
+  Service Performance by Segment:
+    query:
+      fields:
+        [
+          coco_demo__uss_sites.industry_segment,
+          coco_demo__uss_service_orders.total_service_orders,
+          coco_demo__uss_service_orders.missed_orders,
+          coco_demo__uss_service_orders.on_time_rate
+        ]
+      base_view: coco_demo__uss_service_orders
+      sorts:
+        - field: coco_demo__uss_service_orders.total_service_orders
+          desc: true
+      topic: uss_fleet_service
+    description: Field service performance across customer verticals
+    prompt: Show on-time rate and missed orders by industry segment
+skills:
+  service_performance_review:
+    label: Service Performance Review
+    input: What time period and branch or segment should I review?
+    description: Analyze USS field service performance. Query
+      coco_demo__uss_service_orders for total_service_orders, on_time_rate,
+      late_orders, missed_orders and avg_service_cycle_time, trended by
+      scheduled_date month, and broken out by service_type and by
+      coco_demo__uss_sites.industry_segment. Call out the largest drivers of
+      late and missed work and any deteriorating trend.
+  idle_fleet_audit:
+    label: Idle Fleet Audit
+    input: Any specific branch or product type to focus on?
+    description: Audit idle fleet and dead capital. Query coco_demo__uss_assets for
+      idle_asset_count, idle_inventory_value and idle_rate broken out by
+      product_type, asset_age_bucket and home_branch_id. Quantify total capital
+      sitting in the yard and identify the product types and branches with the
+      worst idle rates.
+  utilization_deep_dive:
+    label: Utilization Deep Dive
+    description: Analyze fleet utilization. Combine
+      coco_demo__uss_placements.total_days_on_rent, avg_rental_duration and
+      asset_turns with coco_demo__uss_assets.total_assets, broken out by
+      product_type and coco_demo__uss_sites.industry_segment, and trended over
+      delivery_date month. Highlight where utilization and turns are weakest.
+    options:
+      deep_research: true
+  route_productivity:
+    label: Route Productivity
+    description: Analyze route productivity. Compare
+      coco_demo__uss_routes.total_routes, total_planned_stops and
+      avg_planned_stops against
+      coco_demo__uss_service_orders.total_service_orders and completed_orders to
+      compute stops per route and route completion, broken out by branch_id and
+      route_date month. Identify branches and drivers running below capacity.

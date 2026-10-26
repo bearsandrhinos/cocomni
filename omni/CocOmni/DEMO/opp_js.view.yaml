@@ -1,0 +1,45 @@
+# Reference this view as demo__opp_js
+schema: DEMO
+table_name: OPP_JS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  value:
+    sql: '"VALUE"'
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  opened_date:
+    sql: '"OPENED_DATE"'
+
+  closed_date:
+    sql: '"CLOSED_DATE"'
+
+  name:
+    sql: '"NAME"'
+
+  status:
+    sql: '"STATUS"'
+
+  stage_name:
+    sql: '"STAGE_NAME"'
+
+  forecast_category:
+    sql: '"FORECAST_CATEGORY"'
+
+  business_type:
+    sql: '"BUSINESS_TYPE"'
+
+measures:
+  count:
+    aggregate_type: count

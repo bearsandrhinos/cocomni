@@ -1,0 +1,60 @@
+# Reference this view as demo__int_saas__opportunity_line_items
+schema: DEMO
+table_name: INT_SAAS__OPPORTUNITY_LINE_ITEMS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  opportunity_id:
+    sql: '"OPPORTUNITY_ID"'
+    format: ID
+
+  product_id:
+    sql: '"PRODUCT_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  quantity:
+    sql: '"QUANTITY"'
+
+  list_price:
+    sql: '"LIST_PRICE"'
+
+  sale_price:
+    sql: '"SALE_PRICE"'
+
+  total_price:
+    sql: '"TOTAL_PRICE"'
+
+  arr:
+    sql: '"ARR"'
+
+  acv:
+    sql: '"ACV"'
+
+  tcv:
+    sql: '"TCV"'
+
+  contract_term_months:
+    sql: '"CONTRACT_TERM_MONTHS"'
+
+  description:
+    sql: '"DESCRIPTION"'
+
+  service_date:
+    sql: '"SERVICE_DATE"'
+
+  as_of_date:
+    sql: '"AS_OF_DATE"'
+
+  year_offset:
+    sql: '"YEAR_OFFSET"'
+
+measures:
+  count:
+    aggregate_type: count

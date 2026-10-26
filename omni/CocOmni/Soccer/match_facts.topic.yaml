@@ -1,0 +1,72 @@
+base_view: coco_demo__fct_matches
+label: Match Facts
+group_label: Soccer
+description: Team-level match statistics for international soccer matches across
+  tournaments and friendlies. Analyze team performance, win/loss records,
+  goal-scoring patterns, shooting efficiency, passing accuracy, possession, and
+  discipline metrics for World Cup bracket predictions and soccer analytics.
+
+default_filters:
+  coco_demo__fct_matches.fixture_type:
+    is: []
+
+joins: {}
+
+ai_context: |-
+  This topic provides comprehensive team-level match analytics for international soccer matches from multiple sources (World Cup, tournaments, friendlies). Use it for World Cup bracket predictions and soccer performance analysis.
+
+  VIEWS:
+  - coco_demo__fct_matches: Team-level match statistics (base view) - each row is one team's performance in one match
+
+  KEY METRICS AND WHERE TO FIND THEM:
+  - Match Count → coco_demo__fct_matches.count
+  - Unique Fixtures → coco_demo__fct_matches.unique_fixtures
+  - Total Goals Scored → coco_demo__fct_matches.total_goals_scored
+  - Total Goals Conceded → coco_demo__fct_matches.total_goals_conceded
+  - Average Goals per Match → coco_demo__fct_matches.average_goals_scored
+  - Win/Draw/Loss Counts → coco_demo__fct_matches.total_wins, total_draws, total_losses
+  - Win Rate → coco_demo__fct_matches.win_rate
+  - Clean Sheets → coco_demo__fct_matches.total_clean_sheets, clean_sheet_rate
+  - Shot Accuracy → coco_demo__fct_matches.average_shot_accuracy
+  - Pass Accuracy → coco_demo__fct_matches.average_pass_accuracy
+  - Possession → coco_demo__fct_matches.average_possession
+  - Discipline → coco_demo__fct_matches.total_yellow_cards, total_red_cards, total_fouls
+  - Goal Difference → coco_demo__fct_matches.goal_difference_sum, average_goal_difference
+
+  COMMON ANALYSIS PATTERNS:
+  - Team rankings: group by team, sort by total_wins or win_rate
+  - Head-to-head matchups: filter by team and opponent
+  - Home advantage: compare is_home = true vs false with win_rate
+  - Scoring trends: group by match_date[year] or season with total_goals_scored
+  - Defensive strength: group by team, sort by total_goals_conceded or clean_sheet_rate
+  - Shooting efficiency: group by team with average_shot_accuracy
+  - Possession vs results: compare average_possession with win_rate
+  - Tournament comparison: group by fixture_type or season
+  - Round analysis: group by round to see knockout vs group stage performance
+  - Period analysis: use ht_goals_scored, ft_goals_scored, et_goals_scored for timing patterns
+
+  QUERY TIPS:
+  - Each fixture appears twice (once per team), so count gives team appearances, not match count
+  - Use unique_fixtures measure for actual match count
+  - Use result dimension to filter/group by Win, Draw, or Loss
+  - Use is_win, is_draw, is_loss boolean dimensions for filtering
+  - Use is_home to split home vs away performance
+  - Use fixture_type to distinguish World Cup, Tournament, or Friendly matches
+  - Use round to analyze knockout stages vs group stages
+  - Filter went_to_pens or went_to_et for dramatic matches
+  - Use season or match_date[year] for time-based trends
+  - Goals are broken down by period: ht (first half), ft (second half), et (extra time), pen (penalties)
+
+  COMMON QUESTIONS THIS TOPIC ANSWERS:
+  1. Which teams have the best win rates?
+  2. What's the home team advantage across all matches?
+  3. Which teams have the strongest defense (fewest goals conceded)?
+  4. Which teams are the most disciplined (fewest cards)?
+  5. How does possession correlate with winning?
+  6. Which teams have the best shooting accuracy?
+  7. What are the scoring trends over time?
+  8. How do teams perform in knockout rounds vs group stages?
+  9. Which teams score the most in extra time?
+  10. What's the head-to-head record between two teams?
+  11. Which teams have the most clean sheets?
+  12. How do teams perform in different fixture types (World Cup vs friendlies)?

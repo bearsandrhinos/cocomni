@@ -1,0 +1,373 @@
+# Reference this view as coco_demo__tournament_fixture_detail_facts
+description: Team-level match detail statistics for international soccer
+  tournaments. Each row represents one team's performance in a single match,
+  including shots, passes, fouls, cards, possession, expected goals, and
+  goalkeeper saves.
+
+schema: COCO_DEMO
+table_name: TOURNAMENT_FIXTURE_DETAIL_FACTS
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    format: ID
+    description: Unique identifier for the match fixture
+    ai_context: Primary key for the match. Each fixture has two rows — one per team.
+
+  league_id:
+    sql: '"LEAGUE_ID"'
+    format: ID
+    description: Identifier for the league or tournament
+    ai_context: Internal league/tournament ID. Prefer using 'league_name' for
+      display purposes.
+
+  league_name:
+    sql: '"LEAGUE_NAME"'
+    description: Name of the league or tournament
+    ai_context: Use to filter or group matches by competition (e.g., UEFA Nations
+      League, Copa America).
+
+  season:
+    sql: '"SEASON"'
+    description: Season or year the tournament match took place
+    ai_context: Use to filter or group matches by season/year for trend analysis
+      across tournaments.
+
+  is_home:
+    sql: '"IS_HOME"'
+    description: Whether the team was the home team in the match
+    ai_context: Boolean flag indicating home (true) or away (false). Use to analyze
+      home vs away performance differences.
+
+  shots_on_goal:
+    sql: '"SHOTS_ON_GOAL"'
+    description: Number of shots on target in the match
+    group_label: Shots
+    ai_context: Shots that were on target (would have gone in without a save). Key
+      indicator of attacking quality.
+
+  shots_off_goal:
+    sql: '"SHOTS_OFF_GOAL"'
+    description: Number of shots off target in the match
+    group_label: Shots
+    ai_context: Shots that missed the goal frame entirely. High values may indicate
+      poor finishing.
+
+  total_shots:
+    sql: '"TOTAL_SHOTS"'
+    description: Total number of shots attempted in the match
+    group_label: Shots
+    ai_context: All shot attempts including on target, off target, and blocked.
+      Measures overall attacking volume.
+
+  blocked_shots:
+    sql: '"BLOCKED_SHOTS"'
+    description: Number of shots blocked by defenders
+    group_label: Shots
+    ai_context: Shots blocked before reaching the goalkeeper. Indicates defensive
+      effort by the opposing team.
+
+  shots_insidebox:
+    sql: '"SHOTS_INSIDEBOX"'
+    description: Number of shots taken from inside the penalty box
+    group_label: Shots
+    ai_context: Shots from inside the 18-yard box. Higher-quality chances with
+      better conversion rates.
+
+  shots_outsidebox:
+    sql: '"SHOTS_OUTSIDEBOX"'
+    description: Number of shots taken from outside the penalty box
+    group_label: Shots
+    ai_context: Long-range shots from outside the 18-yard box. Typically lower
+      conversion rates.
+
+  fouls:
+    sql: '"FOULS"'
+    description: Number of fouls committed by the team in the match
+    group_label: Discipline
+    ai_context: Total fouls committed. High values may indicate aggressive or
+      physical play style.
+
+  corner_kicks:
+    sql: '"CORNER_KICKS"'
+    description: Number of corner kicks awarded to the team in the match
+    group_label: Other Stats
+    ai_context: Corners won. Indicates attacking pressure and set-piece opportunities.
+
+  offsides:
+    sql: '"OFFSIDES"'
+    description: Number of offside calls against the team in the match
+    group_label: Other Stats
+    ai_context: Offside infractions. Can indicate an aggressive attacking line or
+      poor timing of runs.
+
+  ball_possession:
+    sql: CAST("BALL_POSSESSION" AS FLOAT)
+    description: Ball possession percentage for the team in the match
+    group_label: Passing
+    ai_context: Percentage of time the team had the ball. Use to analyze
+      possession-based vs counter-attacking styles.
+
+  yellow_cards:
+    sql: '"YELLOW_CARDS"'
+    description: Number of yellow cards received by the team in the match
+    group_label: Discipline
+    ai_context: Cautions issued to players. Two yellows for one player results in a
+      red card and sending off.
+
+  red_cards:
+    sql: '"RED_CARDS"'
+    description: Number of red cards received by the team in the match
+    group_label: Discipline
+    ai_context: Direct dismissals or second yellow cards. A red card reduces the
+      team to fewer players for the remainder of the match.
+
+  goalkeeper_saves:
+    sql: '"GOALKEEPER_SAVES"'
+    description: Number of saves made by the team's goalkeeper in the match
+    group_label: Other Stats
+    ai_context: Shots stopped by the goalkeeper. High values indicate either a
+      strong keeper or heavy pressure from the opponent.
+
+  total_passes:
+    sql: '"TOTAL_PASSES"'
+    description: Total number of passes attempted in the match
+    group_label: Passing
+    ai_context: All pass attempts in the match. Higher values generally indicate a
+      possession-based style of play.
+
+  passes_accurate:
+    sql: '"PASSES_ACCURATE"'
+    description: Number of accurate (completed) passes in the match
+    group_label: Passing
+    ai_context: Successfully completed passes. Use with total_passes to assess
+      passing accuracy.
+
+  passes_pct:
+    sql: CAST("PASSES_PCT" AS FLOAT)
+    description: Pass completion percentage for the match
+    group_label: Passing
+    ai_context: Percentage of passes that were completed successfully. Key indicator
+      of a team's ability to retain possession.
+
+  expected_goals:
+    sql: '"EXPECTED_GOALS"'
+    description: Expected goals (xG) metric for the team in the match
+    group_label: Other Stats
+    ai_context: Statistical measure of the quality of chances created. Higher xG
+      means better scoring opportunities. Compare to actual goals to assess
+      finishing quality.
+
+  goals_prevented:
+    sql: '"GOALS_PREVENTED"'
+    description: Number of expected goals prevented by the team's defense and goalkeeper
+    group_label: Other Stats
+    ai_context: Measures defensive performance by comparing expected goals conceded
+      to actual goals conceded. Positive values indicate the defense
+      outperformed expectations.
+
+measures:
+  count:
+    description: Total number of team-match detail records
+    aggregate_type: count
+    ai_context: Counts team-match appearances. Since each fixture has two rows (one
+      per team), divide by 2 to get match count.
+
+  total_shots_on_goal:
+    sql: ${coco_demo__tournament_fixture_detail_facts.shots_on_goal}
+    label: Total Shots On Goal
+    group_label: Shots
+    description: Sum of shots on target across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots on target. Use to rank teams by attacking accuracy
+      in tournaments.
+
+  total_shots_off_goal:
+    sql: ${coco_demo__tournament_fixture_detail_facts.shots_off_goal}
+    label: Total Shots Off Goal
+    group_label: Shots
+    description: Sum of shots off target across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots off target. High values relative to shots on goal
+      may indicate poor finishing.
+
+  total_shots_sum:
+    sql: ${coco_demo__tournament_fixture_detail_facts.total_shots}
+    label: Total Shots
+    group_label: Shots
+    description: Sum of all shot attempts across all matches
+    aggregate_type: sum
+    ai_context: Aggregate total shots. Use to measure overall attacking volume
+      across tournaments.
+
+  total_blocked_shots:
+    sql: ${coco_demo__tournament_fixture_detail_facts.blocked_shots}
+    label: Total Blocked Shots
+    group_label: Shots
+    description: Sum of blocked shots across all matches
+    aggregate_type: sum
+    ai_context: Aggregate blocked shots. Indicates how often the opposing defense
+      blocked shot attempts.
+
+  total_shots_insidebox:
+    sql: ${coco_demo__tournament_fixture_detail_facts.shots_insidebox}
+    label: Total Shots Inside Box
+    group_label: Shots
+    description: Sum of shots taken from inside the penalty box across all matches
+    aggregate_type: sum
+    ai_context: Aggregate shots from inside the 18-yard box. Higher-quality chances
+      with better conversion rates.
+
+  total_shots_outsidebox:
+    sql: ${coco_demo__tournament_fixture_detail_facts.shots_outsidebox}
+    label: Total Shots Outside Box
+    group_label: Shots
+    description: Sum of shots taken from outside the penalty box across all matches
+    aggregate_type: sum
+    ai_context: Aggregate long-range shots. Typically lower conversion rates than
+      shots inside the box.
+
+  total_passes_sum:
+    sql: ${coco_demo__tournament_fixture_detail_facts.total_passes}
+    label: Total Passes
+    group_label: Passing
+    description: Sum of all pass attempts across all matches
+    aggregate_type: sum
+    ai_context: Aggregate pass attempts. Higher values indicate possession-oriented teams.
+
+  total_passes_accurate:
+    sql: ${coco_demo__tournament_fixture_detail_facts.passes_accurate}
+    label: Total Accurate Passes
+    group_label: Passing
+    description: Sum of completed passes across all matches
+    aggregate_type: sum
+    ai_context: Aggregate successful passes. Use with total passes to calculate
+      overall pass accuracy.
+
+  average_pass_pct:
+    sql: ${coco_demo__tournament_fixture_detail_facts.passes_pct}
+    label: Average Pass Completion %
+    group_label: Passing
+    format: percent_1
+    description: Average pass completion percentage across all matches
+    aggregate_type: average
+    ai_context: Mean pass accuracy rate. Use to compare passing quality between teams.
+
+  average_ball_possession:
+    sql: ${coco_demo__tournament_fixture_detail_facts.ball_possession}
+    label: Average Possession %
+    group_label: Passing
+    format: percent_1
+    description: Average ball possession percentage across all matches
+    aggregate_type: average
+    ai_context: Mean possession rate. Use to identify possession-dominant vs
+      counter-attacking teams.
+
+  total_fouls:
+    sql: ${coco_demo__tournament_fixture_detail_facts.fouls}
+    label: Total Fouls
+    group_label: Discipline
+    description: Sum of fouls committed across all matches
+    aggregate_type: sum
+    ai_context: Aggregate fouls committed. Use to assess team discipline and
+      physical play style.
+
+  total_yellow_cards:
+    sql: ${coco_demo__tournament_fixture_detail_facts.yellow_cards}
+    label: Total Yellow Cards
+    group_label: Discipline
+    description: Sum of yellow cards received across all matches
+    aggregate_type: sum
+    ai_context: Aggregate cautions. Use to rank teams by discipline in tournaments.
+
+  total_red_cards:
+    sql: ${coco_demo__tournament_fixture_detail_facts.red_cards}
+    label: Total Red Cards
+    group_label: Discipline
+    description: Sum of red cards received across all matches
+    aggregate_type: sum
+    ai_context: Aggregate dismissals. Red cards significantly impact match outcomes.
+
+  total_corner_kicks:
+    sql: ${coco_demo__tournament_fixture_detail_facts.corner_kicks}
+    label: Total Corner Kicks
+    group_label: Other Stats
+    description: Sum of corner kicks awarded across all matches
+    aggregate_type: sum
+    ai_context: Aggregate corners won. Indicates sustained attacking pressure and
+      set-piece opportunities.
+
+  total_offsides:
+    sql: ${coco_demo__tournament_fixture_detail_facts.offsides}
+    label: Total Offsides
+    group_label: Other Stats
+    description: Sum of offside calls across all matches
+    aggregate_type: sum
+    ai_context: Aggregate offside infractions. Can indicate aggressive attacking
+      positioning.
+
+  total_goalkeeper_saves:
+    sql: ${coco_demo__tournament_fixture_detail_facts.goalkeeper_saves}
+    label: Total Goalkeeper Saves
+    group_label: Other Stats
+    description: Sum of goalkeeper saves across all matches
+    aggregate_type: sum
+    ai_context: Aggregate saves. High values may indicate a strong goalkeeper or
+      heavy pressure faced.
+
+  average_expected_goals:
+    sql: ${coco_demo__tournament_fixture_detail_facts.expected_goals}
+    label: Average Expected Goals (xG)
+    group_label: Other Stats
+    description: Average expected goals per match across all matches
+    aggregate_type: average
+    ai_context: Mean xG per match. Use to assess the quality of chances created on average.
+
+  total_expected_goals:
+    sql: ${coco_demo__tournament_fixture_detail_facts.expected_goals}
+    label: Total Expected Goals (xG)
+    group_label: Other Stats
+    description: Sum of expected goals across all matches
+    aggregate_type: sum
+    ai_context: Aggregate xG. Use to rank teams by quality of chances created across
+      tournaments.
+
+  total_goals_prevented:
+    sql: ${coco_demo__tournament_fixture_detail_facts.goals_prevented}
+    label: Total Goals Prevented
+    group_label: Other Stats
+    description: Sum of goals prevented across all matches
+    aggregate_type: sum
+    ai_context: Aggregate defensive overperformance. Positive values mean the
+      defense conceded fewer goals than expected.
+
+  total_matches_home:
+    sql: ${coco_demo__tournament_fixture_detail_facts.is_home}
+    label: Total Home Matches
+    group_label: Other Stats
+    description: Total number of matches played as the home team
+    aggregate_type: count
+    filters:
+      is_home:
+        is: true
+    ai_context: Count of home matches. Use to analyze home vs away performance splits.
+
+  total_matches_away:
+    sql: ${coco_demo__tournament_fixture_detail_facts.is_home}
+    label: Total Away Matches
+    group_label: Other Stats
+    description: Total number of matches played as the away team
+    aggregate_type: count
+    filters:
+      is_home:
+        is: false
+    ai_context: Count of away matches. Use to analyze home vs away performance splits.
+
+ai_context: "This view contains per-team, per-match detail statistics for
+  international soccer tournament matches. Use it to analyze team performance
+  metrics like shooting accuracy, passing efficiency, discipline (cards/fouls),
+  possession, and expected goals. Each fixture appears twice — once for each
+  team. The 'is_home' dimension indicates whether the team was playing at home.
+  Stats are broken into groups: Shots, Passing, Discipline, and Other Stats.
+  This table does not contain goal results — use the fixtures table for match
+  outcomes."

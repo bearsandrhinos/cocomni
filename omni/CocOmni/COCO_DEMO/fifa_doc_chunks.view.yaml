@@ -1,0 +1,17 @@
+# Reference this view as coco_demo__fifa_doc_chunks
+schema: COCO_DEMO
+table_name: FIFA_DOC_CHUNKS
+
+dimensions:
+  relative_path:
+    sql: '"RELATIVE_PATH"'
+
+  file_url:
+    sql: '"FILE_URL"'
+
+  chunk:
+    sql: '"CHUNK"'
+
+measures:
+  count:
+    aggregate_type: count

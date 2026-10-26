@@ -1,0 +1,60 @@
+base_view: coco_demo__tournament_fixtures
+label: Tournaments
+group_label: Soccer
+description: Comprehensive soccer tournament data including match fixtures,
+  detailed team statistics, and individual player performance across various
+  leagues and competitions
+
+joins:
+  coco_demo__tournament_fixture_details: {}
+  coco_demo__tournament_player_stats: {}
+
+ai_context: |-
+  This topic provides comprehensive soccer tournament analytics across matches, teams, and players.
+
+  VIEWS:
+  - coco_demo__tournament_fixtures: Match-level data (teams, scores, venue, round, date)
+  - coco_demo__tournament_fixture_details: Team statistics per match (possession, shots, passes, fouls, cards)
+  - coco_demo__tournament_player_stats: Individual player performance per match (goals, assists, passes, tackles, ratings)
+
+  KEY METRICS AND WHERE TO FIND THEM:
+  - Match Count → coco_demo__tournament_fixtures.count
+  - Total Goals → coco_demo__tournament_fixtures.total_goals_scored
+  - Average Goals per Match → coco_demo__tournament_fixtures.average_goals_per_match
+  - Home Wins / Away Wins / Draws → coco_demo__tournament_fixtures.home_wins, away_wins, draws
+  - Player Goals → coco_demo__tournament_player_stats.goals_total
+  - Player Assists → coco_demo__tournament_player_stats.assists_total
+  - Player Rating → coco_demo__tournament_player_stats.average_rating
+  - Possession % → coco_demo__tournament_fixture_details.average_home_possession, average_away_possession
+  - Shots on Goal → coco_demo__tournament_fixture_details.total_home_shots_on_goal, total_away_shots_on_goal
+  - Cards (Yellow/Red) → coco_demo__tournament_player_stats.yellow_cards_total, red_cards_total
+
+  COMMON ANALYSIS PATTERNS:
+  - Top scorers: goals_total grouped by player_name, sort desc
+  - Team performance: group by home_team or away_team, aggregate goals/wins
+  - Match trends over time: group by date[year] or season
+  - Player efficiency: average_shot_accuracy, average_pass_accuracy by player
+  - Tournament statistics: aggregate by season/league_name
+  - Round analysis: group by round
+  - Venue analysis: group by venue_name or venue_city
+  - Possession vs results: compare possession_difference with match_result
+
+  QUERY TIPS:
+  - Use match_result dimension to filter/group by Home Win, Away Win, or Draw
+  - Use round dimension to analyze knockout stages vs group stages
+  - Filter went_to_penalties or went_to_extra_time for dramatic matches
+  - Use games_position to segment player stats by position (Forward, Midfielder, Defender, Goalkeeper)
+  - Use season to compare across different tournaments
+  - Player stats are per-match, so use unique_players measure for player counts
+
+  COMMON QUESTIONS THIS TOPIC ANSWERS:
+  1. Who are the top goal scorers?
+  2. Which teams have the most wins?
+  3. What's the average number of goals per match by tournament?
+  4. Which players have the highest match ratings?
+  5. How does possession correlate with match outcomes?
+  6. Which venues host the most matches?
+  7. How many matches went to penalties or extra time?
+  8. What's the home team advantage (home wins vs away wins)?
+  9. Which players have the most assists?
+  10. How do player statistics vary by position?

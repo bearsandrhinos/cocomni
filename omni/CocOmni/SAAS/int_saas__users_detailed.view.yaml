@@ -1,0 +1,96 @@
+# Reference this view as saas__int_saas__users_detailed
+schema: SAAS
+table_name: INT_SAAS__USERS_DETAILED
+
+dimensions:
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  days_since_last_event:
+    sql: '"DAYS_SINCE_LAST_EVENT"'
+
+  department:
+    sql: '"DEPARTMENT"'
+
+  email:
+    sql: '"EMAIL"'
+
+  events_last_30d:
+    sql: '"EVENTS_LAST_30D"'
+
+  events_last_90d:
+    sql: '"EVENTS_LAST_90D"'
+
+  invited_by_user_id:
+    sql: '"INVITED_BY_USER_ID"'
+    format: ID
+
+  is_admin:
+    sql: '"IS_ADMIN"'
+
+  license_type:
+    sql: '"LICENSE_TYPE"'
+
+  lifecycle_stage:
+    sql: '"LIFECYCLE_STAGE"'
+
+  location:
+    sql: '"LOCATION"'
+
+  manager_id:
+    sql: '"MANAGER_ID"'
+    format: ID
+
+  name:
+    sql: '"NAME"'
+
+  onboarding_completed:
+    sql: '"ONBOARDING_COMPLETED"'
+
+  onboarding_steps_completed:
+    sql: '"ONBOARDING_STEPS_COMPLETED"'
+
+  role:
+    sql: '"ROLE"'
+
+  signup_source:
+    sql: '"SIGNUP_SOURCE"'
+
+  status:
+    sql: '"STATUS"'
+
+  timezone:
+    sql: '"TIMEZONE"'
+
+  title:
+    sql: '"TITLE"'
+
+  total_events_lifetime:
+    sql: '"TOTAL_EVENTS_LIFETIME"'
+
+  total_sessions_lifetime:
+    sql: '"TOTAL_SESSIONS_LIFETIME"'
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  demo_segment:
+    sql: '"DEMO_SEGMENT"'
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  last_event_date:
+    sql: '"LAST_EVENT_DATE"'
+
+  updated_date:
+    sql: '"UPDATED_DATE"'
+
+  activated_date:
+    sql: '"ACTIVATED_DATE"'
+
+measures:
+  count:
+    aggregate_type: count

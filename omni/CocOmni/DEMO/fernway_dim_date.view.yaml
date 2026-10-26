@@ -1,0 +1,32 @@
+# Reference this view as demo__fernway_dim_date
+schema: DEMO
+table_name: FERNWAY_DIM_DATE
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  day_of_week:
+    sql: '"DAY_OF_WEEK"'
+
+  is_weekend:
+    sql: '"IS_WEEKEND"'
+
+  month:
+    sql: '"MONTH"'
+
+  month_name:
+    sql: '"MONTH_NAME"'
+
+  quarter:
+    sql: '"QUARTER"'
+
+  year:
+    sql: '"YEAR"'
+
+  fiscal_year:
+    sql: '"FISCAL_YEAR"'
+
+measures:
+  count:
+    aggregate_type: count

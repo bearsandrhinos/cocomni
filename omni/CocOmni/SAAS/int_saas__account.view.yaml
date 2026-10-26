@@ -1,0 +1,60 @@
+# Reference this view as saas__int_saas__account
+schema: SAAS
+table_name: INT_SAAS__ACCOUNT
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  type:
+    sql: '"TYPE"'
+
+  billing_street:
+    sql: '"BILLING_STREET"'
+
+  billing_state:
+    sql: '"BILLING_STATE"'
+
+  billing_city:
+    sql: '"BILLING_CITY"'
+
+  billing_zip:
+    sql: '"BILLING_ZIP"'
+
+  billing_country:
+    sql: '"BILLING_COUNTRY"'
+
+  region:
+    sql: '"REGION"'
+
+  industry:
+    sql: '"INDUSTRY"'
+
+  annual_revenue:
+    sql: '"ANNUAL_REVENUE"'
+
+  number_of_employees:
+    sql: '"NUMBER_OF_EMPLOYEES"'
+
+  segment:
+    sql: '"SEGMENT"'
+
+  owner_id:
+    sql: '"OWNER_ID"'
+    format: ID
+
+  created_date:
+    sql: '"CREATED_DATE"'
+
+  csm_id:
+    sql: '"CSM_ID"'
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count

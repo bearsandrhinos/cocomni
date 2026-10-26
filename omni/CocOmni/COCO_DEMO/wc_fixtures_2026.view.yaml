@@ -1,0 +1,92 @@
+# Reference this view as coco_demo__wc_fixtures_2026
+schema: COCO_DEMO
+table_name: WC_FIXTURES_2026
+
+dimensions:
+  fixture_id:
+    sql: '"FIXTURE_ID"'
+    format: ID
+
+  season:
+    sql: '"SEASON"'
+
+  date:
+    sql: '"DATE"'
+
+  referee:
+    sql: '"REFEREE"'
+
+  venue_name:
+    sql: '"VENUE_NAME"'
+
+  venue_city:
+    sql: '"VENUE_CITY"'
+
+  status_short:
+    sql: '"STATUS_SHORT"'
+
+  status_long:
+    sql: '"STATUS_LONG"'
+
+  round:
+    sql: '"ROUND"'
+
+  home_team_id:
+    sql: '"HOME_TEAM_ID"'
+    format: ID
+
+  home_team:
+    sql: '"HOME_TEAM"'
+
+  home_team_logo:
+    sql: '"HOME_TEAM_LOGO"'
+
+  home_winner:
+    sql: '"HOME_WINNER"'
+
+  away_team_id:
+    sql: '"AWAY_TEAM_ID"'
+    format: ID
+
+  away_team:
+    sql: '"AWAY_TEAM"'
+
+  away_team_logo:
+    sql: '"AWAY_TEAM_LOGO"'
+
+  away_winner:
+    sql: '"AWAY_WINNER"'
+
+  goals_home:
+    sql: '"GOALS_HOME"'
+
+  goals_away:
+    sql: '"GOALS_AWAY"'
+
+  ht_home:
+    sql: '"HT_HOME"'
+
+  ht_away:
+    sql: '"HT_AWAY"'
+
+  ft_home:
+    sql: '"FT_HOME"'
+
+  ft_away:
+    sql: '"FT_AWAY"'
+
+  et_home:
+    sql: '"ET_HOME"'
+
+  et_away:
+    sql: '"ET_AWAY"'
+
+  pen_home:
+    sql: '"PEN_HOME"'
+
+  pen_away:
+    sql: '"PEN_AWAY"'
+
+measures:
+  count:
+    aggregate_type: count

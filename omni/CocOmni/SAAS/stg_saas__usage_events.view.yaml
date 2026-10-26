@@ -1,0 +1,104 @@
+# Reference this view as saas__stg_saas__usage_events
+schema: SAAS
+table_name: STG_SAAS__USAGE_EVENTS
+
+dimensions:
+  sequence_number:
+    sql: '"SEQUENCE_NUMBER"'
+
+  product_id:
+    sql: '"PRODUCT_ID"'
+    format: ID
+
+  page_url:
+    sql: '"PAGE_URL"'
+
+  user_role:
+    sql: '"USER_ROLE"'
+
+  feature_name:
+    sql: '"FEATURE_NAME"'
+
+  event_properties:
+    sql: '"EVENT_PROPERTIES"'
+
+  utm_campaign:
+    sql: '"UTM_CAMPAIGN"'
+
+  account_segment:
+    sql: '"ACCOUNT_SEGMENT"'
+
+  product_tier:
+    sql: '"PRODUCT_TIER"'
+
+  user_count:
+    sql: '"USER_COUNT"'
+
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  user_id:
+    sql: '"USER_ID"'
+    format: ID
+
+  event_type:
+    sql: '"EVENT_TYPE"'
+
+  city:
+    sql: '"CITY"'
+
+  device_type:
+    sql: '"DEVICE_TYPE"'
+
+  browser:
+    sql: '"BROWSER"'
+
+  os:
+    sql: '"OS"'
+
+  event_name:
+    sql: '"EVENT_NAME"'
+
+  event_timestamp:
+    sql: '"EVENT_TIMESTAMP"'
+
+  event_date:
+    sql: '"EVENT_DATE"'
+
+  session_id:
+    sql: '"SESSION_ID"'
+    format: ID
+
+  screen_resolution:
+    sql: '"SCREEN_RESOLUTION"'
+
+  referrer:
+    sql: '"REFERRER"'
+
+  utm_source:
+    sql: '"UTM_SOURCE"'
+
+  utm_medium:
+    sql: '"UTM_MEDIUM"'
+
+  user_agent:
+    sql: '"USER_AGENT"'
+
+  ip_address:
+    sql: '"IP_ADDRESS"'
+
+  country:
+    sql: '"COUNTRY"'
+
+  region:
+    sql: '"REGION"'
+
+measures:
+  count:
+    aggregate_type: count

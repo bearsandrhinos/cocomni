@@ -1,0 +1,27 @@
+# Reference this view as saas__benchmark_metric
+schema: SAAS
+table_name: BENCHMARK_METRIC
+
+dimensions:
+  metric_id:
+    sql: '"METRIC_ID"'
+    format: ID
+
+  name:
+    sql: '"NAME"'
+
+  category:
+    sql: '"CATEGORY"'
+
+  denominator_type:
+    sql: '"DENOMINATOR_TYPE"'
+
+  higher_is_better:
+    sql: '"HIGHER_IS_BETTER"'
+
+  format:
+    sql: '"FORMAT"'
+
+measures:
+  count:
+    aggregate_type: count
