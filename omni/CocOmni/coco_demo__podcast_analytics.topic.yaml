@@ -27,7 +27,22 @@ views:
 
       genre:
         sql: '"GENRE"'
-        description: Primary genre category such as Comedy, News, or Technology
+        description: Primary genre category such as Comedy, News, or Technology. This is
+          a cool description
+        sample_values:
+          [
+            Business,
+            Comedy,
+            Education,
+            Entertainment,
+            Health,
+            History,
+            Lifestyle,
+            Music,
+            News,
+            Politics
+          ]
+        synonyms: [ Category, Podcast Type, Content Genre ]
 
       host_name:
         sql: '"HOST_NAME"'
@@ -88,6 +103,11 @@ views:
       total_subscribers:
         sql: SUM(${coco_demo__podcast_analytics__podcasts.subscriber_count})
         description: Total subscriber count across all podcasts
+
+      rating_max:
+        sql: ${coco_demo__podcast_analytics__podcasts.rating}
+        description: "(Max) Rating: Average user rating on a scale of 0 to 5"
+        aggregate_type: max
 
   coco_demo__podcast_analytics__streams:
     label: Streams
@@ -266,3 +286,5 @@ relationships:
     on_sql: ${coco_demo__podcast_analytics__streams.user_id} =
       ${coco_demo__podcast_analytics__users.id}
     relationship_type: many_to_one
+
+ai_context: This is a topic on podcast analytics.
