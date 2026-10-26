@@ -242,10 +242,14 @@ views:
         description: Average age of registered users
 
       id_count_distinct:
-        sql: COUNT(DISTINCT CASE WHEN ${coco_demo__podcast_analytics__users.state} =
-          'California' THEN ${coco_demo__podcast_analytics__users.id} ELSE NULL
-          END)
+        sql: ${coco_demo__podcast_analytics__users.id}
+        label: ID Count Distinct california
+        format: NUMBER_0
         description: "(Count Distinct) ID: Unique user identifier"
+        aggregate_type: count_distinct
+        filters:
+          state:
+            is: California
 
       total_users:
         sql: COUNT(${coco_demo__podcast_analytics__users.id})
