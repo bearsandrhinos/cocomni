@@ -32,6 +32,7 @@ views:
       host_name:
         sql: '"HOST_NAME"'
         description: Name of the podcast host
+        synonyms: [ Host, Presenter, Podcast Creator ]
 
       is_explicit:
         sql: '"IS_EXPLICIT"'
