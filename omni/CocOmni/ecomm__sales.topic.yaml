@@ -237,12 +237,6 @@ views:
           analysis and basket composition insights.
         synonyms: [ aov, average order value, average transaction, avg price, mean price ]
 
-      avg_margin:
-        sql: AVG(${ecomm__sales__order_items.margin})
-        description: Average profit margin per item sold, useful for product-level
-          profitability analysis.
-        synonyms: [ average profit per item, mean margin ]
-
       avg_time_to_ship:
         sql: AVG(${ecomm__sales__order_items.time_to_ship})
         description: Average number of days to ship orders, a critical operational KPI
@@ -255,24 +249,6 @@ views:
         description: Average number of items per order, a key metric for basket analysis
           and cross-sell effectiveness.
         synonyms: [ basket size, items per basket, order size, units per transaction ]
-
-      max_sales:
-        sql: MAX(${ecomm__sales__order_items.sale_price})
-        description: The highest individual sale price in the dataset, useful for
-          identifying premium purchases and outliers.
-        synonyms: [ highest sale, largest order, max transaction, peak sale ]
-
-      max_time_to_ship:
-        sql: MAX(${ecomm__sales__order_items.time_to_ship})
-        description: Maximum shipping time observed, useful for identifying fulfillment
-          bottlenecks.
-        synonyms: [ longest ship time, max fulfillment delay ]
-
-      min_sale_price:
-        sql: MIN(${ecomm__sales__order_items.sale_price})
-        description: The lowest sale price, useful for identifying deep discounts or
-          promotional pricing.
-        synonyms: [ floor price, lowest sale, minimum price ]
 
       orders_per_customer:
         sql: COUNT(DISTINCT ${ecomm__sales__order_items.order_id}) * 1.0 /
@@ -313,12 +289,6 @@ views:
         sql: COUNT(${ecomm__sales__order_items.id})
         description: Total number of individual items sold across all orders.
         synonyms: [ item count, quantity sold, units sold, volume ]
-
-      total_margin:
-        sql: SUM(${ecomm__sales__order_items.margin})
-        description: Sum of individual item margins, providing an alternative profit
-          calculation from pre-computed margin values.
-        synonyms: [ aggregate profit, sum of margins, total item profit ]
 
       total_orders:
         sql: COUNT(DISTINCT ${ecomm__sales__order_items.order_id})
