@@ -1,0 +1,93 @@
+# Reference this view as coco_demo__nba_play_by_play
+schema: COCO_DEMO
+table_name: NBA_PLAY_BY_PLAY
+
+dimensions:
+  game_id:
+    sql: '"GAME_ID"'
+    format: ID
+
+  action_number:
+    sql: '"ACTION_NUMBER"'
+
+  clock:
+    sql: '"CLOCK"'
+
+  period:
+    sql: '"PERIOD"'
+
+  team_id:
+    sql: '"TEAM_ID"'
+    format: ID
+
+  team_tricode:
+    sql: '"TEAM_TRICODE"'
+
+  person_id:
+    sql: '"PERSON_ID"'
+    format: ID
+
+  player_name:
+    sql: '"PLAYER_NAME"'
+
+  player_name_i:
+    sql: '"PLAYER_NAME_I"'
+
+  x_legacy:
+    sql: '"X_LEGACY"'
+
+  y_legacy:
+    sql: '"Y_LEGACY"'
+
+  shot_distance:
+    sql: '"SHOT_DISTANCE"'
+
+  shot_result:
+    sql: '"SHOT_RESULT"'
+
+  is_field_goal:
+    sql: '"IS_FIELD_GOAL"'
+
+  score_home:
+    sql: '"SCORE_HOME"'
+
+  score_away:
+    sql: '"SCORE_AWAY"'
+
+  points_total:
+    sql: '"POINTS_TOTAL"'
+
+  location:
+    sql: '"LOCATION"'
+
+  description:
+    sql: '"DESCRIPTION"'
+
+  action_type:
+    sql: '"ACTION_TYPE"'
+
+  sub_type:
+    sql: '"SUB_TYPE"'
+
+  video_available:
+    sql: '"VIDEO_AVAILABLE"'
+
+  shot_value:
+    sql: '"SHOT_VALUE"'
+
+  action_id:
+    sql: '"ACTION_ID"'
+    format: ID
+
+  season:
+    sql: '"SEASON"'
+
+  season_type:
+    sql: '"SEASON_TYPE"'
+
+  extracted_at:
+    sql: '"EXTRACTED_AT"'
+
+measures:
+  count:
+    aggregate_type: count

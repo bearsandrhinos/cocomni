@@ -12,9 +12,6 @@ dimensions:
   total_sale_price:
     sql: '"TOTAL_SALE_PRICE"'
 
-  mom_change:
-    sql: '"MOM_CHANGE"'
-
 measures:
   count:
     aggregate_type: count

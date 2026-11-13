@@ -1,0 +1,213 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.COCO_DEMO.SITE_SERVICES
+semantic_view: ANALYTICS_PROD.COCO_DEMO.SITE_SERVICES
+label: Site Services
+description: "Site services analytics: rental assets, customer sites, asset
+  placements, service orders, and service routes."
+
+views:
+  coco_demo__site_services__uss_assets:
+    label: Uss Assets
+
+    schema: COCO_DEMO
+    table_name: USS_ASSETS
+
+    dimensions:
+      asset_id:
+        sql: '"ASSET_ID"'
+        primary_key: true
+
+      home_branch_id:
+        sql: '"HOME_BRANCH_ID"'
+
+      product_type:
+        sql: '"PRODUCT_TYPE"'
+
+      purchase_date:
+        sql: '"PURCHASE_DATE"'
+
+      status:
+        sql: '"STATUS"'
+
+    measures:
+      asset_count:
+        sql: COUNT(DISTINCT ${coco_demo__site_services__uss_assets.asset_id})
+        description: Number of distinct assets
+
+  coco_demo__site_services__uss_placements:
+    label: Uss Placements
+
+    schema: COCO_DEMO
+    table_name: USS_PLACEMENTS
+
+    dimensions:
+      asset_id:
+        sql: '"ASSET_ID"'
+
+      delivery_date:
+        sql: '"DELIVERY_DATE"'
+
+      pickup_date:
+        sql: '"PICKUP_DATE"'
+
+      placement_id:
+        sql: '"PLACEMENT_ID"'
+        primary_key: true
+
+      site_id:
+        sql: '"SITE_ID"'
+
+      days_on_rent:
+        sql: '"DAYS_ON_RENT"'
+
+    measures:
+      avg_days_on_rent:
+        sql: AVG(${coco_demo__site_services__uss_placements.days_on_rent})
+
+      placement_count:
+        sql: COUNT(${coco_demo__site_services__uss_placements.placement_id})
+
+      total_days_on_rent:
+        sql: SUM(${coco_demo__site_services__uss_placements.days_on_rent})
+
+  coco_demo__site_services__uss_routes:
+    label: Uss Routes
+
+    schema: COCO_DEMO
+    table_name: USS_ROUTES
+
+    dimensions:
+      branch_id:
+        sql: '"BRANCH_ID"'
+
+      driver_id:
+        sql: '"DRIVER_ID"'
+
+      route_date:
+        sql: '"ROUTE_DATE"'
+
+      route_id:
+        sql: '"ROUTE_ID"'
+        primary_key: true
+
+      planned_stops:
+        sql: '"PLANNED_STOPS"'
+
+    measures:
+      route_count:
+        sql: COUNT(${coco_demo__site_services__uss_routes.route_id})
+
+      total_planned_stops:
+        sql: SUM(${coco_demo__site_services__uss_routes.planned_stops})
+
+  coco_demo__site_services__uss_service_orders:
+    label: Uss Service Orders
+
+    schema: COCO_DEMO
+    table_name: USS_SERVICE_ORDERS
+
+    dimensions:
+      asset_id:
+        sql: '"ASSET_ID"'
+
+      completed_date:
+        sql: '"COMPLETED_DATE"'
+
+      route_id:
+        sql: '"ROUTE_ID"'
+
+      scheduled_date:
+        sql: '"SCHEDULED_DATE"'
+
+      service_order_id:
+        sql: '"SERVICE_ORDER_ID"'
+        primary_key: true
+
+      service_type:
+        sql: '"SERVICE_TYPE"'
+
+      site_id:
+        sql: '"SITE_ID"'
+
+      status:
+        sql: '"STATUS"'
+
+    measures:
+      avg_days_to_complete:
+        sql: AVG(DATEDIFF(DAY,
+          ${coco_demo__site_services__uss_service_orders.scheduled_date},
+          ${coco_demo__site_services__uss_service_orders.completed_date}))
+        description: Average days from scheduled to completed
+
+      completed_service_order_count:
+        sql: COUNT_IF(${coco_demo__site_services__uss_service_orders.completed_date} IS
+          NOT NULL)
+
+      service_order_count:
+        sql: COUNT(${coco_demo__site_services__uss_service_orders.service_order_id})
+
+  coco_demo__site_services__uss_sites:
+    label: Uss Sites
+
+    schema: COCO_DEMO
+    table_name: USS_SITES
+
+    dimensions:
+      branch_id:
+        sql: '"BRANCH_ID"'
+
+      city:
+        sql: '"CITY"'
+
+      customer_id:
+        sql: '"CUSTOMER_ID"'
+
+      industry_segment:
+        sql: '"INDUSTRY_SEGMENT"'
+
+      site_id:
+        sql: '"SITE_ID"'
+        primary_key: true
+
+      state:
+        sql: '"STATE"'
+
+    measures:
+      site_count:
+        sql: COUNT(DISTINCT ${coco_demo__site_services__uss_sites.site_id})
+        description: Number of distinct customer sites
+
+relationships:
+  - join_from_view: coco_demo__site_services__uss_placements
+    join_to_view: coco_demo__site_services__uss_assets
+    join_type: always_left
+    on_sql: ${coco_demo__site_services__uss_placements.asset_id} =
+      ${coco_demo__site_services__uss_assets.asset_id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__site_services__uss_placements
+    join_to_view: coco_demo__site_services__uss_sites
+    join_type: always_left
+    on_sql: ${coco_demo__site_services__uss_placements.site_id} =
+      ${coco_demo__site_services__uss_sites.site_id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__site_services__uss_service_orders
+    join_to_view: coco_demo__site_services__uss_assets
+    join_type: always_left
+    on_sql: ${coco_demo__site_services__uss_service_orders.asset_id} =
+      ${coco_demo__site_services__uss_assets.asset_id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__site_services__uss_service_orders
+    join_to_view: coco_demo__site_services__uss_routes
+    join_type: always_left
+    on_sql: ${coco_demo__site_services__uss_service_orders.route_id} =
+      ${coco_demo__site_services__uss_routes.route_id}
+    relationship_type: many_to_one
+
+  - join_from_view: coco_demo__site_services__uss_service_orders
+    join_to_view: coco_demo__site_services__uss_sites
+    join_type: always_left
+    on_sql: ${coco_demo__site_services__uss_service_orders.site_id} =
+      ${coco_demo__site_services__uss_sites.site_id}
+    relationship_type: many_to_one

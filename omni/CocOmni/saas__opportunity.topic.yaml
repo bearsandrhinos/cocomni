@@ -1,0 +1,595 @@
+# Topic is generated from the semantic view ANALYTICS_PROD.SAAS.OPPORTUNITY
+semantic_view: ANALYTICS_PROD.SAAS.OPPORTUNITY
+label: Opportunity
+description: Sales pipeline and revenue data from Salesforce (converted from the
+  Omni Opportunity topic in My New Model). Enables pipeline management, revenue
+  forecasting, sales performance tracking, win/loss analysis, and sales cycle
+  analysis.
+
+views:
+  saas__opportunity__account:
+    label: Account
+    description: Companies that are prospects or customers. Parent of contacts and
+      opportunities.
+
+    schema: SAAS
+    table_name: ACCOUNT
+
+    dimensions:
+      annual_revenue:
+        sql: '"ANNUAL_REVENUE"'
+        description: Annual operating revenue of the account
+        synonyms: [ company_revenue ]
+
+      number_of_employees:
+        sql: '"NUMBER_OF_EMPLOYEES"'
+        description: Total employee count at the account
+
+      billing_city:
+        sql: '"BILLING_CITY"'
+        description: Account billing city
+        synonyms: [ city ]
+
+      billing_country:
+        sql: '"BILLING_COUNTRY"'
+        description: Account billing country
+        synonyms: [ country ]
+
+      billing_state:
+        sql: '"BILLING_STATE"'
+        description: Account billing state
+        synonyms: [ state ]
+
+      billing_street:
+        sql: '"BILLING_STREET"'
+        description: Account billing street
+
+      billing_zip:
+        sql: '"BILLING_ZIP"'
+        description: Account billing zip code
+        synonyms: [ zip_code, postal_code ]
+
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: SFDC account created date
+        synonyms: [ account_created_date ]
+
+      csm_id:
+        sql: '"CSM_ID"'
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for an account
+        primary_key: true
+
+      industry:
+        sql: '"INDUSTRY"'
+        description: Industry vertical
+        synonyms: [ industry_vertical, sector ]
+
+      name:
+        sql: '"NAME"'
+        description: Account company name
+        synonyms: [ company_name, account_name, organization_name ]
+
+      owner_id:
+        sql: '"OWNER_ID"'
+        description: Unique identifier for the account owner
+        synonyms: [ account_owner_id ]
+
+      region:
+        sql: '"REGION"'
+        description: Sales region
+        synonyms: [ sales_region, territory_region ]
+
+      segment:
+        sql: '"SEGMENT"'
+        description: SMB (<500 employees), Mid-Market (500-5000), Enterprise (5000+)
+        synonyms: [ account_segment, customer_segment ]
+
+      type:
+        sql: '"TYPE"'
+        description: Prospect or Customer
+        synonyms: [ account_type, customer_type ]
+
+    measures:
+      account_count:
+        sql: COUNT(${saas__opportunity__account.id})
+        description: Count of accounts
+        synonyms: [ total_accounts, number_of_accounts ]
+
+      customer_count:
+        sql: COUNT(CASE WHEN ${saas__opportunity__account.type} = 'Customer' THEN
+          ${saas__opportunity__account.id} ELSE NULL END)
+        description: Count of accounts that are customers
+        synonyms: [ customers, total_customers ]
+
+  saas__opportunity__contacts:
+    label: Contacts
+    description: People who work at accounts; primary contact on opportunities.
+
+    schema: SAAS
+    table_name: CONTACTS
+
+    dimensions:
+      account_id:
+        sql: '"ACCOUNT_ID"'
+        description: Account identifier for each contact
+
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: The date the contact record was created
+
+      email:
+        sql: '"EMAIL"'
+        description: Company email address of the contact
+        synonyms: [ contact_email ]
+
+      first_name:
+        sql: '"FIRST_NAME"'
+        description: Contact first name
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each contact
+        primary_key: true
+
+      last_name:
+        sql: '"LAST_NAME"'
+        description: Contact last name
+
+      phone:
+        sql: '"PHONE"'
+        description: Phone number of the contact
+        synonyms: [ contact_phone ]
+
+      title:
+        sql: '"TITLE"'
+        description: Job title. CEO/VP/CTO/Director typically decision-makers.
+        synonyms: [ job_title, contact_title ]
+
+    measures:
+      contact_count:
+        sql: COUNT(${saas__opportunity__contacts.id})
+        description: Count of contacts
+        synonyms: [ total_contacts ]
+
+  saas__opportunity__opportunities:
+    label: Opportunities
+    description: Core sales pipeline table. Each row is a sales deal (New Business,
+      Expansion, or Renewal) moving through stages Pre-Qualified → Qualified →
+      Trial → Trial Positive → Negotiate → Closed Won/Lost.
+
+    schema: SAAS
+    table_name: OPPORTUNITIES
+
+    dimensions:
+      acv:
+        sql: '"ACV"'
+
+      amount:
+        sql: '"AMOUNT"'
+        description: Contract amount for the opportunity
+        synonyms: [ deal_amount, opportunity_amount, contract_value ]
+
+      arr:
+        sql: '"ARR"'
+
+      contract_term_months:
+        sql: '"CONTRACT_TERM_MONTHS"'
+        description: Length in months of the contract
+
+      probability:
+        sql: '"PROBABILITY"'
+        description: Win probability percentage (0-100)
+
+      risk_score:
+        sql: '"RISK_SCORE"'
+        description: Risk level to close, 1-100 (100 is locked, 1 is highly risky)
+
+      tcv:
+        sql: '"TCV"'
+
+      account_id:
+        sql: '"ACCOUNT_ID"'
+        description: Unique identifier for an account
+
+      ae_notes:
+        sql: '"AE_NOTES"'
+
+      close_date:
+        sql: '"CLOSE_DATE"'
+        description: Forecasted or actual close date. Use for revenue timing.
+        synonyms: [ expected_close_date, forecast_close_date ]
+
+      competitor:
+        sql: '"COMPETITOR"'
+        description: Direct competitor in the deal or tool they would be migrating from
+
+      contact_id:
+        sql: '"CONTACT_ID"'
+        description: Identifier for main point of contact at the account
+
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: Date the opportunity was created
+
+      first_demo_date:
+        sql: '"FIRST_DEMO_DATE"'
+        description: Date of the first demo
+
+      forecast_category:
+        sql: '"FORECAST_CATEGORY"'
+        description: Forecast classification. Commit and Forecast are more likely to close.
+        synonyms: [ forecast, sales_forecast_category ]
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for the opportunity (Salesforce record id)
+        primary_key: true
+
+      identified_pain:
+        sql: '"IDENTIFIED_PAIN"'
+
+      last_stage_change_date:
+        sql: '"LAST_STAGE_CHANGE_DATE"'
+        description: Date of last change in opportunity stage
+
+      lead_source:
+        sql: '"LEAD_SOURCE"'
+        description: Channel the opportunity was generated from. Inbound = customer
+          reached out, Outbound = we reached out, Referral = referred by a
+          customer, Organic = search/organic.
+
+      loss_reason:
+        sql: '"LOSS_REASON"'
+        description: Reason for opportunity not winning
+
+      name:
+        sql: '"NAME"'
+        description: Opportunity name. Account name + opportunity type
+        synonyms: [ opportunity_name, deal_name ]
+
+      next_steps:
+        sql: '"NEXT_STEPS"'
+        description: Action items for moving the deal forward
+
+      owner_id:
+        sql: '"OWNER_ID"'
+        description: ID of account executive who currently owns the opportunity
+        synonyms: [ sales_rep_id, opportunity_owner_id ]
+
+      risk_details:
+        sql: '"RISK_DETAILS"'
+
+      risk_flags:
+        sql: '"RISK_FLAGS"'
+        description: Identified risks from the AE
+
+      sales_engineer_id:
+        sql: '"SALES_ENGINEER_ID"'
+        description: ID of sales engineer assigned
+        synonyms: [ se_id, sales_engineer ]
+
+      stage_name:
+        sql: '"STAGE_NAME"'
+        description: Current pipeline stage. Values - Pre-Qualified, Qualified, Trial,
+          Trial Positive, Negotiate, Closed Won, Closed Lost. Early stage =
+          Pre-Qualified/Qualified; late stage = Trial Positive/Negotiate.
+        synonyms: [ stage, pipeline_stage, opportunity_gate ]
+
+      status:
+        sql: CASE WHEN ${saas__opportunity__opportunities.stage_name} IN ('Negotiate',
+          'Pre-Qualified', 'Qualified', 'Trial', 'Trial Positive') THEN 'Open
+          Pipeline' WHEN ${saas__opportunity__opportunities.stage_name} IN
+          ('Closed Won', 'Closed Lost') THEN 'Closed' ELSE 'Other' END
+        description: Status of opportunity in current pipeline (Open Pipeline, Closed,
+          Other)
+
+      trial_start_date:
+        sql: '"TRIAL_START_DATE"'
+        description: Date of the trial start day
+
+      type:
+        sql: '"TYPE"'
+        description: Opportunity type - New Business (first-time customers), Expansion
+          (existing customers buying more), Renewal.
+        synonyms: [ opportunity_type, deal_type, business_type ]
+
+      win_reason:
+        sql: '"WIN_REASON"'
+        description: The win reason defined by the AE in Salesforce
+
+    measures:
+      amount_average:
+        sql: AVG(${saas__opportunity__opportunities.amount})
+        description: Average ARR per opportunity
+        synonyms: [ average_arr, avg_arr, average_deal_size, avg_deal_value ]
+
+      amount_sum:
+        sql: COALESCE(SUM(${saas__opportunity__opportunities.amount}), 0)
+        description: Total ARR across all opportunities. Use for total sales / revenue.
+        synonyms: [ total_arr, total_revenue, sum_amount, total_deal_value ]
+
+      amount_sum_pipeline:
+        sql: COALESCE(SUM(CASE WHEN ${saas__opportunity__opportunities.stage_name} IN
+          ('Pre-Qualified', 'Qualified', 'Trial', 'Trial Positive', 'Negotiate')
+          THEN ${saas__opportunity__opportunities.amount} ELSE NULL END), 0)
+        description: Total pipeline value for open opportunities
+        synonyms: [ total_pipeline, pipeline_value, open_pipeline, pipeline_arr ]
+
+      amount_sum_won:
+        sql: COALESCE(SUM(CASE WHEN "IS_WON" = TRUE THEN
+          ${saas__opportunity__opportunities.amount} ELSE NULL END), 0)
+        description: Total ARR from won opportunities
+        synonyms: [ total_won_arr, won_revenue, won_arr, closed_won_revenue ]
+
+      opportunity_count:
+        sql: COUNT(${saas__opportunity__opportunities.id})
+        description: Count of opportunities
+        synonyms: [ total_opportunities, number_of_opportunities, deal_count ]
+
+      pipeline_count:
+        sql: COUNT(CASE WHEN ${saas__opportunity__opportunities.stage_name} IN
+          ('Pre-Qualified', 'Qualified', 'Trial', 'Trial Positive', 'Negotiate')
+          THEN ${saas__opportunity__opportunities.id} ELSE NULL END)
+        description: Count of opportunities in open pipeline stages
+        synonyms: [ pipeline_opportunities, open_deals_count ]
+
+      weighted_pipeline_amount:
+        sql: COALESCE(SUM(${saas__opportunity__opportunities.amount} *
+          ${saas__opportunity__opportunities.probability} / 100), 0)
+        description: Weighted pipeline - sum of opportunity amount multiplied by win
+          probability (probability is 0-100). Filter to open stages for open
+          weighted pipeline.
+        synonyms: [ weighted_pipeline, weighted_arr, expected_pipeline_value ]
+
+      won_opps_count:
+        sql: COUNT(CASE WHEN ${saas__opportunity__opportunities.stage_name} = 'Closed
+          Won' THEN ${saas__opportunity__opportunities.id} ELSE NULL END)
+        description: Count of won opportunities
+        synonyms: [ won_deals, closed_won_count, deals_won ]
+
+  saas__opportunity__opportunity_line_items:
+    label: Opportunity Line Items
+    description: Product-level breakdown of each opportunity.
+
+    schema: SAAS
+    table_name: OPPORTUNITY_LINE_ITEMS
+
+    dimensions:
+      acv:
+        sql: '"ACV"'
+
+      arr:
+        sql: '"ARR"'
+
+      contract_term_months:
+        sql: '"CONTRACT_TERM_MONTHS"'
+
+      list_price:
+        sql: '"LIST_PRICE"'
+        description: Standard list price per unit
+        synonyms: [ standard_price ]
+
+      quantity:
+        sql: '"QUANTITY"'
+        description: Number of units for this product
+        synonyms: [ units ]
+
+      sale_price:
+        sql: '"SALE_PRICE"'
+        description: Actual sale price per unit after discounts
+        synonyms: [ negotiated_price ]
+
+      tcv:
+        sql: '"TCV"'
+
+      total_price:
+        sql: '"TOTAL_PRICE"'
+        description: Total price for this line item (quantity * sale_price)
+        synonyms: [ line_item_total ]
+
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: Date when the line item was added to the opportunity
+
+      description:
+        sql: '"DESCRIPTION"'
+        description: Additional description or notes for the line item
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each opportunity line item
+        primary_key: true
+
+      opportunity_id:
+        sql: '"OPPORTUNITY_ID"'
+        description: Foreign key to the parent opportunity
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+        description: Foreign key to the product catalog
+
+      service_date:
+        sql: '"SERVICE_DATE"'
+        description: Expected delivery or service date
+        synonyms: [ delivery_date, subscription_start_date ]
+
+    measures:
+      line_item_count:
+        sql: COUNT(${saas__opportunity__opportunity_line_items.id})
+        description: Count of opportunity line items
+        synonyms: [ total_line_items ]
+
+  saas__opportunity__product:
+    label: Product
+    description: Master product catalog.
+
+    schema: SAAS
+    table_name: PRODUCT
+
+    dimensions:
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: Date when the product was added to the catalog
+
+      family:
+        sql: '"FAMILY"'
+        description: Product family or category grouping
+        synonyms: [ product_family, product_category ]
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each product
+        primary_key: true
+
+      name:
+        sql: '"NAME"'
+        description: Product name
+        synonyms: [ product_name ]
+
+      product_code:
+        sql: '"PRODUCT_CODE"'
+        description: Internal product code or SKU
+        synonyms: [ sku ]
+
+    measures:
+      product_count:
+        sql: COUNT(${saas__opportunity__product.id})
+        description: Count of products
+        synonyms: [ total_products ]
+
+  saas__opportunity__users:
+    label: Users
+    description: Internal employees (account executives, sales engineers, CSMs).
+      Joined as the account owner.
+
+    schema: SAAS
+    table_name: USER
+
+    dimensions:
+      quota_2024:
+        sql: '"QUOTA_2024"'
+
+      quota_2025:
+        sql: '"QUOTA_2025"'
+
+      quota_2026:
+        sql: '"QUOTA_2026"'
+
+      quota_attainment_pct:
+        sql: '"QUOTA_ATTAINMENT_PCT"'
+
+      quota_target:
+        sql: '"QUOTA_TARGET"'
+
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: Date employee started
+        synonyms: [ start_date, hire_date ]
+
+      email:
+        sql: '"EMAIL"'
+        description: Employee email address
+        synonyms: [ employee_email ]
+
+      first_name:
+        sql: '"FIRST_NAME"'
+        description: First name of the employee
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier of the employee
+        primary_key: true
+
+      last_name:
+        sql: '"LAST_NAME"'
+        description: Last name of the employee
+
+      manager_id:
+        sql: '"MANAGER_ID"'
+
+      name:
+        sql: ${saas__opportunity__users.first_name} || ' ' ||
+          ${saas__opportunity__users.last_name}
+        description: Full name of the employee. Use for sales rep questions; use
+          contains when given only a first name.
+        synonyms: [ sales_rep, rep_name, account_owner_name ]
+
+      performance_tier:
+        sql: '"PERFORMANCE_TIER"'
+
+      ramp_end_date:
+        sql: '"RAMP_END_DATE"'
+
+      region:
+        sql: '"REGION"'
+        description: Region the employee covers
+
+      role:
+        sql: '"ROLE"'
+        description: Job role (Account Executive, Sales Engineer, Customer Success
+          Manager, Support Rep)
+        synonyms: [ job_role, employee_role ]
+
+      segment:
+        sql: '"SEGMENT"'
+        description: Account segment the employee covers
+
+      se_id:
+        sql: '"SE_ID"'
+
+    measures:
+      user_count:
+        sql: COUNT(${saas__opportunity__users.id})
+        description: Count of users (employees)
+        synonyms: [ total_users, employee_count ]
+
+relationships:
+  - join_from_view: saas__opportunity__account
+    join_to_view: saas__opportunity__users
+    join_type: always_left
+    on_sql: ${saas__opportunity__account.owner_id} = ${saas__opportunity__users.id}
+    relationship_type: many_to_one
+
+  - join_from_view: saas__opportunity__opportunities
+    join_to_view: saas__opportunity__account
+    join_type: always_left
+    on_sql: ${saas__opportunity__opportunities.account_id} =
+      ${saas__opportunity__account.id}
+    relationship_type: many_to_one
+
+  - join_from_view: saas__opportunity__opportunities
+    join_to_view: saas__opportunity__contacts
+    join_type: always_left
+    on_sql: ${saas__opportunity__opportunities.contact_id} =
+      ${saas__opportunity__contacts.id}
+    relationship_type: many_to_one
+
+  - join_from_view: saas__opportunity__opportunity_line_items
+    join_to_view: saas__opportunity__opportunities
+    join_type: always_left
+    on_sql: ${saas__opportunity__opportunity_line_items.opportunity_id} =
+      ${saas__opportunity__opportunities.id}
+    relationship_type: many_to_one
+
+  - join_from_view: saas__opportunity__opportunity_line_items
+    join_to_view: saas__opportunity__product
+    join_type: always_left
+    on_sql: ${saas__opportunity__opportunity_line_items.product_id} =
+      ${saas__opportunity__product.id}
+    relationship_type: many_to_one
+
+ai_context: |-
+  Use these instructions for question categorization: You are an expert data analyst analyzing Salesforce opportunity data. Stages: Pre-Qualified → Qualified → Trial → Trial Positive → Negotiate → Closed Won/Lost. Types: New Business, Expansion, Renewal. We report on a Fiscal Year that starts February 1st.
+  - Total sales or revenue: use opportunities.amount_sum.
+  - Sales reps: use users.name (never return an ID unless asked). If only given a first name, use a contains filter.
+  - Lost deals: stage_name = Closed Lost and status = Closed. Won deals: stage_name = Closed Won and status = Closed.
+  - Pipeline: open new opportunities (status = Open Pipeline, type = New Business), i.e. all stages that are not Closed Won or Closed Lost.
+  - Active trials: stage_name in (Trial, Trial Positive). Early stage: (Pre-Qualified, Qualified). Late stage: (Trial Positive, Negotiate).
+  - New business: type = New Business. Expansion/upsell: type = Expansion. Renewals: type = Renewal.
+  - Competitors: competitor. Loss reasons: loss_reason. Lead sources: lead_source.
+  - Use close_date for revenue timing and sales cycle analysis; probability for weighted pipeline; forecast_category for forecasting (Commit and Forecast more likely to close).
+  - Risk questions: show competitor, days since last_stage_change_date, risk_flags, risk_score and other risk indicators.
+  - Put dimensions first in result columns, then measures.

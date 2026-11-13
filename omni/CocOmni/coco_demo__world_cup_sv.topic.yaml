@@ -15,7 +15,7 @@ views:
     table_name: WC_FIXTURES
 
     dimensions:
-      away_team:
+      away_team_name:
         sql: '"AWAY_TEAM"'
         description: Name of the away team
 
