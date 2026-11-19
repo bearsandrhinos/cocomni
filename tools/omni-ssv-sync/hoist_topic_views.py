@@ -1,4 +1,5 @@
 """Hoist topic-scoped views into the views/ + relationships.yaml layout ossie-omni reads."""
+import re
 import sys
 from pathlib import Path
 import yaml
@@ -35,6 +36,71 @@ def condition(view, field, spec, where):
     return " AND ".join(parts)
 
 
+def parse_selector(sel):
+    """Return (tier, exclude, args) for one Omni topic `fields` selector.
+
+    Tiers follow Omni's order of operations: 1 all_views.*, 2 view.*, 3 tag:x, 4 view:tag:x, 5 view.field.
+    """
+    sel = str(sel).strip()
+    exclude = sel.startswith("-")
+    body = sel[1:].strip() if exclude else sel
+    if body == "all_views.*":
+        return 1, exclude, ()
+    m = re.fullmatch(r"(\w+)\.\*", body)
+    if m:
+        return 2, exclude, (m.group(1),)
+    m = re.fullmatch(r"tag:(.+)", body)
+    if m:
+        return 3, exclude, (m.group(1),)
+    m = re.fullmatch(r"(\w+):tag:(.+)", body)
+    if m:
+        return 4, exclude, (m.group(1), m.group(2))
+    m = re.fullmatch(r"(\w+)\.(\w+)", body)
+    if m:
+        return 5, exclude, (m.group(1), m.group(2))
+    raise SystemExit(f"topic fields: unsupported selector '{sel}'")
+
+
+def apply_topic_fields(views, selectors):
+    """Evaluate a topic's `fields:` list; returns {view: [excluded field names]}."""
+    universe = {}  # (view, field) -> (kind, tags)
+    view_tags = {}
+    for vname, view in views.items():
+        view_tags[vname] = set(view.get("tags") or [])
+        for kind in ("dimensions", "measures"):
+            for fname, f in (view.get(kind) or {}).items():
+                universe[(vname, fname)] = (kind, set((f or {}).get("tags") or []))
+
+    def matches(tier, args):
+        if tier == 1:
+            return set(universe)
+        if tier == 2:
+            return {k for k in universe if k[0] == args[0]}
+        if tier == 3:
+            return {k for k, (_, tags) in universe.items() if args[0] in tags or args[0] in view_tags[k[0]]}
+        if tier == 4:
+            return {k for k, (_, tags) in universe.items() if k[0] == args[0] and args[1] in tags}
+        return {k for k in universe if k == (args[0], args[1])}
+
+    parsed = [parse_selector(sel) for sel in selectors]
+    selected = set()
+    for tier in range(1, 6):
+        for t, exclude, args in parsed:
+            if t == tier:
+                selected = selected - matches(t, args) if exclude else selected | matches(t, args)
+
+    excluded = {}
+    for (vname, fname), (kind, _) in universe.items():
+        if (vname, fname) in selected:
+            continue
+        excluded.setdefault(vname, []).append(fname)
+        field = views[vname][kind][fname] or {}
+        # A primary key dimension stays in the converter input so keys and joins still resolve.
+        if not field.get("primary_key"):
+            del views[vname][kind][fname]
+    return excluded
+
+
 def inline_measure_filters(views):
     """Ossie has no measure filters, so rewrite filtered measures as CASE WHEN raw-SQL measures."""
     for vname, view in views.items():
@@ -67,9 +133,10 @@ def hoist(topic_path, out_dir, extras_path=None):
     views = topic.pop("views", {})
     rels = topic.pop("relationships", [])
     inline_measure_filters(views)
+    excluded = apply_topic_fields(views, topic.pop("fields")) if topic.get("fields") else {}
 
     # Things the converters drop on the way to Snowflake travel in a sidecar instead.
-    extras = {"fields": {}}
+    extras = {"fields": {}, "excluded": excluded}
     if topic.get("ai_context"):
         extras["ai_context"] = str(topic.pop("ai_context")).strip()
     for vname, view in views.items():

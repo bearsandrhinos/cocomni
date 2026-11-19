@@ -102,7 +102,21 @@ class Merger:
             return col if ex_t is owner else f"{ex_t['name']}.{col}"
         return REF.sub(sub, str(expr))
 
+    def apply_exclusions(self):
+        """Remove fields the topic's `fields:` curation excludes from the existing file."""
+        for view, names in (self.extras.get("excluded") or {}).items():
+            ex_t = self.gen_to_ex.get(view)
+            if ex_t is None:
+                continue
+            for name in names:
+                for kind in FIELD_KINDS + ("metrics",):
+                    item = find_named(ex_t.get(kind), name)
+                    if item is not None:
+                        ex_t[kind].remove(item)
+                        self.note(f"{ex_t['name']}.{item['name']}: REMOVED, excluded by topic fields curation")
+
     def merge(self):
+        self.apply_exclusions()
         if self.gen.get("description") and self.gen["description"] != self.ex.get("description"):
             self.note("model: description updated")
             self.ex["description"] = self.gen["description"]
