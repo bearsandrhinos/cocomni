@@ -124,11 +124,24 @@ def inline_measure_filters(views):
 
 
 
-def hoist(topic_path, out_dir, extras_path=None):
+def field_names(topic):
+    """{view: {field names}} for the dimensions and measures a topic defines."""
+    return {v: set((body.get("dimensions") or {})) | set((body.get("measures") or {}))
+            for v, body in (topic.get("views") or {}).items()}
+
+
+def hoist(topic_path, out_dir, extras_path=None, previous_path=None):
     topic = yaml.safe_load(Path(topic_path).read_text())
     out = Path(out_dir)
     (out / "views").mkdir(parents=True, exist_ok=True)
     (out / "topics").mkdir(exist_ok=True)
+
+    removed = {}
+    if previous_path:
+        before = field_names(yaml.safe_load(Path(previous_path).read_text()) or {})
+        now = field_names(topic)
+        removed = {v: sorted(names - now.get(v, set())) for v, names in before.items()
+                   if v in now and names - now[v]}
 
     views = topic.pop("views", {})
     rels = topic.pop("relationships", [])
@@ -136,7 +149,7 @@ def hoist(topic_path, out_dir, extras_path=None):
     excluded = apply_topic_fields(views, topic.pop("fields")) if topic.get("fields") else {}
 
     # Things the converters drop on the way to Snowflake travel in a sidecar instead.
-    extras = {"fields": {}, "excluded": excluded}
+    extras = {"fields": {}, "excluded": excluded, "removed": removed}
     if topic.get("ai_context"):
         extras["ai_context"] = str(topic.pop("ai_context")).strip()
     for vname, view in views.items():
@@ -166,4 +179,5 @@ def hoist(topic_path, out_dir, extras_path=None):
 
 
 if __name__ == "__main__":
-    hoist(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
+    args = sys.argv[1:] + [None] * 4
+    hoist(args[0], args[1], args[2], args[3])

@@ -10,6 +10,8 @@ exist yet, are skipped and reported; a first-time file needs hand classification
 Writes a markdown report for the PR body. Exits non-zero if any conversion failed.
 """
 import argparse
+import os
+import tempfile
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +25,7 @@ def main():
     ap.add_argument("--ssv-dir", default="cortex_project")
     ap.add_argument("--report", required=True)
     ap.add_argument("--prune", action="store_true")
+    ap.add_argument("--before", help="git ref of the previous state; fields deleted from a topic since then are removed from the semantic view")
     ap.add_argument("files", nargs="*")
     args = ap.parse_args()
 
@@ -46,7 +49,18 @@ def main():
         cmd = [str(here / "run_chain.sh"), str(topic), str(target), str(target)]
         if args.prune:
             cmd.append("--prune")
-        proc = subprocess.run(cmd, capture_output=True, text=True)
+        env = dict(os.environ)
+        env.pop("PREVIOUS_TOPIC", None)
+        if args.before:
+            old = subprocess.run(["git", "show", f"{args.before}:{name}"], capture_output=True, text=True)
+            if old.returncode == 0:
+                prev = tempfile.NamedTemporaryFile("w", suffix=".topic", delete=False)
+                prev.write(old.stdout)
+                prev.close()
+                env["PREVIOUS_TOPIC"] = prev.name
+        proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        if "PREVIOUS_TOPIC" in env:
+            os.unlink(env["PREVIOUS_TOPIC"])
         if proc.returncode != 0:
             failed = True
             sections.append(f"### `{name}`\nFAILED\n```\n{proc.stderr.strip()}\n```")

@@ -74,10 +74,13 @@ jobs:
         env:
           OSSIE_CONVERTERS: ${{ github.workspace }}/.ossie-converters
           TOPIC_FILES: ${{ steps.changed.outputs.files }}
+          # Previous commit, so fields deleted in Omni are removed from the semantic view
+          BEFORE_SHA: ${{ github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000' && github.event.before || '' }}
         run: |
           # word-splitting of TOPIC_FILES is intended (space-separated paths)
           uv run tools/omni-ssv-sync/sync_topics.py \
             --ssv-root ssv --ssv-dir "$SSV_DIR" --report sync-report.md \
+            ${BEFORE_SHA:+--before "$BEFORE_SHA"} \
             $TOPIC_FILES
 
       - name: Open PR on the ssv repo
