@@ -11,6 +11,32 @@ views:
     table_name: INVENTORY_ITEMS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+        description: The wholesale cost paid to acquire this specific inventory item
+          from the supplier, used for calculating profit margins and cost of
+          goods sold (COGS).
+        synonyms: [ cogs, inventory cost, item cost, unit cost ]
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      product_distribution_center_id:
+        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
+        description: Identifier for the distribution center or warehouse where this
+          inventory item is stored and shipped from.
+        synonyms: [ dc id, fulfillment center, warehouse id ]
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+        description: The manufacturer suggested retail price (MSRP) for the product,
+          representing the recommended selling price before any discounts.
+        synonyms: [ list price, msrp, sticker price ]
+
       created_at:
         sql: '"CREATED_AT"'
         description: Timestamp when the inventory item was added to the system, useful
@@ -53,32 +79,6 @@ views:
           inventory velocity and turnover calculations.
         synonyms: [ inventory sold date, sale date, sold date ]
 
-      cost:
-        sql: '"COST"'
-        description: The wholesale cost paid to acquire this specific inventory item
-          from the supplier, used for calculating profit margins and cost of
-          goods sold (COGS).
-        synonyms: [ cogs, inventory cost, item cost, unit cost ]
-
-      id:
-        sql: '"ID"'
-        primary_key: true
-
-      product_distribution_center_id:
-        sql: '"PRODUCT_DISTRIBUTION_CENTER_ID"'
-        description: Identifier for the distribution center or warehouse where this
-          inventory item is stored and shipped from.
-        synonyms: [ dc id, fulfillment center, warehouse id ]
-
-      product_id:
-        sql: '"PRODUCT_ID"'
-
-      product_retail_price:
-        sql: '"PRODUCT_RETAIL_PRICE"'
-        description: The manufacturer suggested retail price (MSRP) for the product,
-          representing the recommended selling price before any discounts.
-        synonyms: [ list price, msrp, sticker price ]
-
     measures:
       average_cost:
         sql: AVG(${ecomm__sales__inventory_items.cost})
@@ -109,55 +109,6 @@ views:
     table_name: ORDER_ITEMS
 
     dimensions:
-      created_at:
-        sql: '"CREATED_AT"'
-        description: Timestamp when the order was placed. Primary time dimension for
-          sales trends, seasonality, and cohort analysis.
-        synonyms: [ order date, order timestamp, purchase date, transaction date ]
-
-      delivered_at:
-        sql: '"DELIVERED_AT"'
-        description: Timestamp when the order was delivered to the customer, used for
-          delivery time analysis.
-        synonyms: [ arrival date, delivery date, received date ]
-
-      is_delivered:
-        sql: '"IS_DELIVERED"'
-        description: Boolean flag indicating whether the order has been successfully
-          delivered to the customer.
-        synonyms: [ delivered, delivery confirmed, received by customer ]
-
-      is_returned:
-        sql: '"IS_RETURNED"'
-        description: Boolean flag indicating whether the customer returned this item.
-          Critical for return rate analysis and quality insights.
-        synonyms: [ refunded, returned, sent back ]
-
-      is_shipped:
-        sql: '"IS_SHIPPED"'
-        description: Boolean flag indicating whether the order has been shipped from the
-          fulfillment center.
-        synonyms: [ dispatched, in transit, shipped ]
-
-      returned_at:
-        sql: '"RETURNED_AT"'
-        description: Timestamp when the item was returned, if applicable. Used for
-          return timing and seasonal return pattern analysis.
-        synonyms: [ refund date, return date ]
-
-      shipped_at:
-        sql: '"SHIPPED_AT"'
-        description: Timestamp when the order was shipped from the warehouse, used for
-          fulfillment speed analysis.
-        synonyms: [ dispatch date, ship date, shipment date ]
-
-      status:
-        sql: '"STATUS"'
-        description: "Current status of the order: Processing, Shipped, Complete,
-          Cancelled, or Returned. Essential for order funnel and fulfillment
-          analysis."
-        synonyms: [ fulfillment status, order state, order status, transaction status ]
-
       completed_order:
         sql: CASE WHEN ${ecomm__sales__order_items.status} = 'Complete' THEN 1 ELSE 0
           END
@@ -229,6 +180,55 @@ views:
 
       user_id:
         sql: '"USER_ID"'
+
+      created_at:
+        sql: '"CREATED_AT"'
+        description: Timestamp when the order was placed. Primary time dimension for
+          sales trends, seasonality, and cohort analysis.
+        synonyms: [ order date, order timestamp, purchase date, transaction date ]
+
+      delivered_at:
+        sql: '"DELIVERED_AT"'
+        description: Timestamp when the order was delivered to the customer, used for
+          delivery time analysis.
+        synonyms: [ arrival date, delivery date, received date ]
+
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+        description: Boolean flag indicating whether the order has been successfully
+          delivered to the customer.
+        synonyms: [ delivered, delivery confirmed, received by customer ]
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+        description: Boolean flag indicating whether the customer returned this item.
+          Critical for return rate analysis and quality insights.
+        synonyms: [ refunded, returned, sent back ]
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+        description: Boolean flag indicating whether the order has been shipped from the
+          fulfillment center.
+        synonyms: [ dispatched, in transit, shipped ]
+
+      returned_at:
+        sql: '"RETURNED_AT"'
+        description: Timestamp when the item was returned, if applicable. Used for
+          return timing and seasonal return pattern analysis.
+        synonyms: [ refund date, return date ]
+
+      shipped_at:
+        sql: '"SHIPPED_AT"'
+        description: Timestamp when the order was shipped from the warehouse, used for
+          fulfillment speed analysis.
+        synonyms: [ dispatch date, ship date, shipment date ]
+
+      status:
+        sql: '"STATUS"'
+        description: "Current status of the order: Processing, Shipped, Complete,
+          Cancelled, or Returned. Essential for order funnel and fulfillment
+          analysis."
+        synonyms: [ fulfillment status, order state, order status, transaction status ]
 
     measures:
       average_sale_price:
@@ -358,6 +358,25 @@ views:
     table_name: PRODUCTS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+        description: The standard cost for this product SKU, used as the baseline for
+          margin calculations and inventory valuation.
+        synonyms: [ base cost, product cost, wholesale price ]
+
+      distribution_center_id:
+        sql: '"DISTRIBUTION_CENTER_ID"'
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      retail_price:
+        sql: '"RETAIL_PRICE"'
+        description: The standard retail price for this product before any discounts or
+          promotions are applied.
+        synonyms: [ full price, list price, msrp, recommended price ]
+
       brand:
         sql: '"BRAND"'
         description: Brand name from the product master data. Use for brand-level
@@ -385,25 +404,6 @@ views:
         description: SKU from product master for product-level detail analysis.
         synonyms: [ item code, product code, product sku ]
 
-      cost:
-        sql: '"COST"'
-        description: The standard cost for this product SKU, used as the baseline for
-          margin calculations and inventory valuation.
-        synonyms: [ base cost, product cost, wholesale price ]
-
-      distribution_center_id:
-        sql: '"DISTRIBUTION_CENTER_ID"'
-
-      id:
-        sql: '"ID"'
-        primary_key: true
-
-      retail_price:
-        sql: '"RETAIL_PRICE"'
-        description: The standard retail price for this product before any discounts or
-          promotions are applied.
-        synonyms: [ full price, list price, msrp, recommended price ]
-
     measures:
       total_cost:
         sql: SUM(${ecomm__sales__products.cost})
@@ -430,6 +430,28 @@ views:
     table_name: USERS
 
     dimensions:
+      age:
+        sql: '"AGE"'
+        description: The age of the customer in years, useful for demographic
+          segmentation and targeted marketing analysis.
+        synonyms: [ customer age, user age, years old ]
+
+      id:
+        sql: '"ID"'
+        primary_key: true
+
+      latitude:
+        sql: '"LATITUDE"'
+        description: Geographic latitude coordinate of the customer location for mapping
+          and regional analysis.
+        synonyms: [ geo latitude, lat ]
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Geographic longitude coordinate of the customer location for
+          mapping and regional analysis.
+        synonyms: [ geo longitude, lng, long ]
+
       city:
         sql: '"CITY"'
         description: City where the customer is located. Key geographic dimension for
@@ -494,28 +516,6 @@ views:
         description: Customer postal/zip code for micro-geographic analysis and delivery
           planning.
         synonyms: [ postal code, postcode, zip code ]
-
-      age:
-        sql: '"AGE"'
-        description: The age of the customer in years, useful for demographic
-          segmentation and targeted marketing analysis.
-        synonyms: [ customer age, user age, years old ]
-
-      id:
-        sql: '"ID"'
-        primary_key: true
-
-      latitude:
-        sql: '"LATITUDE"'
-        description: Geographic latitude coordinate of the customer location for mapping
-          and regional analysis.
-        synonyms: [ geo latitude, lat ]
-
-      longitude:
-        sql: '"LONGITUDE"'
-        description: Geographic longitude coordinate of the customer location for
-          mapping and regional analysis.
-        synonyms: [ geo longitude, lng, long ]
 
     measures:
       avg_customer_age:

@@ -40,6 +40,9 @@ views:
     table_name: USS_PLACEMENTS
 
     dimensions:
+      days_on_rent:
+        sql: '"DAYS_ON_RENT"'
+
       asset_id:
         sql: '"ASSET_ID"'
 
@@ -55,9 +58,6 @@ views:
 
       site_id:
         sql: '"SITE_ID"'
-
-      days_on_rent:
-        sql: '"DAYS_ON_RENT"'
 
     measures:
       avg_days_on_rent:
@@ -76,6 +76,9 @@ views:
     table_name: USS_ROUTES
 
     dimensions:
+      planned_stops:
+        sql: '"PLANNED_STOPS"'
+
       branch_id:
         sql: '"BRANCH_ID"'
 
@@ -88,9 +91,6 @@ views:
       route_id:
         sql: '"ROUTE_ID"'
         primary_key: true
-
-      planned_stops:
-        sql: '"PLANNED_STOPS"'
 
     measures:
       route_count:

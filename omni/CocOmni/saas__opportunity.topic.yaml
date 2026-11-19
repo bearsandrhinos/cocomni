@@ -16,15 +16,6 @@ views:
     table_name: ACCOUNT
 
     dimensions:
-      annual_revenue:
-        sql: '"ANNUAL_REVENUE"'
-        description: Annual operating revenue of the account
-        synonyms: [ company_revenue ]
-
-      number_of_employees:
-        sql: '"NUMBER_OF_EMPLOYEES"'
-        description: Total employee count at the account
-
       billing_city:
         sql: '"BILLING_CITY"'
         description: Account billing city
@@ -91,6 +82,15 @@ views:
         sql: '"TYPE"'
         description: Prospect or Customer
         synonyms: [ account_type, customer_type ]
+
+      annual_revenue:
+        sql: '"ANNUAL_REVENUE"'
+        description: Annual operating revenue of the account
+        synonyms: [ company_revenue ]
+
+      number_of_employees:
+        sql: '"NUMBER_OF_EMPLOYEES"'
+        description: Total employee count at the account
 
     measures:
       account_count:
@@ -164,32 +164,6 @@ views:
     table_name: OPPORTUNITIES
 
     dimensions:
-      acv:
-        sql: '"ACV"'
-
-      amount:
-        sql: '"AMOUNT"'
-        description: Contract amount for the opportunity
-        synonyms: [ deal_amount, opportunity_amount, contract_value ]
-
-      arr:
-        sql: '"ARR"'
-
-      contract_term_months:
-        sql: '"CONTRACT_TERM_MONTHS"'
-        description: Length in months of the contract
-
-      probability:
-        sql: '"PROBABILITY"'
-        description: Win probability percentage (0-100)
-
-      risk_score:
-        sql: '"RISK_SCORE"'
-        description: Risk level to close, 1-100 (100 is locked, 1 is highly risky)
-
-      tcv:
-        sql: '"TCV"'
-
       account_id:
         sql: '"ACCOUNT_ID"'
         description: Unique identifier for an account
@@ -300,6 +274,32 @@ views:
         sql: '"WIN_REASON"'
         description: The win reason defined by the AE in Salesforce
 
+      acv:
+        sql: '"ACV"'
+
+      amount:
+        sql: '"AMOUNT"'
+        description: Contract amount for the opportunity
+        synonyms: [ deal_amount, opportunity_amount, contract_value ]
+
+      arr:
+        sql: '"ARR"'
+
+      contract_term_months:
+        sql: '"CONTRACT_TERM_MONTHS"'
+        description: Length in months of the contract
+
+      probability:
+        sql: '"PROBABILITY"'
+        description: Win probability percentage (0-100)
+
+      risk_score:
+        sql: '"RISK_SCORE"'
+        description: Risk level to close, 1-100 (100 is locked, 1 is highly risky)
+
+      tcv:
+        sql: '"TCV"'
+
     measures:
       amount_average:
         sql: AVG(${saas__opportunity__opportunities.amount})
@@ -358,6 +358,32 @@ views:
     table_name: OPPORTUNITY_LINE_ITEMS
 
     dimensions:
+      created_date:
+        sql: '"CREATED_DATE"'
+        description: Date when the line item was added to the opportunity
+
+      description:
+        sql: '"DESCRIPTION"'
+        description: Additional description or notes for the line item
+
+      id:
+        sql: '"ID"'
+        description: Unique identifier for each opportunity line item
+        primary_key: true
+
+      opportunity_id:
+        sql: '"OPPORTUNITY_ID"'
+        description: Foreign key to the parent opportunity
+
+      product_id:
+        sql: '"PRODUCT_ID"'
+        description: Foreign key to the product catalog
+
+      service_date:
+        sql: '"SERVICE_DATE"'
+        description: Expected delivery or service date
+        synonyms: [ delivery_date, subscription_start_date ]
+
       acv:
         sql: '"ACV"'
 
@@ -389,32 +415,6 @@ views:
         sql: '"TOTAL_PRICE"'
         description: Total price for this line item (quantity * sale_price)
         synonyms: [ line_item_total ]
-
-      created_date:
-        sql: '"CREATED_DATE"'
-        description: Date when the line item was added to the opportunity
-
-      description:
-        sql: '"DESCRIPTION"'
-        description: Additional description or notes for the line item
-
-      id:
-        sql: '"ID"'
-        description: Unique identifier for each opportunity line item
-        primary_key: true
-
-      opportunity_id:
-        sql: '"OPPORTUNITY_ID"'
-        description: Foreign key to the parent opportunity
-
-      product_id:
-        sql: '"PRODUCT_ID"'
-        description: Foreign key to the product catalog
-
-      service_date:
-        sql: '"SERVICE_DATE"'
-        description: Expected delivery or service date
-        synonyms: [ delivery_date, subscription_start_date ]
 
     measures:
       line_item_count:
@@ -469,21 +469,6 @@ views:
     table_name: USER
 
     dimensions:
-      quota_2024:
-        sql: '"QUOTA_2024"'
-
-      quota_2025:
-        sql: '"QUOTA_2025"'
-
-      quota_2026:
-        sql: '"QUOTA_2026"'
-
-      quota_attainment_pct:
-        sql: '"QUOTA_ATTAINMENT_PCT"'
-
-      quota_target:
-        sql: '"QUOTA_TARGET"'
-
       created_date:
         sql: '"CREATED_DATE"'
         description: Date employee started
@@ -539,6 +524,21 @@ views:
 
       se_id:
         sql: '"SE_ID"'
+
+      quota_2024:
+        sql: '"QUOTA_2024"'
+
+      quota_2025:
+        sql: '"QUOTA_2025"'
+
+      quota_2026:
+        sql: '"QUOTA_2026"'
+
+      quota_attainment_pct:
+        sql: '"QUOTA_ATTAINMENT_PCT"'
+
+      quota_target:
+        sql: '"QUOTA_TARGET"'
 
     measures:
       user_count:

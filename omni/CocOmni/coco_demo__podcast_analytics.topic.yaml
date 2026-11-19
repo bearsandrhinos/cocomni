@@ -17,6 +17,10 @@ views:
     table_name: PODCASTS
 
     dimensions:
+      rating:
+        sql: '"RATING"'
+        description: Average user rating on a scale of 0 to 5
+
       avg_episode_length_min:
         sql: '"AVG_EPISODE_LENGTH_MIN"'
         description: Average episode duration in minutes
@@ -71,10 +75,6 @@ views:
         sql: '"TITLE"'
         description: Podcast show title
 
-      rating:
-        sql: '"RATING"'
-        description: Average user rating on a scale of 0 to 5
-
     measures:
       avg_rating:
         sql: AVG(${coco_demo__podcast_analytics__podcasts.rating})
@@ -99,6 +99,14 @@ views:
     table_name: STREAMS
 
     dimensions:
+      completion_pct:
+        sql: '"COMPLETION_PCT"'
+        description: Percentage of the episode that was listened to, from 0 to 100
+
+      listened_min:
+        sql: '"LISTENED_MIN"'
+        description: Actual minutes the listener engaged with the episode
+
       downloaded:
         sql: '"DOWNLOADED"'
         description: Whether the episode was downloaded for offline listening
@@ -136,14 +144,6 @@ views:
         sql: '"USER_ID"'
         description: Foreign key to the listener who initiated the stream
 
-      completion_pct:
-        sql: '"COMPLETION_PCT"'
-        description: Percentage of the episode that was listened to, from 0 to 100
-
-      listened_min:
-        sql: '"LISTENED_MIN"'
-        description: Actual minutes the listener engaged with the episode
-
     measures:
       avg_completion_rate:
         sql: AVG(${coco_demo__podcast_analytics__streams.completion_pct})
@@ -175,6 +175,14 @@ views:
     table_name: USERS
 
     dimensions:
+      latitude:
+        sql: '"LATITUDE"'
+        description: Geographic latitude of the user location
+
+      longitude:
+        sql: '"LONGITUDE"'
+        description: Geographic longitude of the user location
+
       age:
         sql: '"AGE"'
         description: User age in years
@@ -228,14 +236,6 @@ views:
       zip:
         sql: '"ZIP"'
         description: Postal or ZIP code
-
-      latitude:
-        sql: '"LATITUDE"'
-        description: Geographic latitude of the user location
-
-      longitude:
-        sql: '"LONGITUDE"'
-        description: Geographic longitude of the user location
 
     measures:
       avg_user_age:

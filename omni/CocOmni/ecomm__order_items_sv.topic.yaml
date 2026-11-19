@@ -42,6 +42,10 @@ views:
     table_name: INVENTORY_ITEMS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+        description: Cost of the inventory item
+
       created_at:
         sql: '"CREATED_AT"'
         description: Timestamp when the inventory item was created
@@ -86,10 +90,6 @@ views:
         sql: '"SOLD_AT"'
         description: Timestamp when the item was sold
 
-      cost:
-        sql: '"COST"'
-        description: Cost of the inventory item
-
     measures:
       cost_sum:
         sql: COALESCE(SUM(${ecomm__order_items_sv__inventory_items.cost}), 0)
@@ -107,6 +107,37 @@ views:
     table_name: ORDER_ITEMS
 
     dimensions:
+      is_delivered:
+        sql: '"IS_DELIVERED"'
+        description: Boolean indicating if the order was delivered
+        hidden: true
+
+      is_returned:
+        sql: '"IS_RETURNED"'
+        description: Boolean indicating if the order was returned
+        hidden: true
+
+      is_shipped:
+        sql: '"IS_SHIPPED"'
+        description: Boolean indicating if the order was shipped
+        hidden: true
+
+      margin:
+        sql: '"MARGIN"'
+        description: Profit margin for the order
+
+      months_since_signup:
+        sql: '"MONTHS_SINCE_SIGNUP"'
+        description: Number of months since the user signed up
+
+      sale_price:
+        sql: '"SALE_PRICE"'
+        description: Price at which the item was sold
+
+      time_to_ship:
+        sql: '"TIME_TO_SHIP"'
+        description: Time taken to ship the order
+
       created_at:
         sql: '"CREATED_AT"'
         description: Timestamp when the order was created
@@ -151,37 +182,6 @@ views:
       user_id:
         sql: '"USER_ID"'
         description: Identifier of the user who placed the order
-
-      is_delivered:
-        sql: '"IS_DELIVERED"'
-        description: Boolean indicating if the order was delivered
-        hidden: true
-
-      is_returned:
-        sql: '"IS_RETURNED"'
-        description: Boolean indicating if the order was returned
-        hidden: true
-
-      is_shipped:
-        sql: '"IS_SHIPPED"'
-        description: Boolean indicating if the order was shipped
-        hidden: true
-
-      margin:
-        sql: '"MARGIN"'
-        description: Profit margin for the order
-
-      months_since_signup:
-        sql: '"MONTHS_SINCE_SIGNUP"'
-        description: Number of months since the user signed up
-
-      sale_price:
-        sql: '"SALE_PRICE"'
-        description: Price at which the item was sold
-
-      time_to_ship:
-        sql: '"TIME_TO_SHIP"'
-        description: Time taken to ship the order
 
     measures:
       count:
@@ -255,6 +255,10 @@ views:
     table_name: PRODUCTS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+        description: Cost of the product
+
       brand:
         sql: '"BRAND"'
         description: Brand of the product
@@ -286,10 +290,6 @@ views:
       sku:
         sql: '"SKU"'
         description: Stock Keeping Unit of the product
-
-      cost:
-        sql: '"COST"'
-        description: Cost of the product
 
     measures:
       count:

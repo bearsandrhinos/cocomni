@@ -18,18 +18,18 @@ views:
     table_name: DISTRIBUTION_CENTERS
 
     dimensions:
+      latitude:
+        sql: '"LATITUDE"'
+
+      longitude:
+        sql: '"LONGITUDE"'
+
       id:
         sql: '"ID"'
         primary_key: true
 
       name:
         sql: '"NAME"'
-
-      latitude:
-        sql: '"LATITUDE"'
-
-      longitude:
-        sql: '"LONGITUDE"'
 
   coco_demo__oi_atl_2026_sv__inventory_items:
     label: Inventory Items
@@ -42,6 +42,12 @@ views:
     table_name: INVENTORY_ITEMS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+
+      product_retail_price:
+        sql: '"PRODUCT_RETAIL_PRICE"'
+
       created_at:
         sql: '"CREATED_AT"'
 
@@ -73,12 +79,6 @@ views:
       sold_at:
         sql: '"SOLD_AT"'
 
-      cost:
-        sql: '"COST"'
-
-      product_retail_price:
-        sql: '"PRODUCT_RETAIL_PRICE"'
-
     measures:
       total_inventory:
         sql: COUNT(*)
@@ -99,6 +99,12 @@ views:
     table_name: ORDER_ITEMS
 
     dimensions:
+      margin:
+        sql: '"MARGIN"'
+
+      sale_price:
+        sql: '"SALE_PRICE"'
+
       created_at:
         sql: '"CREATED_AT"'
 
@@ -142,12 +148,6 @@ views:
       user_id:
         sql: '"USER_ID"'
 
-      margin:
-        sql: '"MARGIN"'
-
-      sale_price:
-        sql: '"SALE_PRICE"'
-
     measures:
       avg_order_value:
         sql: AVG(${coco_demo__oi_atl_2026_sv__order_items.sale_price})
@@ -184,6 +184,12 @@ views:
     table_name: PRODUCTS
 
     dimensions:
+      cost:
+        sql: '"COST"'
+
+      retail_price:
+        sql: '"RETAIL_PRICE"'
+
       brand:
         sql: '"BRAND"'
 
@@ -206,12 +212,6 @@ views:
       sku:
         sql: '"SKU"'
 
-      cost:
-        sql: '"COST"'
-
-      retail_price:
-        sql: '"RETAIL_PRICE"'
-
     measures:
       id_count_distinct:
         sql: COUNT(DISTINCT ${coco_demo__oi_atl_2026_sv__products.id})
@@ -229,6 +229,12 @@ views:
     table_name: USERS
 
     dimensions:
+      latitude:
+        sql: '"LATITUDE"'
+
+      longitude:
+        sql: '"LONGITUDE"'
+
       age:
         sql: '"AGE"'
 
@@ -265,12 +271,6 @@ views:
 
       zip:
         sql: '"ZIP"'
-
-      latitude:
-        sql: '"LATITUDE"'
-
-      longitude:
-        sql: '"LONGITUDE"'
 
     measures:
       user_count:
