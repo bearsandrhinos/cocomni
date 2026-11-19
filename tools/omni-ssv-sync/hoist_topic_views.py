@@ -36,6 +36,64 @@ def condition(view, field, spec, where):
     return " AND ".join(parts)
 
 
+LOD_MODES = {"fixed": "fixed", "always_include": "include", "always_exclude": "exclude"}
+LOD_AGGS = {**AGGS, "count_distinct": "COUNT_DISTINCT"}
+
+
+def extract_lod(views):
+    """Pull `level_of_detail` dimensions out of the views (the converters would emit them as plain
+    dimensions, which is wrong). Returns entries for the merge step to build model-level LOD facts."""
+    entries = []
+    for vname, view in views.items():
+        dims = view.get("dimensions") or {}
+        names = set(dims) | set(view.get("measures") or {})
+        for dname in [n for n, d in dims.items() if (d or {}).get("level_of_detail")]:
+            dim = dims.pop(dname)
+            lod = dim["level_of_detail"]
+            where = f"level of detail '{vname}.{dname}'"
+            entry = {"view": vname, "name": dname, "notes": []}
+            for key in ("description", "synonyms"):
+                if dim.get(key):
+                    entry[key] = dim[key]
+            modes = [k for k in LOD_MODES if k in lod]
+            agg = lod.get("aggregate_type")
+            if len(modes) != 1:
+                entry["skipped"] = "needs exactly one of fixed, always_include, always_exclude"
+            elif agg not in LOD_AGGS:
+                entry["skipped"] = f"aggregate_type '{agg}' has no Snowflake LOD equivalent"
+            else:
+                sql = re.sub(r"\$\{\s*([A-Za-z_]\w*)\s*\}",
+                             lambda m: "${%s.%s}" % (vname, m.group(1)) if m.group(1) in names else m.group(0),
+                             str(dim.get("sql") or "")).strip()
+                conds = []
+                for field, spec in (lod.get("filters") or {}).items():
+                    spec = dict(spec or {})
+                    cancel = spec.pop("cancel_query_filter", None)
+                    real = {op: v for op, v in spec.items() if not (op == "is" and v in ("", None, []))}
+                    if real:
+                        conds.append(condition(vname, field, real, where))
+                    if cancel:
+                        entry["notes"].append(f"cancel_query_filter on '{field}' has no Snowflake equivalent, ignored")
+                if lod.get("cancel_query_filters"):
+                    entry["notes"].append("cancel_query_filters has no Snowflake equivalent, ignored")
+                operand = sql or "1"
+                if conds:
+                    operand = f"CASE WHEN {' AND '.join(conds)} THEN {operand} END"
+                if agg == "count_distinct":
+                    expr = f"COUNT(DISTINCT {operand})"
+                elif agg == "count" and not sql and not conds:
+                    expr = "COUNT(*)"
+                else:
+                    expr = f"{LOD_AGGS[agg]}({operand})"
+                grain = []
+                for f in lod[modes[0]] or []:
+                    grain.append(str(f).split(".", 1) if "." in str(f) else [vname, str(f)])
+                entry.update(expr=expr, agg=agg.replace("average", "avg"), lod_type=LOD_MODES[modes[0]],
+                             lod_dimensions=grain, operand_fields=re.findall(r"\$\{(\w+)\.(\w+)\}", sql))
+            entries.append(entry)
+    return entries
+
+
 def parse_selector(sel):
     """Return (tier, exclude, args) for one Omni topic `fields` selector.
 
@@ -147,9 +205,10 @@ def hoist(topic_path, out_dir, extras_path=None, previous_path=None):
     rels = topic.pop("relationships", [])
     inline_measure_filters(views)
     excluded = apply_topic_fields(views, topic.pop("fields")) if topic.get("fields") else {}
+    lod = extract_lod(views)
 
     # Things the converters drop on the way to Snowflake travel in a sidecar instead.
-    extras = {"fields": {}, "excluded": excluded, "removed": removed}
+    extras = {"fields": {}, "excluded": excluded, "removed": removed, "lod": lod}
     if topic.get("ai_context"):
         extras["ai_context"] = str(topic.pop("ai_context")).strip()
     for vname, view in views.items():

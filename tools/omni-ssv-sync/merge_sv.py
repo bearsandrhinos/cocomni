@@ -74,8 +74,9 @@ def set_list(item, key, values, label, note):
 
 
 class Merger:
-    def __init__(self, existing, generated, prune, extras=None):
+    def __init__(self, existing, generated, prune, extras=None, lod_as="facts"):
         self.extras = extras or {}
+        self.lod_as = lod_as
         self.ex = existing
         self.gen = generated
         self.prune = prune
@@ -102,6 +103,91 @@ class Merger:
             return col if ex_t is owner else f"{ex_t['name']}.{col}"
         return REF.sub(sub, str(expr))
 
+    def drop_model_level_lod(self, name):
+        for key in ("facts", "dimensions"):
+            item = find_named(self.ex.get(key), name)
+            if item is not None and "lod_dimension_type" in item:
+                self.ex[key].remove(item)
+                self.note(f"model {key}.{item['name']}: LOD entry REMOVED")
+
+    def guess_type(self, entry):
+        if entry["agg"] in ("count", "count_distinct"):
+            return "NUMBER(38,0)"
+        types = []
+        for view, field in entry.get("operand_fields") or []:
+            ex_t = self.gen_to_ex.get(view)
+            _, f = find_field(ex_t, field) if ex_t is not None else (None, None)
+            if f is not None and f.get("data_type"):
+                types.append(str(f["data_type"]))
+        if entry["agg"] in ("min", "max", "sum") and len(set(types)) == 1:
+            return types[0]
+        return "FLOAT"
+
+    def apply_lod(self):
+        mode = self.lod_as
+        for entry in self.extras.get("lod") or []:
+            label = f"model {mode}.{entry['name'].upper()}"
+            ex_t = self.gen_to_ex.get(entry["view"])
+            if ex_t is None:
+                continue
+            # an earlier sync may have written this as a plain table dimension, which is wrong
+            for kind in FIELD_KINDS:
+                plain = find_named(ex_t.get(kind), entry["name"])
+                if plain is not None:
+                    ex_t[kind].remove(plain)
+                    self.note(f"{ex_t['name']}.{plain['name']}: plain {kind[:-1]} REMOVED, it is a level-of-detail field now")
+            if entry.get("skipped"):
+                self.drop_model_level_lod(entry["name"])
+                self.note(f"{label}: SKIPPED level of detail, {entry['skipped']}")
+                continue
+            for note in entry["notes"]:
+                self.note(f"{label}: {note}")
+            grain = []
+            for view, field in entry["lod_dimensions"]:
+                g_t = self.gen_to_ex.get(view)
+                if g_t is None:
+                    self.note(f"{label}: WARNING grain field '{view}.{field}' is not in a synced table")
+                    continue
+                kind, f = find_field(g_t, field)
+                if f is None:
+                    self.note(f"{label}: WARNING grain field '{g_t['name']}.{field}' not found, check it exists")
+                elif kind == "facts":
+                    self.note(f"{label}: WARNING grain field '{g_t['name']}.{f['name']}' is a fact; LOD grains need dimensions")
+                grain.append((g_t["name"], f["name"] if f is not None else field.upper()))
+            expr = self.resolve(re.sub(r"\$\{([^}]*)\}", r"\1", entry["expr"]), None)
+            other = "dimensions" if mode == "facts" else "facts"
+            current = find_named(self.ex.get(mode), entry["name"])
+            if find_named(self.ex.get(other), entry["name"]) is not None:
+                self.note(f"{label}: also exists under model-level {other}, left as is")
+            if current is None:
+                new = CommentedMap(name=entry["name"].upper())
+                if entry.get("description"):
+                    new["description"] = entry["description"]
+                new["expr"] = expr
+                new["data_type"] = self.guess_type(entry)
+                new["lod_dimension_type"] = entry["lod_type"]
+                new["lod_dimensions"] = CommentedSeq(CommentedMap(table=t, dimension=d) for t, d in grain)
+                if entry.get("synonyms"):
+                    new["synonyms"] = CommentedSeq(entry["synonyms"])
+                ensure_list(self.ex, mode).append(new)
+                self.note(f"{label}: ADDED {entry['lod_type']} LOD ({expr}), data_type {new['data_type']} is a guess, review it")
+                continue
+            if entry.get("description") and entry["description"] != current.get("description"):
+                current["description"] = entry["description"]
+                self.note(f"{label}: description updated")
+            if norm(expr) != norm(current["expr"]):
+                current["expr"] = expr
+                self.note(f"{label}: expr changed to {expr}")
+            if current.get("lod_dimension_type") != entry["lod_type"]:
+                current["lod_dimension_type"] = entry["lod_type"]
+                self.note(f"{label}: lod_dimension_type set to {entry['lod_type']}")
+            old = [(str(x.get("table", "")).upper(), str(x["dimension"]).upper()) for x in current.get("lod_dimensions") or []]
+            if old != [(t.upper(), d.upper()) for t, d in grain]:
+                current["lod_dimensions"] = CommentedSeq(CommentedMap(table=t, dimension=d) for t, d in grain)
+                self.note(f"{label}: lod_dimensions set to {[f'{t}.{d}' for t, d in grain]}")
+            if entry.get("synonyms"):
+                set_list(current, "synonyms", entry["synonyms"], label, self.note)
+
     def apply_exclusions(self):
         """Remove fields the topic's `fields:` curation excludes from the existing file."""
         for view, names in (self.extras.get("excluded") or {}).items():
@@ -109,6 +195,7 @@ class Merger:
             if ex_t is None:
                 continue
             for name in names:
+                self.drop_model_level_lod(name)
                 for kind in FIELD_KINDS + ("metrics",):
                     item = find_named(ex_t.get(kind), name)
                     if item is not None:
@@ -123,6 +210,7 @@ class Merger:
             if ex_t is None:
                 continue
             for name in names:
+                self.drop_model_level_lod(name)
                 found = False
                 for kind in FIELD_KINDS + ("metrics",):
                     item = find_named(ex_t.get(kind), name)
@@ -153,6 +241,7 @@ class Merger:
         self.merge_metrics()
         self.merge_relationships()
         self.merge_extras()
+        self.apply_lod()
         self.check_synonyms()
 
     def merge_extras(self):
@@ -181,6 +270,10 @@ class Merger:
 
     def check_synonyms(self):
         seen = {}
+        for key in ("facts", "dimensions"):
+            for i in self.ex.get(key) or []:
+                for syn in i.get("synonyms") or []:
+                    seen.setdefault(str(syn).lower(), f"model.{i['name']}")
         for t in self.ex["tables"]:
             items = [i for k in FIELD_KINDS + ("metrics",) for i in t.get(k) or []]
             for i in items:
@@ -330,6 +423,8 @@ def main():
     ap.add_argument("--generated", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--extras", help="sidecar written by hoist_topic_views.py (sample_values, topic ai_context)")
+    ap.add_argument("--lod-as", choices=("facts", "dimensions"), default="facts",
+                    help="model-level list that level-of-detail entries are written to (default: facts, as in Snowflake's examples)")
     ap.add_argument("--prune", action="store_true", help="remove fields/metrics/relationships absent from Omni")
     args = ap.parse_args()
 
@@ -343,7 +438,7 @@ def main():
     if args.extras:
         with open(args.extras) as f:
             extras = YAML(typ="safe").load(f)
-    merger = Merger(existing, generated, args.prune, extras)
+    merger = Merger(existing, generated, args.prune, extras, args.lod_as)
     merger.merge()
     with open(args.out, "w") as f:
         y.dump(existing, f)
