@@ -22,11 +22,26 @@ FIELD_KINDS = ("dimensions", "time_dimensions", "facts")
 REF = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\b")
 
 
-def make_yaml():
+def detect_style(text):
+    """Indentation and wrap width of an existing file, so a rewrite does not reformat it."""
+    lines = text.splitlines()
+    offset = 2
+    for key, nxt in zip(lines, lines[1:]):
+        k = re.match(r"^(\s*)[A-Za-z_]\w*:\s*$", key)
+        n = re.match(r"^(\s*)- ", nxt)
+        if k and n:
+            offset = len(n.group(1)) - len(k.group(1))
+            break
+    width = 80 if lines and max(len(l) for l in lines) <= 90 else 10000
+    return offset, width
+
+
+def make_yaml(text=""):
+    offset, width = detect_style(text)
     y = YAML()
     y.preserve_quotes = True
-    y.width = 10000
-    y.indent(mapping=2, sequence=4, offset=2)
+    y.width = width
+    y.indent(mapping=2, sequence=offset + 2, offset=offset)
     return y
 
 
@@ -417,6 +432,13 @@ class Merger:
                     self.note(f"relationship {r['name']}: not in Omni topic, kept (use --prune to remove)")
 
 
+def dump_str(y, data):
+    import io
+    buf = io.StringIO()
+    y.dump(data, buf)
+    return buf.getvalue()
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--existing", required=True)
@@ -428,9 +450,11 @@ def main():
     ap.add_argument("--prune", action="store_true", help="remove fields/metrics/relationships absent from Omni")
     args = ap.parse_args()
 
-    y = make_yaml()
     with open(args.existing) as f:
-        existing = y.load(f)
+        original = f.read()
+    y = make_yaml(original)
+    existing = y.load(original)
+    before = dump_str(y, existing)
     with open(args.generated) as f:
         generated = YAML(typ="safe").load(f)
 
@@ -440,8 +464,13 @@ def main():
             extras = YAML(typ="safe").load(f)
     merger = Merger(existing, generated, args.prune, extras, args.lod_as)
     merger.merge()
-    with open(args.out, "w") as f:
-        y.dump(existing, f)
+    # Only rewrite when the content changed, so a no-op sync cannot reformat the file.
+    if dump_str(y, existing) != before:
+        with open(args.out, "w") as f:
+            y.dump(existing, f)
+    elif args.out != args.existing:
+        with open(args.out, "w") as f:
+            f.write(original)
     for line in merger.report:
         print(line, file=sys.stderr)
     if not merger.report:
