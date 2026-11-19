@@ -5,7 +5,8 @@ from pathlib import Path
 import yaml
 
 AGGS = {"sum": "SUM", "avg": "AVG", "average": "AVG", "min": "MIN", "max": "MAX", "count": "COUNT"}
-CMP = {"greater_than": ">", "greater_than_or_equal_to": ">=", "less_than": "<", "less_than_or_equal_to": "<="}
+CMP = {"greater_than": ">", "greater_than_or_equal_to": ">=", "less_than": "<", "less_than_or_equal_to": "<=",
+       "before": "<", "on_or_after": ">="}
 
 
 def literal(v):
@@ -22,6 +23,7 @@ def condition(view, field, spec, where):
         raise SystemExit(f"{where}: filter on '{field}' must be a mapping of operator to value")
     parts = []
     for op, val in spec.items():
+        op = "is_not" if op == "not" else op
         vals = val if isinstance(val, list) else [val]
         if op in ("is", "is_not") and isinstance(val, list):
             neg = "NOT " if op == "is_not" else ""
@@ -32,7 +34,7 @@ def condition(view, field, spec, where):
             parts.append(f"{ref} {CMP[op]} {literal(val)}")
         else:
             raise SystemExit(f"{where}: unsupported filter operator '{op}' on '{field}'; "
-                             f"supported: is, is_not, {', '.join(CMP)}")
+                             f"supported: is, is_not (not), {', '.join(CMP)}")
     return " AND ".join(parts)
 
 
@@ -92,6 +94,103 @@ def extract_lod(views):
                              lod_dimensions=grain, operand_fields=re.findall(r"\$\{(\w+)\.(\w+)\}", sql))
             entries.append(entry)
     return entries
+
+
+TEMPLATE = re.compile(r"\{\{\s*(.*?)\s*\}\}")
+VAR_TYPES = {"string": "STRING", "boolean": "BOOLEAN", "timestamp": "TIMESTAMP_NTZ", "column": "STRING"}
+
+
+def extract_variables(views, notes):
+    """Turn Omni filter-only fields (a view's `filters:` block) that are used in field SQL into
+    Snowflake variables, and rewrite `{{filters.v.f.value}}` templates into references to them.
+    Fields using template forms with no Snowflake equivalent are dropped with a note."""
+    defs = {}
+    shorts = [v.split("__")[-1] for v in views]
+    for vname, view in views.items():
+        short = vname.split("__")[-1] if shorts.count(vname.split("__")[-1]) == 1 else vname
+        for fname, spec in (view.pop("filters", None) or {}).items():
+            spec = spec or {}
+            default = (spec.get("default_filter") or {}).get("is")
+            defs[(vname, fname)] = {
+                "name": f"{short}__{fname}", "type": spec.get("type"),
+                "suggestions": [str(x["value"]) for x in spec.get("suggestion_list") or [] if isinstance(x, dict) and "value" in x],
+                "default": None if default in (None, "", []) or isinstance(default, list) else default,
+                "description": spec.get("description") or spec.get("label")}
+    used = {}
+
+    def declare(info, suffix="", data_type=None):
+        name = info["name"] + suffix
+        if name not in used:
+            used[name] = {"name": name, "data_type": data_type or VAR_TYPES.get(info["type"]) or "STRING",
+                          "description": info["description"]}
+            if info["default"] is not None and not suffix:
+                used[name]["default_value"] = str(info["default"]).lower() if isinstance(info["default"], bool) else str(info["default"])
+        return name
+
+    def rewrite(sql, where):
+        bad = []
+
+        def sub(m):
+            parts = re.fullmatch(r"filters\.(\w+)\.(\w+)\.(value|range_start|range_end)", m.group(1))
+            info = defs.get((parts.group(1), parts.group(2))) if parts else None
+            if info is None:
+                bad.append(m.group(0))
+                return m.group(0)
+            attr = parts.group(3)
+            if attr == "value":
+                if info["type"] == "number":
+                    is_int = isinstance(info["default"], int) and not isinstance(info["default"], bool)
+                    return declare(info, data_type="NUMBER(38,0)" if is_int else "FLOAT")
+                if info["type"] == "column":
+                    if not info["suggestions"]:
+                        bad.append(m.group(0) + " (column filter without a suggestion_list)")
+                        return m.group(0)
+                    var = declare(info)
+                    arms = " ".join(f"WHEN {var} = {literal(v)} THEN {v}" for v in info["suggestions"])
+                    return f"CASE {arms} END"
+                if info["type"] in VAR_TYPES:
+                    return declare(info)
+            elif info["type"] == "timestamp":
+                return declare(info, "_start" if attr == "range_start" else "_end")
+            bad.append(m.group(0))
+            return m.group(0)
+
+        out = TEMPLATE.sub(sub, sql)
+        if bad:
+            notes.append(f"{where}: SKIPPED, template {bad[0]} has no Snowflake equivalent "
+                         "(supported: filters.view.field.value, .range_start, .range_end)")
+            return None
+        return out
+
+    for vname, view in views.items():
+        for kind in ("dimensions", "measures"):
+            for fname, f in list((view.get(kind) or {}).items()):
+                if f and "{{" in str(f.get("sql", "")):
+                    new = rewrite(str(f["sql"]), f"{vname}.{fname}")
+                    if new is None:
+                        del view[kind][fname]
+                    else:
+                        f["sql"] = new
+    return list(used.values())
+
+
+def extract_default_filters(topic, notes):
+    """Topic default_filters -> SQL conditions in Omni ${view.field} reference form."""
+    out = []
+    for key, spec in (topic.pop("default_filters", None) or {}).items():
+        view, _, field = str(key).rpartition(".")
+        spec = dict(spec or {})
+        required = bool(spec.pop("required", False))
+        ops = {op: v for op, v in spec.items() if v not in ([], None, "")}
+        if not view or not ops:
+            continue
+        try:
+            cond = condition(view, field, ops, f"default filter '{key}'")
+        except SystemExit as e:
+            notes.append(f"default filter {key}: SKIPPED, {e}")
+            continue
+        out.append({"view": view, "field": field, "condition": cond, "required": required})
+    return out
 
 
 def parse_selector(sel):
@@ -206,9 +305,15 @@ def hoist(topic_path, out_dir, extras_path=None, previous_path=None):
     inline_measure_filters(views)
     excluded = apply_topic_fields(views, topic.pop("fields")) if topic.get("fields") else {}
     lod = extract_lod(views)
+    notes = []
+    variables = extract_variables(views, notes)
+    default_filters = extract_default_filters(topic, notes)
 
     # Things the converters drop on the way to Snowflake travel in a sidecar instead.
-    extras = {"fields": {}, "excluded": excluded, "removed": removed, "lod": lod}
+    extras = {"fields": {}, "excluded": excluded, "removed": removed, "lod": lod, "variables": variables,
+              "default_filters": default_filters, "notes": notes,
+              "measure_views": {n: v for v, body in views.items() for m in (body.get("measures") or {})
+                                for n in (m, f"{v}__{m}")}}
     if topic.get("ai_context"):
         extras["ai_context"] = str(topic.pop("ai_context")).strip()
     for vname, view in views.items():

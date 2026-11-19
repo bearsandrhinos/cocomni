@@ -237,6 +237,9 @@ class Merger:
                     self.note(f"{ex_t['name']}.{name}: deleted from the Omni topic, already absent here")
 
     def merge(self):
+        for note in self.extras.get("notes") or []:
+            self.note(note)
+        self.default_filter_lines = []
         self.apply_exclusions()
         self.apply_removals()
         if self.gen.get("description") and self.gen["description"] != self.ex.get("description"):
@@ -255,20 +258,14 @@ class Merger:
 
         self.merge_metrics()
         self.merge_relationships()
+        self.apply_variables()
+        self.apply_default_filters()
         self.merge_extras()
         self.apply_lod()
         self.check_synonyms()
 
     def merge_extras(self):
-        instructions = self.extras.get("ai_context")
-        if instructions:
-            block = self.ex.get("module_custom_instructions")
-            if block is None:
-                block = CommentedMap()
-                self.ex.insert(list(self.ex.keys()).index("tables"), "module_custom_instructions", block)
-            if str(block.get("sql_generation") or "").strip() != instructions:
-                block["sql_generation"] = instructions
-                self.note("model: module_custom_instructions.sql_generation set from topic ai_context")
+        self.merge_instructions()
         for view, fields in (self.extras.get("fields") or {}).items():
             ex_t = self.gen_to_ex.get(view)
             if ex_t is None:
@@ -282,6 +279,84 @@ class Merger:
                     self.note(f"{label}: sample_values skipped, Snowflake only allows them on dimensions")
                 else:
                     set_list(ex_f, "sample_values", props["sample_values"], label, self.note)
+
+    DEFAULT_FILTER_MARKER = "Default filters from the Omni topic"
+
+    def merge_instructions(self):
+        """module_custom_instructions.sql_generation = topic ai_context + advisory default filters."""
+        parts = []
+        if self.extras.get("ai_context"):
+            parts.append(self.extras["ai_context"])
+        if self.default_filter_lines:
+            parts.append(f"{self.DEFAULT_FILTER_MARKER} (apply these WHERE conditions unless the user asks otherwise):\n"
+                         + "\n".join(f"- {line}" for line in self.default_filter_lines))
+        text = "\n\n".join(parts)
+        block = self.ex.get("module_custom_instructions")
+        current = str(block.get("sql_generation") or "").strip() if block is not None else ""
+        if not text:
+            if block is not None and self.DEFAULT_FILTER_MARKER in current:
+                del self.ex["module_custom_instructions"]
+                self.note("model: module_custom_instructions removed, the Omni default filters are gone")
+            return
+        if block is None:
+            block = CommentedMap()
+            self.ex.insert(list(self.ex.keys()).index("tables"), "module_custom_instructions", block)
+        if current != text:
+            block["sql_generation"] = text
+            self.note("model: module_custom_instructions.sql_generation set from topic ai_context and default filters")
+
+    def apply_variables(self):
+        for var in self.extras.get("variables") or []:
+            current = find_named(self.ex.get("variables"), var["name"])
+            label = f"variables.{var['name']}"
+            if current is None:
+                new = CommentedMap(name=var["name"], data_type=var["data_type"])
+                if var.get("default_value") is not None:
+                    new["default_value"] = var["default_value"]
+                if var.get("description"):
+                    new["description"] = var["description"]
+                ensure_list(self.ex, "variables").append(new)
+                self.note(f"{label}: ADDED ({var['data_type']}); data_type is inferred from the Omni filter type, review it")
+                continue
+            if var.get("default_value") is not None and str(current.get("default_value")) != var["default_value"]:
+                current["default_value"] = var["default_value"]
+                self.note(f"{label}: default_value set to {var['default_value']}")
+            if var.get("description") and var["description"] != current.get("description"):
+                current["description"] = var["description"]
+                self.note(f"{label}: description updated")
+
+    def apply_default_filters(self):
+        """Snowflake has no default-applied filter, so write each as an entity-level filter
+        (labels: [filter]) and mention them in the custom instructions."""
+        wanted = {}
+        for item in self.extras.get("default_filters") or []:
+            ex_t = self.gen_to_ex.get(item["view"])
+            if ex_t is None:
+                self.note(f"default filter {item['view']}.{item['field']}: SKIPPED, view is not a synced table")
+                continue
+            sql = self.resolve(re.sub(r"\$\{([^}]*)\}", r"\1", item["condition"]), ex_t)
+            kind, f = find_field(ex_t, item["field"])
+            name = f"DEFAULT_FILTER_{(f['name'] if f is not None else item['field']).upper()}"
+            desc = f"Omni topic default filter on {item['field']}" + (" (required in Omni)" if item["required"] else "")
+            wanted.setdefault(id(ex_t), (ex_t, {}))[1][name] = (sql, desc)
+            self.default_filter_lines.append(f"{ex_t['name']}: {sql}")
+        for ex_t in self.ex["tables"]:
+            mine = wanted.get(id(ex_t), (ex_t, {}))[1]
+            for name, (sql, desc) in mine.items():
+                current = find_named(ex_t.get("dimensions"), name)
+                if current is None:
+                    new = CommentedMap(name=name, description=desc, expr=sql, data_type="BOOLEAN")
+                    new["labels"] = CommentedSeq(["filter"])
+                    ensure_list(ex_t, "dimensions").append(new)
+                    self.note(f"{ex_t['name']}.{name}: default filter ADDED as entity-level filter ({sql})")
+                elif norm(current["expr"]) != norm(sql):
+                    current["expr"] = sql
+                    self.note(f"{ex_t['name']}.{name}: default filter expr changed to {sql}")
+            for dim in list(ex_t.get("dimensions") or []):
+                if str(dim["name"]).startswith("DEFAULT_FILTER_") and "filter" in (dim.get("labels") or []) \
+                        and dim["name"] not in mine and ex_t in self.gen_to_ex.values():
+                    ex_t["dimensions"].remove(dim)
+                    self.note(f"{ex_t['name']}.{dim['name']}: default filter REMOVED, no longer in the Omni topic")
 
     def check_synonyms(self):
         seen = {}
@@ -335,6 +410,8 @@ class Merger:
 
         for kind in FIELD_KINDS:
             for f in list(ex_t.get(kind) or []):
+                if str(f["name"]).startswith("DEFAULT_FILTER_") and "filter" in (f.get("labels") or []):
+                    continue  # generated from the topic's default_filters, handled separately
                 if str(f["name"]).upper() not in g_fields:
                     if self.prune:
                         ex_t[kind].remove(f)
@@ -342,12 +419,14 @@ class Merger:
                     else:
                         self.note(f"{name}.{f['name']}: not in Omni topic, kept (use --prune to remove)")
 
-    def metric_owner(self, expr):
+    def metric_owner(self, expr, name=None):
         for m in REF.finditer(str(expr)):
             ex_t = self.gen_to_ex.get(m.group(1))
             if ex_t is not None:
                 return ex_t
-        return None
+        # no table reference in the expression (e.g. a CASE over variables): use the Omni view
+        view = (self.extras.get("measure_views") or {}).get(name)
+        return self.gen_to_ex.get(view) if view else None
 
     def merge_metrics(self):
         # Generated metrics live at model level; existing ones live on tables.
@@ -365,7 +444,7 @@ class Merger:
                     owner, ex_m = t, found
                     break
             if ex_m is None:
-                owner = self.metric_owner(g_m["expr"])
+                owner = self.metric_owner(g_m["expr"], g_m["name"])
                 if owner is None:
                     self.note(f"metric {g_m['name']}: cannot determine owning table, skipped")
                     continue
